@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage'
 
+import * as firebase from 'firebase/app';
+
+
 @Injectable({
   providedIn: 'root'
 })
