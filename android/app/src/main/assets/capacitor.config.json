@@ -1,0 +1,7 @@
+{
+  "appId": "com.bowieventures.www",
+  "appName": "rocco",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

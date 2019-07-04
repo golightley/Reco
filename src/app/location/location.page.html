@@ -1,0 +1,17 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>
+        <img src="assets/images/logo.png" class="logo" />
+      </ion-title>
+      <ion-buttons slot="start">
+        <ion-button (click)="setLocation()"><ion-icon slot="icon-only" name="pin"></ion-icon></ion-button>    
+      </ion-buttons>
+      <ion-buttons slot="end">
+          <ion-button (click)="takeMeHome()"><ion-icon slot="icon-only" name="walk"></ion-icon></ion-button>  
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <google-map apiKey="AIzaSyB-1vMQ2VXYlqkf80AwCy7dxG9O0cAtqI8"></google-map>
+  </ion-content>
