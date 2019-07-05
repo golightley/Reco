@@ -1,0 +1,34 @@
+    <ion-header>
+        <ion-toolbar color="primary">    
+        </ion-toolbar>
+      </ion-header>
+
+    <ion-list lines="none">
+  
+        <form [formGroup]="myDetailsForm" (input)="saveForm()">
+    
+          <ion-item>
+            <ion-label position="stacked">New Place</ion-label>
+            <ion-input formControlName="name" type="text"></ion-input>
+          </ion-item>
+    
+          <ion-item>
+            <ion-label position="stacked">City</ion-label>
+            <ion-input formControlName="city" type="text"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Notes</ion-label>
+            <ion-textarea formControlName="notes" type="text"></ion-textarea>
+          </ion-item>
+
+          <ion-button (click)="createNewRec(myDetailsForm)" expand="block" >
+
+            Create
+          </ion-button>
+          <ion-button (click)="closeModal()">Close Modal</ion-button>
+
+    
+        </form>
+    
+      </ion-list>

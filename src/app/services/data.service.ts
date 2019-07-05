@@ -2,14 +2,51 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage'
 
 import * as firebase from 'firebase/app';
-
+import 'firebase/auth';
+import 'firebase/firestore';
+import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  constructor(private storage:Storage) { }
+  public eventListRef: firebase.firestore.CollectionReference;
+
+  constructor(private storage:Storage) { 
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.eventListRef = firebase
+          .firestore()
+          .collection(`/userProfile/${user.uid}/eventList`);
+      }
+    });
+
+  }
+
+  async createNewRecommendation(newRecFormDetails:FormGroup) {
+    // print the form results 
+    console.log("DATASERVICE.CreateNewRcommendations.FormGroup:")
+    console.log(newRecFormDetails);
+
+    try{
+      await firebase.firestore().collection('recommendations').add({
+        name: newRecFormDetails.value.name,
+        city: newRecFormDetails.value.city,
+        notes: newRecFormDetails.value.notes,
+        user: firebase.auth().currentUser.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function (docRef) {
+        console.log('DATASERVICE.createNewRecommendation:', docRef.id);
+      }).catch(function (error) {
+        console.error('DATASERVICE.createNewRecommendation.Error adding document: ', error);
+      });
+    }catch (err){
+      console.log("DATASERVICE.createNewRecommendation");
+      console.log(err);
+    }
+
+  }
 
   setMyDetails(data):void{
     this.storage.set('myDetails',data);

@@ -1,56 +1,23 @@
 <ion-header>
     <ion-toolbar color="primary">
-      <ion-title>
-        <img src="assets/images/logo.png" class="logo" />
-      </ion-title>
+        <ion-searchbar placeholder="City"></ion-searchbar>
+
     </ion-toolbar>
   </ion-header>
-  
+  <ion-button (click)="openModal()">Create new place</ion-button>
+
   <ion-content padding>
   
     <ion-card>
-  
-      <ion-card-header>
-        My Details
-      </ion-card-header>
-  
-      <ion-card-content>
-        Update this form with your details so you have an easy reference for later.
-      </ion-card-content>
-  
-    </ion-card>	
-  
-    <ion-list lines="none">
-  
-      <form [formGroup]="myDetailsForm" (input)="saveForm()">
-  
-        <ion-item>
-          <ion-label position="stacked">Car Registration</ion-label>
-          <ion-input formControlName="carRegistration" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Trailer Registration</ion-label>
-          <ion-input formControlName="trailerRegistration" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Trailer Dimensions</ion-label>
-          <ion-input formControlName="trailerDimensions" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Phone Number</ion-label>
-          <ion-input formControlName="phoneNumber" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Notes</ion-label>
-          <ion-textarea formControlName="notes" type="text"></ion-textarea>
-        </ion-item>
-  
-      </form>
-  
-    </ion-list>
+        <ion-card-header>
+          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          <ion-card-title>Card Title</ion-card-title>
+        </ion-card-header>
+      
+        <ion-card-content>
+          Keep close to Nature's heart... and break clear away, once in awhile,
+          and climb a mountain or spend a week in the woods. Wash your spirit clean.
+        </ion-card-content>
+      </ion-card>
   
   </ion-content>

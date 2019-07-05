@@ -3,6 +3,10 @@ import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
 import { DataService } from '../services/data.service'
 import { formControlBinding } from '@angular/forms/src/directives/ng_model';
 
+// for the modal 
+import { ModalController } from '@ionic/angular';
+import { CreatePlaceModalPage } from '../pages/create-place-modal/create-place-modal.page'
+
 @Component({
   selector: 'app-my-details',
   templateUrl: './my-details.page.html',
@@ -10,39 +14,34 @@ import { formControlBinding } from '@angular/forms/src/directives/ng_model';
 })
 export class MyDetailsPage implements OnInit {
 
-  public myDetailsForm: FormGroup;
+  dataReturned:any;
 
 
-  constructor(private formBuilder:FormBuilder, private dataService:DataService) {
-    this.myDetailsForm = formBuilder.group({
-      carRegistration:[''],
-      trailerRegistration:[''],
-      trailerDimensions:[''],
-      phoneNumber:[''],
-      notes:['']
-    })
-
+  constructor(private dataService:DataService,public modalController: ModalController) {
    }
 
-  ngOnInit() {
-
-    this.dataService.getMyDetails().then((details)=>{
-      let formControls:any = this.myDetailsForm.controls;
-
-      if(details!=null){
-        formControls.carRegistration.setValue(details.carRegistration);
-        formControls.trailerRegistration.setValue(details.trailerRegistration)
-        formControls.trailerDimensions.setValue(details.trailerDimensions);
-
-        formControls.phoneNumber.setValue(details.phoneNumber);
-        formControls.notes.setValue(details.notes)
-
+   // create the modal 
+   async openModal() {
+    const modal = await this.modalController.create({
+      component: CreatePlaceModalPage,
+      componentProps: {
+        "paramID": 123,
+        "paramTitle": "Test Title"
       }
-    })
+    });
+ 
+    // wait for the modal to be dismissed 
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned !== null) {
+        this.dataReturned = dataReturned.data;
+        //alert('Modal Sent Data :'+ dataReturned);
+      }
+    });
+ 
+    return await modal.present();
   }
 
-  saveForm():void{
-    this.dataService.setMyDetails(this.myDetailsForm)
-
+  ngOnInit() {
   }
+
 }

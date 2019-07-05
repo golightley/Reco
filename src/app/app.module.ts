@@ -15,11 +15,20 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/firestore';
 
+import { CreatePlaceModalPageModule } from './pages/create-place-modal/create-place-modal.module'
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), IonicStorageModule.forRoot(), AppRoutingModule,AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(), 
+    IonicStorageModule.forRoot(), 
+    AppRoutingModule,AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    CreatePlaceModalPageModule
+  ],
   providers: [
     StatusBar,
     SplashScreen,
