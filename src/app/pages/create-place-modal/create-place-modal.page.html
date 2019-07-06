@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
     <ion-toolbar>
         <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()"></ion-searchbar>
     </ion-toolbar>
@@ -6,16 +6,40 @@
     <ion-list>
         <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
     </ion-list>
-</ion-header>
+</ion-header> -->
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="closeModal()">Cancel</ion-button>    
+        </ion-buttons>
+        <b>Recommendation</b> 
+         <ion-buttons slot="end">
+            <ion-button (click)="createNewRec()">Create</ion-button>  
+        </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+
 <div id="service-helper"></div>
+  
+<ion-content>
 
     <ion-list lines="none">
   
         <!-- <form [formGroup]="myDetailsForm" (input)="saveForm()"> -->
     
-          <ion-item>
+          <!-- <ion-item>
             <ion-label position="stacked">New Place</ion-label>
             <ion-input  [(ngModel)]="name"  type="text"></ion-input>
+          </ion-item> -->
+
+          <ion-item>
+            <ion-label position="stacked">New Place</ion-label>
+            <ion-input  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-input>
+
+            <ion-list>
+                <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
+            </ion-list>
           </ion-item>
     
           <ion-item>
@@ -25,16 +49,12 @@
 
           <ion-item>
             <ion-label position="stacked">Notes</ion-label>
-            <ion-textarea type="text"></ion-textarea>
+            <ion-textarea [(ngModel)]="notes" type="text"></ion-textarea>
           </ion-item>
-
-          <ion-button (click)="createNewRec(myDetailsForm)" expand="block" >
-
-            Create
-          </ion-button>
-          <ion-button (click)="closeModal()">Close Modal</ion-button>
 
     
         <!-- </form> -->
     
       </ion-list>
+
+    </ion-content>

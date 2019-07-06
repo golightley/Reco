@@ -24,16 +24,17 @@ export class DataService {
 
   }
 
-  async createNewRecommendation(newRecFormDetails:FormGroup) {
+  async createNewRecommendation(name:string,city:string,notes:string,location:any) {
     // print the form results 
     console.log("DATASERVICE.CreateNewRcommendations.FormGroup:")
-    console.log(newRecFormDetails);
+    console.log(location);
 
     try{
       await firebase.firestore().collection('recommendations').add({
-        name: newRecFormDetails.value.name,
-        city: newRecFormDetails.value.city,
-        notes: newRecFormDetails.value.notes,
+        name: name,
+        city: city,
+        notes: notes,
+        location:location,
         user: firebase.auth().currentUser.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function (docRef) {

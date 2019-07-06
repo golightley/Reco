@@ -25,8 +25,9 @@ export class CreatePlaceModalPage implements OnInit {
   searchDisabled: boolean;
   saveDisabled: boolean;
   location: any;  
-  public name:string;
-  public city:string;
+  public name:string  = "";
+  public city:string  = "";
+  public notes:string = "";
 
   constructor(
     private modalController: ModalController,
@@ -54,8 +55,13 @@ export class CreatePlaceModalPage implements OnInit {
     let div = this.renderer.createElement('div');
     div.id  = 'googleDiv';
 
-    this.autocompleteService = new google.maps.places.AutocompleteService()
-    this.service = new google.maps.places.PlacesService(div);
+    
+      this.autocompleteService = new google.maps.places.AutocompleteService()
+      this.service = new google.maps.places.PlacesService(div);
+    
+
+    
+
 
 
   }
@@ -121,10 +127,6 @@ selectPlace(place){
   };
 
   this.service.getDetails({placeId: place.place_id}, (details) => {
-
-  // this.placesService.getDetails({placeId: place.place_id}, (details) => {
-
-      // this.zone.run(() => {
           console.log("CreatePlaceModal.SelectPlace")
           console.log(details)
           console.log(details.address_components[3].short_name)
@@ -134,12 +136,8 @@ selectPlace(place){
           location.city = details.address_components[3].short_name;
           this.saveDisabled = false;
 
-
-          // this.maps.map.setCenter({lat: location.lat, lng: location.lng}); 
-          this.name = location.name;
+          this.query = location.name;
           this.city = location.city;
-
-
 
           this.location = location;
           console.log(this.location)
@@ -151,8 +149,10 @@ selectPlace(place){
 }
 
 
-  public createNewRec(newRecFormDetails:FormGroup):void{
-    console.log(newRecFormDetails);
+  public createNewRec():void{
+
+    this.dataService.createNewRecommendation(this.name,this.city,this.notes,this.location);
+    this.closeModal()
 
   }
 
