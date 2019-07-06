@@ -1,25 +1,31 @@
-    <ion-header>
-        <ion-toolbar color="primary">    
-        </ion-toolbar>
-      </ion-header>
+<ion-header>
+    <ion-toolbar>
+        <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()"></ion-searchbar>
+    </ion-toolbar>
+
+    <ion-list>
+        <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
+    </ion-list>
+</ion-header>
+<div id="service-helper"></div>
 
     <ion-list lines="none">
   
-        <form [formGroup]="myDetailsForm" (input)="saveForm()">
+        <!-- <form [formGroup]="myDetailsForm" (input)="saveForm()"> -->
     
           <ion-item>
             <ion-label position="stacked">New Place</ion-label>
-            <ion-input formControlName="name" type="text"></ion-input>
+            <ion-input  [(ngModel)]="name"  type="text"></ion-input>
           </ion-item>
     
           <ion-item>
             <ion-label position="stacked">City</ion-label>
-            <ion-input formControlName="city" type="text"></ion-input>
+            <ion-input  [(ngModel)]="city" type="text"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label position="stacked">Notes</ion-label>
-            <ion-textarea formControlName="notes" type="text"></ion-textarea>
+            <ion-textarea type="text"></ion-textarea>
           </ion-item>
 
           <ion-button (click)="createNewRec(myDetailsForm)" expand="block" >
@@ -29,6 +35,6 @@
           <ion-button (click)="closeModal()">Close Modal</ion-button>
 
     
-        </form>
+        <!-- </form> -->
     
       </ion-list>

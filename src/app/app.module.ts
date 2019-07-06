@@ -18,6 +18,9 @@ import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/fi
 import { CreatePlaceModalPageModule } from './pages/create-place-modal/create-place-modal.module'
 
 
+import { HttpClientModule } from  '@angular/common/http';
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -27,7 +30,8 @@ import { CreatePlaceModalPageModule } from './pages/create-place-modal/create-pl
     IonicStorageModule.forRoot(), 
     AppRoutingModule,AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    CreatePlaceModalPageModule
+    CreatePlaceModalPageModule,
+    HttpClientModule
   ],
   providers: [
     StatusBar,

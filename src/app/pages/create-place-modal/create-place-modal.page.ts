@@ -1,8 +1,9 @@
-import { Component, OnInit, ɵConsole } from '@angular/core';
+import { Component, OnInit, ɵConsole, Renderer2 } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
 import { formControlBinding } from '@angular/forms/src/directives/ng_model';
 import { DataService } from '../../services/data.service'
+import { RestService } from '../../services/rest.service'
 
 
 @Component({
@@ -16,12 +17,25 @@ export class CreatePlaceModalPage implements OnInit {
   public myDetailsForm: FormGroup;
   modalTitle:string;
   modelId:number;
+  autocompleteService: any;
+  service:any;
+  placesService: any;
+  query: string = '';
+  places: any = [];
+  searchDisabled: boolean;
+  saveDisabled: boolean;
+  location: any;  
+  public name:string;
+  public city:string;
 
   constructor(
     private modalController: ModalController,
     private navParams: NavParams,
     private formBuilder:FormBuilder,
-    private dataService:DataService
+    private dataService:DataService,
+    private restService:RestService,
+    private renderer: Renderer2,
+
 
   ) {
     this.myDetailsForm = formBuilder.group({
@@ -29,40 +43,121 @@ export class CreatePlaceModalPage implements OnInit {
       city:[''],
       notes:[''],
     })
-
-
-   }
-
-  ngOnInit() {
-    // console.table(this.navParams);
-    // this.modelId = this.navParams.data.paramID;
-    // this.modalTitle = this.navParams.data.paramTitle;
-
-    // this.dataService.getMyDetails().then((details)=>{
-    //   let formControls:any = this.myDetailsForm.controls;
-
-    //   if(details!=null){
-    //     formControls.carRegistration.setValue(details.carRegistration);
-    //     formControls.trailerRegistration.setValue(details.trailerRegistration)
-    //     formControls.trailerDimensions.setValue(details.trailerDimensions);
-
-    //     formControls.phoneNumber.setValue(details.phoneNumber);
-    //     formControls.notes.setValue(details.notes)
-
-    //   }
-    // })
+    let options = {
+      types: [],
+      componentRestrictions: {country: "uk"}
+    }
+ 
   }
 
-  public createNewRec(newRecFormDetails:FormGroup):void{
-    let formControls:any = this.myDetailsForm.controls;
-    console.log(newRecFormDetails);
-    console.log(formControls.name.getValue)
+  ngOnInit() {
+    let div = this.renderer.createElement('div');
+    div.id  = 'googleDiv';
 
-    this.dataService.createNewRecommendation(this.myDetailsForm);
+    this.autocompleteService = new google.maps.places.AutocompleteService()
+    this.service = new google.maps.places.PlacesService(div);
+
+
+  }
+
+
+
+  ionViewDidLoad(): void {
+
+        let div = this.renderer.createElement('div');
+        div.id  = 'googleDiv';
+        this.autocompleteService = new google.maps.places.AutocompleteService()
+
+        // this.autocompleteService = new google.maps.places.PlacesService(div)
+        
+        this.searchDisabled = false;
+
+
+}
+
+  searchPlace(){
+
+    this.saveDisabled = true;
+
+    if(this.query.length > 0 && !this.searchDisabled) {
+
+        let config = {
+            types: ['establishment'],
+            // types: ['geocode'],
+            input: this.query
+        }
+
+          this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
+          console.log("CreateModalPage.SearchPlace.Autocomplete")
+          console.log(predictions)
+          console.log(status)
+
+            if(status == google.maps.places.PlacesServiceStatus.OK && predictions){
+
+                this.places = [];
+
+                predictions.forEach((prediction) => {
+                    this.places.push(prediction);
+                });
+            }
+
+        });
+
+    } else {
+        this.places = [];
+    }
+
+}
+
+selectPlace(place){
+
+  this.places = [];
+
+  let location = {
+      lat: null,
+      lng: null,
+      name: place.name,
+      city:null
+  };
+
+  this.service.getDetails({placeId: place.place_id}, (details) => {
+
+  // this.placesService.getDetails({placeId: place.place_id}, (details) => {
+
+      // this.zone.run(() => {
+          console.log("CreatePlaceModal.SelectPlace")
+          console.log(details)
+          console.log(details.address_components[3].short_name)
+          location.name = details.name;
+          location.lat  = details.geometry.location.lat();
+          location.lng  = details.geometry.location.lng();
+          location.city = details.address_components[3].short_name;
+          this.saveDisabled = false;
+
+
+          // this.maps.map.setCenter({lat: location.lat, lng: location.lng}); 
+          this.name = location.name;
+          this.city = location.city;
+
+
+
+          this.location = location;
+          console.log(this.location)
+
+      // });
+
+  });
+
+}
+
+
+  public createNewRec(newRecFormDetails:FormGroup):void{
+    console.log(newRecFormDetails);
+
   }
 
   saveForm():void{
-    // this.dataService.setMyDetails(this.myDetailsForm)
+    this.dataService.setMyDetails(this.myDetailsForm)
     console.log(this.myDetailsForm)
 
   }
