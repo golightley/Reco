@@ -15,6 +15,8 @@ import { CreatePlaceModalPage } from '../pages/create-place-modal/create-place-m
 export class MyDetailsPage implements OnInit {
 
   dataReturned:any;
+  recArray: any = [];
+  results:any = [];
 
 
   constructor(private dataService:DataService,public modalController: ModalController) {
@@ -41,7 +43,22 @@ export class MyDetailsPage implements OnInit {
     return await modal.present();
   }
 
+
+   getRecommendations(){
+    this.dataService.getReccos().then((recsArray)=>{
+
+      recsArray.forEach(data => {
+        this.results.push(data);
+      });
+      console.log("MyDetailsPage.GetReccomandations: Results");
+      console.log(this.results[0].data())
+      
+    })
+
+  }
+
   ngOnInit() {
+    this.getRecommendations();
   }
 
 }

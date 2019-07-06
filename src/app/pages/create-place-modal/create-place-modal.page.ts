@@ -55,9 +55,13 @@ export class CreatePlaceModalPage implements OnInit {
     let div = this.renderer.createElement('div');
     div.id  = 'googleDiv';
 
-    
+    try{
       this.autocompleteService = new google.maps.places.AutocompleteService()
       this.service = new google.maps.places.PlacesService(div);
+    }catch{
+      
+    }
+
     
 
     
@@ -151,7 +155,7 @@ selectPlace(place){
 
   public createNewRec():void{
 
-    this.dataService.createNewRecommendation(this.name,this.city,this.notes,this.location);
+    this.dataService.createNewRecommendation(this.query,this.city,this.notes,this.location);
     this.closeModal()
 
   }

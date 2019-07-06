@@ -49,6 +49,22 @@ export class DataService {
 
   }
 
+
+  getReccos() {
+    const recsArray: any[] = [];
+    // pull each question from firebase
+    return new Promise<any>((resolve, reject) => {
+      // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
+      firebase.firestore().collection('recommendations').get()
+        .then((recs) => {
+          recs.forEach((doc) => {
+            recsArray.push(doc);
+          });
+          resolve(recsArray);
+        }, err => reject(err));
+    });
+  }
+
   setMyDetails(data):void{
     this.storage.set('myDetails',data);
 
