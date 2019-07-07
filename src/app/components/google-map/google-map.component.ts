@@ -112,15 +112,15 @@ export class GoogleMapComponent {
         resolve(true)
       }
 
-      let script = this.renderer.createElement('script');
-      script.id  = 'googleMaps';
+      // let script = this.renderer.createElement('script');
+      // script.id  = 'googleMaps';
 
-      if(this.apiKey){
-        script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&callback=mapInit';
-      }else{
-        script.src = 'https://maps.googleapis.com/maps/api/js?callback=mapInit';
-      }
-      this.renderer.appendChild(this._document.body, script);
+      // if(this.apiKey){
+      //   script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&callback=mapInit';
+      // }else{
+      //   script.src = 'https://maps.googleapis.com/maps/api/js?callback=mapInit';
+      // }
+      // this.renderer.appendChild(this._document.body, script);
     })
   }
 
@@ -192,7 +192,9 @@ export class GoogleMapComponent {
           this.disableMap();
         }
       });
+
     }
+
 
   }
 

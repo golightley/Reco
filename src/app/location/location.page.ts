@@ -3,6 +3,7 @@ import { AlertController, LoadingController, Platform } from '@ionic/angular'
 import { Plugins } from '@capacitor/core'
 import { GoogleMapComponent } from '../components/google-map/google-map.component'
 import { DataService } from '../services/data.service';
+import { RecommendationModel } from '../models/recommendation-model';
 
 const { Geolocation } = Plugins;
 
@@ -17,6 +18,10 @@ export class LocationPage implements OnInit {
 
   private latitude: number;
   private longtitude: number;
+  // public results:any = [];
+  public stopSuggestions:any = ["Test","es","t","te","te","et"]
+  public results: RecommendationModel[]= [];
+
 
   constructor(
     private alertCtrl: AlertController,
@@ -28,21 +33,46 @@ export class LocationPage implements OnInit {
 
   ngOnInit() {
 
-    this.dataService.getLocation().then((location)=>{
-      this.map.init().then((res)=>{
+    console.log("Location.NgOnInit: Google Variable status");
+    // console.log(google)
+    console.log("Location.NgOnInit: Map Variable status");
+    this.getRecommendations();
+    // console.log(this.map)
 
-        if(location != null){
-          this.latitude = location.latitude;
-          this.longtitude = location.longitude;
-          this.map.changeMarker(this.latitude,this.longtitude);
-          console.log('Map Ready');
-        }
-      },(err)=>{
-        console.log(err)
-      });
+    // --- commented out while fixing googloe maps bug----
+    // this.dataService.getLocation().then((location)=>{
+    //   this.map.init().then((res)=>{
 
-  })
+    //     if(location != null){
+    //       this.latitude = location.latitude;
+    //       this.longtitude = location.longitude;
+    //       this.map.changeMarker(this.latitude,this.longtitude);
+    //       console.log('Map Ready');
+    //     }
+    //   },(err)=>{
+    //     console.log(err)
+    //   });
+
+  // })
     
+  }
+
+
+  getRecommendations(){
+    this.dataService.getReccos().then((recsArray)=>{
+      console.log("Location.GetReccomandations: Results");
+      console.log(recsArray)
+
+      recsArray.forEach(data => {
+
+        
+        var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes);
+        this.results.push(newRec);
+      });
+      console.log("LocationPage.GetReccomandations: Results");
+      console.log(this.results)
+      
+    })
   }
 
   setLocation():void {

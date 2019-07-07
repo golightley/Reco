@@ -1,0 +1,56 @@
+div[scrollx=true] {
+    // display: flex;
+    position: relative;
+
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+       display: none;
+    }
+     .scroll-item {
+       flex: 0 0 auto;
+    }
+    .card {
+        flex: 0 0 auto;
+      }
+
+  }
+
+  .suggest-button-start {
+    --background: white;
+    --color:  black;
+    padding: 4px;
+    --box-shadow: 0 0 2px rgba(27, 168, 50, 0.8);  
+    // --box-shadow: 0 0 7px rgba(66, 66, 66, 0.8);  
+  }
+
+// .scrolling-wrapper-flexbox {
+//     display: flex;
+//     flex-wrap: nowrap;
+//     overflow-x: auto;
+//       &::-webkit-scrollbar {
+//        display: none;
+//     }
+//     .card {
+//       flex: 0 0 auto;
+//     }
+//   }
+//   div[scrollx=true] {
+//     overflow-x: auto;
+// }
+
+
+    #myFixZone {
+        height: 200px;
+
+    }
+
+    // .suggest-button-stop {
+    //     --background: white;
+    //     --color: black;
+    //     padding: 4px;
+    //     // width: 100px;    
+    //     // --box-shadow: 0 0 10px rgba(0,0,0,0.8);  
+    //     --box-shadow: 0 0 2px rgba(218, 50, 50, 0.8);  
+    // }

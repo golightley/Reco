@@ -40,58 +40,37 @@ export class CreatePlaceModalPage implements OnInit {
     private restService:RestService,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private _document
-
-
-  ) {
-    this.myDetailsForm = formBuilder.group({
-      name:[''],
-      city:[''],
-      notes:[''],
-    })
-    let options = {
-      types: [],
-      componentRestrictions: {country: "uk"}
-    }
- 
-  }
+  ) {}
 
   ngOnInit() {
     let div = this.renderer.createElement('div');
     div.id  = 'googleDiv';
 
-
+     console.log("CreatePlaceMOdal.NgOnInit: Google Variable status");
+     console.log(google)
+     console.log("CreatePlaceMOdal.NgOnInit: Google AutoComplete status");
+     console.log(this.autocompleteService)
     try{
       this.autocompleteService = new google.maps.places.AutocompleteService()
       this.service = new google.maps.places.PlacesService(div);
     }catch{
       
     }
-
-    
-
-    
-
-
-
   }
 
 
 
   ionViewDidLoad(): void {
-
-        // let div = this.renderer.createElement('div');
-        // div.id  = 'googleDiv';
-       
-        // this.autocompleteService = new google.maps.places.AutocompleteService()
-
-        // // this.autocompleteService = new google.maps.places.PlacesService(div)
-        
+        let div = this.renderer.createElement('div');
+        div.id  = 'googleDiv';
+        this.autocompleteService = new google.maps.places.AutocompleteService()
+        this.autocompleteService = new google.maps.places.PlacesService(div)
         // this.searchDisabled = false;
-
-
 }
 
   searchPlace(){
+
+    console.log("Searchplace")
 
     this.saveDisabled = true;
 

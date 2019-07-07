@@ -1,17 +1,70 @@
 <ion-header>
     <ion-toolbar color="primary">
       <ion-title>
-        <img src="assets/images/logo.png" class="logo" />
+        <!-- <img src="assets/images/logo.png" class="logo" /> -->
       </ion-title>
       <ion-buttons slot="start">
         <ion-button (click)="setLocation()"><ion-icon slot="icon-only" name="pin"></ion-icon></ion-button>    
       </ion-buttons>
+        <ion-searchbar placeholder="City"></ion-searchbar>
       <ion-buttons slot="end">
           <ion-button (click)="takeMeHome()"><ion-icon slot="icon-only" name="walk"></ion-icon></ion-button>  
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
-  
+
   <ion-content>
-    <google-map apiKey="AIzaSyB-1vMQ2VXYlqkf80AwCy7dxG9O0cAtqI8"></google-map>
-  </ion-content>
+
+
+<ion-grid>
+  <ion-row>
+    
+      <div scrollX="true" id="myFixZone">
+          <!-- <ion-button  class ="suggest-button-start" *ngFor="let suggestion of stopSuggestions" class ="suggest-button-start" (click)="makeSuggestion(suggestion)">
+             Testadswdasdas
+          </ion-button> -->
+          <ion-card *ngFor="let suggestion of results" class ="suggest-button-start">
+              <ion-card-header>
+                <ion-card-subtitle>{{suggestion.city}} </ion-card-subtitle>
+                <ion-card-title>{{suggestion.name}}</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                 Test
+              </ion-card-content>
+            </ion-card>
+    </div>
+  </ion-row>
+  <ion-row>
+      <google-map apiKey="AIzaSyB-1vMQ2VXYlqkf80AwCy7dxG9O0cAtqI8"></google-map>
+    </ion-row>  
+</ion-grid>
+
+  <!-- <ion-row>
+    <div> -->
+      <!-- <ion-list> -->
+          <!-- <ion-list-header> -->
+            <!-- <ion-label>Popular Suggestions</ion-label>
+          </ion-list-header>
+            <ion-row>
+              <ion-col>
+                  <div scrollX="true" id="myFixZone" >
+                          <ion-card *ngFor="let suggestion of stopSuggestions" >
+                              <ion-card-header>
+                                <ion-card-subtitle>Liam </ion-card-subtitle>
+                                <ion-card-title>Test</ion-card-title>
+                              </ion-card-header>
+                            
+                              <ion-card-content>
+                                 Test
+                              </ion-card-content>
+                            </ion-card>
+                  </div>
+              </ion-col>
+            </ion-row> 
+          </div> -->
+      <!-- </ion-list>   -->
+  <!-- </ion-row> -->
+
+
+</ion-content>

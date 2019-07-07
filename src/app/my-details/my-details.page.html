@@ -8,7 +8,7 @@
 
   <ion-content padding>
   
-    <ion-card *ngFor="let recs of results">
+    <ion-card *ngFor="let recs of results" id="myFixZone">
         <ion-card-header>
           <ion-card-subtitle>{{recs.data().city}}</ion-card-subtitle>
           <ion-card-title>{{recs.data().name}}</ion-card-title>
