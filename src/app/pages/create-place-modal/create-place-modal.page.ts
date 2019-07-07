@@ -1,10 +1,12 @@
-import { Component, OnInit, ɵConsole, Renderer2 } from '@angular/core';
+import { Component, OnInit, ɵConsole, Renderer2, Inject } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
 import { formControlBinding } from '@angular/forms/src/directives/ng_model';
 import { DataService } from '../../services/data.service'
 import { RestService } from '../../services/rest.service'
+import { DOCUMENT } from '@angular/common';
 
+declare var google: any;
 
 @Component({
   selector: 'app-create-place-modal',
@@ -28,6 +30,7 @@ export class CreatePlaceModalPage implements OnInit {
   public name:string  = "";
   public city:string  = "";
   public notes:string = "";
+  script:any;
 
   constructor(
     private modalController: ModalController,
@@ -36,6 +39,7 @@ export class CreatePlaceModalPage implements OnInit {
     private dataService:DataService,
     private restService:RestService,
     private renderer: Renderer2,
+    @Inject(DOCUMENT) private _document
 
 
   ) {
@@ -54,6 +58,7 @@ export class CreatePlaceModalPage implements OnInit {
   ngOnInit() {
     let div = this.renderer.createElement('div');
     div.id  = 'googleDiv';
+
 
     try{
       this.autocompleteService = new google.maps.places.AutocompleteService()
@@ -74,13 +79,14 @@ export class CreatePlaceModalPage implements OnInit {
 
   ionViewDidLoad(): void {
 
-        let div = this.renderer.createElement('div');
-        div.id  = 'googleDiv';
-        this.autocompleteService = new google.maps.places.AutocompleteService()
+        // let div = this.renderer.createElement('div');
+        // div.id  = 'googleDiv';
+       
+        // this.autocompleteService = new google.maps.places.AutocompleteService()
 
-        // this.autocompleteService = new google.maps.places.PlacesService(div)
+        // // this.autocompleteService = new google.maps.places.PlacesService(div)
         
-        this.searchDisabled = false;
+        // this.searchDisabled = false;
 
 
 }

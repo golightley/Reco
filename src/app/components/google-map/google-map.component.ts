@@ -4,6 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { Plugins, Network }  from '@capacitor/core';
 import { inject } from '@angular/core/testing';
 import { reject } from 'q';
+import { DataService } from '../../services/data.service';
 
 const { Geolocation, Newtwork } = Plugins; 
 
@@ -33,6 +34,7 @@ export class GoogleMapComponent {
     private renderer: Renderer2,
     private element: ElementRef,
     private platform: Platform,
+    private dataService: DataService,
     @Inject(DOCUMENT) private _document
 
   ) {}
@@ -42,7 +44,7 @@ export class GoogleMapComponent {
   public init(): Promise <any> {
     return new Promise((resolve, reject) => {
       // make sure we don't load / inject the SDK twice 
-      if(typeof(google)=="undefined"){
+      // if(typeof(google)=="undefined"){
         this.loadSDK().then((res)=>{
           this.initMap().then((res)=>{
             this.enableMap();
@@ -55,9 +57,9 @@ export class GoogleMapComponent {
           this.firstLoadFailed = true;
           reject(err);
         });
-      }else{
-          reject('Google Maps Already running')
-      }
+      // }else{
+      //     reject('Google Maps Already running')
+      // }
     });
   }
 
@@ -123,7 +125,7 @@ export class GoogleMapComponent {
   }
 
 // called once the sdk is loaded and responsible for setting up the current map
-  private initMap():Promise <any> {
+  private async initMap():Promise <any> {
     return new Promise ((resolve, reject) =>{
 
       Geolocation.getCurrentPosition({enableHighAccuracy:true,timeout:1000}).then((position) => {
@@ -138,6 +140,16 @@ export class GoogleMapComponent {
         };
 
         this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+
+        this.dataService.getReccos().then((recsArray)=>{
+
+          recsArray.forEach(data => {
+            this.addMarker(data.data().location.lat,data.data().location.long)
+          });
+
+          
+        })
+    
         resolve(true)
       }, (err)=>{
         console.log(err)
@@ -186,6 +198,29 @@ export class GoogleMapComponent {
 
   // utility function to drop a new pin
   public changeMarker(lat:number,lng:number){
+
+    let latLng = new google.maps.LatLng(lat,lng);
+
+    let marker = new google.maps.Marker({
+      map:this.map, 
+      animation:google.maps.Animation.DROP,
+      position:latLng
+    });
+
+
+    // remove marketer if exists
+    if(this.marker){
+      this.marker.setMap(null);
+    }
+
+    // add new marker 
+    this.marker = marker;
+
+  }
+
+
+  // utility function to drop a new pin
+  public addMarker(lat:number,lng:number){
 
     let latLng = new google.maps.LatLng(lat,lng);
 
