@@ -44,9 +44,13 @@ export class GoogleMapComponent {
   public init(): Promise <any> {
     return new Promise((resolve, reject) => {
       // make sure we don't load / inject the SDK twice 
-      // if(typeof(google)=="undefined"){
+      if(typeof(google)=="undefined"){
+        console.log("GoogleMapComponent.google =")
+
         this.loadSDK().then((res)=>{
+           console.log("GoogleMapComponent.SDKLoaded")
           this.initMap().then((res)=>{
+            console.log("GoogleMapComponent.MapInitialized")
             this.enableMap();
             resolve(true);
           },(err) => {
@@ -57,9 +61,9 @@ export class GoogleMapComponent {
           this.firstLoadFailed = true;
           reject(err);
         });
-      // }else{
-      //     reject('Google Maps Already running')
-      // }
+      }else{
+          reject('Google Maps Already running')
+      }
     });
   }
 
@@ -112,49 +116,42 @@ export class GoogleMapComponent {
         resolve(true)
       }
 
-      // let script = this.renderer.createElement('script');
-      // script.id  = 'googleMaps';
+      let script = this.renderer.createElement('script');
+      script.id  = 'googleMaps';
 
-      // if(this.apiKey){
-      //   script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&callback=mapInit';
-      // }else{
-      //   script.src = 'https://maps.googleapis.com/maps/api/js?callback=mapInit';
-      // }
-      // this.renderer.appendChild(this._document.body, script);
+      if(this.apiKey){
+        // script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&callback=mapInit';
+
+        script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&libraries=places&callback=mapInit';
+      }else{
+        script.src = 'https://maps.googleapis.com/maps/api/js?callback=mapInit';
+      }
+      this.renderer.appendChild(this._document.body, script);
     })
   }
 
 // called once the sdk is loaded and responsible for setting up the current map
   private async initMap():Promise <any> {
     return new Promise ((resolve, reject) =>{
+      Geolocation.getCurrentPosition().then((position) => {
 
-      Geolocation.getCurrentPosition({enableHighAccuracy:true,timeout:1000}).then((position) => {
-       
-        console.log(position)
+        console.log(position);
 
-        let latLng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+        let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
         let mapOptions = {
-          center:latLng,
-          zoom:15
+            center: latLng,
+            zoom: 15
         };
 
         this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+        resolve(true);
 
-        this.dataService.getReccos().then((recsArray)=>{
+    }, (err) => {
 
-          recsArray.forEach(data => {
-            this.addMarker(data.data().location.lat,data.data().location.long)
-          });
+        reject('Could not initialise map');
 
-          
-        })
-    
-        resolve(true)
-      }, (err)=>{
-        console.log(err)
-        reject('Could not initatilze map');
-      });
+    });
     });
   }
 
@@ -243,6 +240,12 @@ export class GoogleMapComponent {
 
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+      this.init().then((res) => {
+        console.log("Google Maps ready.")
+    }, (err) => {    
+        console.log(err);
+    });
+  }
 
 }

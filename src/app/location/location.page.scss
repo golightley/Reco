@@ -17,13 +17,13 @@ div[scrollx=true] {
 
   }
 
-  .suggest-button-start {
-    --background: white;
-    --color:  black;
-    padding: 4px;
-    --box-shadow: 0 0 2px rgba(27, 168, 50, 0.8);  
-    // --box-shadow: 0 0 7px rgba(66, 66, 66, 0.8);  
-  }
+//   .suggest-button-start {
+//     --background: white;
+//     --color:  black;
+//     padding: 4px;
+//     --box-shadow: 0 0 2px rgba(27, 168, 50, 0.8);  
+//     // --box-shadow: 0 0 7px rgba(66, 66, 66, 0.8);  
+//   }
 
 // .scrolling-wrapper-flexbox {
 //     display: flex;
@@ -46,6 +46,19 @@ div[scrollx=true] {
 
     }
 
+
+    // div[scrollx=true],div[scrolly=true] {
+    //   position: relative;
+    //   overflow: hidden;
+    // }
+    
+    // div[scrollx=true] {
+    //   overflow-x: auto;
+    // }
+    
+    // div[scrolly=true] {
+    //   overflow-y: auto;
+    // }
     // .suggest-button-stop {
     //     --background: white;
     //     --color: black;
