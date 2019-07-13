@@ -5,6 +5,7 @@ import { Plugins, Network }  from '@capacitor/core';
 import { inject } from '@angular/core/testing';
 import { reject } from 'q';
 import { DataService } from '../../services/data.service';
+import { RecommendationModel } from 'src/app/models/recommendation-model';
 
 const { Geolocation, Newtwork } = Plugins; 
 
@@ -242,86 +243,69 @@ export class GoogleMapComponent {
 
   }
 
+  // function used by location page to add reco markers and info window 
+  public addMarkers(recosArray: RecommendationModel[]){
 
-  // utility function to drop a new pin
-  public addMarker(lat:number,lng:number){
-
-    let latLng = new google.maps.LatLng(lat,lng);
-    console.log("GoogleMapComponent.addMarker: Latlng ")
-    console.log(latLng)
-
-    let marker = new google.maps.Marker({
-      map:this.map, 
-      animation:google.maps.Animation.DROP,
-      position:latLng,
-      label:"L",
-      title: 'Hello World!'
-    });
-    // marker.addListener('click', this.markerClicked);
-    marker.addListener('click', () => {
-
-      if(this.infowindow = "undefined"){
-        this.infowindow = new google.maps.InfoWindow({
-          content:  '<div id="siteNotice">'+
-          '</div>'+
-          '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
-          '<div id="bodyContent">'+
-          '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-          'sandstone rock formation in the southern part of the '+
-          'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
-          'south west of the nearest large town, Alice Springs; 450&#160;km '+
-          '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
-          'features of the Uluru - Kata Tjuta National Park. Uluru is '+
-          'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
-          'Aboriginal people of the area. It has many springs, waterholes, '+
-          'rock caves and ancient paintings. Uluru is listed as a World '+
-          'Heritage Site.</p>'+
-          '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
-          'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
-          '(last visited June 22, 2009).</p>'+
-          '</div>'+
-          '</div>'
-        });
-      }
-      console.log("GoogleMapComponent.insideEventListner. Click occured")
-      console.log(this.infowindow)
-      this.infowindow.open(this.map, marker);
-
-  });
+    // arrays to store the info 
+    var markers = [];
+    var infowindows = [];
 
 
-    marker.setMap(this.map);
+    // create a marker and info window for each one 
+    for (var i = 0; i < recosArray.length; ++i) {
 
-    // var myLatLng = {lat: -25.363, lng: 131.044};
 
-    // var marker = new google.maps.Marker({
-    //   position: myLatLng,
-    //   map: this.map,
-    //   title: 'Hello World!'
-    // });
+      // create the info window for each   
+      infowindows[i] = new google.maps.InfoWindow({
+          // content:recosArray[i].name
+          content:this.formatContent(recosArray[i])
+      });
 
-    console.log("Marker added" + "Lat is "+lat+" long is"+lng);
-    // remove marketer if exists
-    // if(this.marker){
-    //   this.marker.setMap(null);
-    // }
+      // get lat / long for the reco
+      var latLng = new google.maps.LatLng(recosArray[i].lat,recosArray[i].lng);
 
-    // add new marker 
-    // this.marker = marker;
+      // create marker and add it to the array 
+      markers[i] = new google.maps.Marker({
+        position:latLng,
+        map:this.map, 
+        animation:google.maps.Animation.DROP,
+        label:"L",
+        title: 'Hello World!'
+        // icon: fonekingiconsrc
+      });
+
+      // add listener to the map
+      google.maps.event.addListener(markers[i], 'click', (function(marker, i) {
+        return function() {
+         infowindows[i].open(this.map, markers[i]);
+        }
+       })(markers[i], i));
+    }
+  };  
+
+
+  formatContent(reco: RecommendationModel){
+
+
+    var content = 
+
+    '<div id="siteNotice">'+
+    '</div>'+
+    '<h1 id="firstHeading" class="firstHeading">'+reco.name + '</h1>'+
+    '<div id="bodyContent">'+
+    '<p>recommended by <b>'+ 'Liam</b>'+'</p>'+
+    '<p>'+reco.notes+'</p>'
+    // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+    // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+    // '(last visited June 22, 2009).</p>'+
+    '</div>'+
+    '</div>';
+
+    return content;
 
   }
 
-  
 
-      // public map: any;
-
-  // public markerClicked(marker:any) {
-  //   console.log("GoogleMapComponent.markerClicked")
-  //   console.log(this.infowindow)
-  //   this.infowindow.open(this.map, marker);
-
-    
-  // }
 
   
 
