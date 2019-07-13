@@ -27,6 +27,10 @@ export class CreatePlaceModalPage implements OnInit {
   searchDisabled: boolean;
   saveDisabled: boolean;
   location: any;  
+  googlePlaceId:string;
+  googleTypes:any;
+  placePhone:any;
+  placeWebsite:string;
   public name:string  = "";
   public city:string  = "";
   public notes:string = "";
@@ -127,6 +131,10 @@ selectPlace(place){
 
           this.query = location.name;
           this.city = location.city;
+          this.googlePlaceId = details.place_id;
+          this.googleTypes =details.types;
+          this.placeWebsite = details.website;
+          this.placePhone = details.international_phone_number;
 
           this.location = location;
           console.log(this.location)
@@ -140,7 +148,7 @@ selectPlace(place){
 
   public createNewRec():void{
 
-    this.dataService.createNewRecommendation(this.query,this.city,this.notes,this.location);
+    this.dataService.createNewRecommendation(this.query,this.city,this.notes,this.location,this.googlePlaceId,this.googleTypes,this.placeWebsite,this.placePhone);
     this.closeModal()
 
   }

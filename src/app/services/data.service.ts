@@ -24,7 +24,7 @@ export class DataService {
 
   }
 
-  async createNewRecommendation(name:string,city:string,notes:string,location:any) {
+  async createNewRecommendation(name:string,city:string,notes:string,location:any,googlePlaceId:any,googleTypes:any,placeWebsite:any,placePhone:any) {
     // print the form results 
     console.log("DATASERVICE.CreateNewRcommendations.FormGroup:")
     console.log(location);
@@ -35,6 +35,10 @@ export class DataService {
         city: city,
         notes: notes,
         location:location,
+        gplaceId:googlePlaceId,
+        gType:googleTypes,
+        website:placeWebsite,
+        phone:placePhone,
         user: firebase.auth().currentUser.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function (docRef) {

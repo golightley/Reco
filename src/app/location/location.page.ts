@@ -22,7 +22,14 @@ export class LocationPage implements OnInit {
   public stopSuggestions:any = ["Test","es","t","te","te","et"]
   public results: RecommendationModel[]= [];
   public markersArray:any = [];
-
+  service:any;
+  placesService: any;
+  query: string = '';
+  places: any = [];
+  searchDisabled: boolean;
+  saveDisabled: boolean;
+  location: any; 
+  autocompleteService: any;
 
   constructor(
     private alertCtrl: AlertController,
@@ -38,10 +45,9 @@ export class LocationPage implements OnInit {
     // console.log(google)
     console.log("Location.NgOnInit: Map Variable status");
     this.getRecommendations();
-    // console.log(this.map)
 
-    // --- commented out while fixing googloe maps bug----
-    // this.dataService.getLocation().then((location)=>{
+  
+
     //   this.map.init().then((res)=>{
 
     //     if(location != null){
@@ -123,7 +129,78 @@ export class LocationPage implements OnInit {
     });
   }
 
-  
+  searchPlace(){
+
+    try{
+      this.autocompleteService = new google.maps.places.AutocompleteService()
+    }catch(err){
+      console.log("Autocomplete service failed")
+      console.log(err)
+    }
+
+    console.log("Searchplace")
+
+    this.saveDisabled = true;
+
+    if(this.query.length > 0 && !this.searchDisabled) {
+
+        let config = {
+            types: ['geocode'],
+            // types: ['geocode'],
+            input: this.query
+        }
+
+          this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
+          console.log("CreateModalPage.SearchPlace.Autocomplete")
+          console.log(predictions)
+          console.log(status)
+
+            if(status == google.maps.places.PlacesServiceStatus.OK && predictions){
+
+                this.places = [];
+
+                predictions.forEach((prediction) => {
+                    this.places.push(prediction);
+                });
+            }
+
+        });
+
+    } else {
+        this.places = [];
+    }
+
+}
+
+selectPlace(place){
+
+  this.places = [];
+
+  let location = {
+      lat: null,
+      lng: null,
+      name: place.name,
+      city:null
+  };
+
+  this.service.getDetails({placeId: place.place_id}, (details) => {
+          console.log("CreatePlaceModal.SelectPlace")
+          console.log(details)
+          console.log(details.address_components[3].short_name)
+          location.name = details.name;
+          location.lat  = details.geometry.location.lat();
+          location.lng  = details.geometry.location.lng();
+          location.city = details.address_components[3].short_name;
+          this.saveDisabled = false;
+
+          this.location = location;
+          console.log(this.location)
+
+      // });
+
+  });
+
+}
 
   takeMeHome():void {
 
