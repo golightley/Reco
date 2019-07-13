@@ -22,12 +22,33 @@ export class GoogleMapComponent {
 
   // variables
   public map:any;
+  public infowindow:any;
+  public infowindows = [];
   public marker:any;
   public firstLoadFailed:boolean = false;
   private mapsLoaded:boolean = false;
   private newtworkHandler = null;
   public connectionAvailable:boolean = true;
-
+  public contentString:any =  '<div id="content">'+
+  '<div id="siteNotice">'+
+  '</div>'+
+  '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+  '<div id="bodyContent">'+
+  '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+  'sandstone rock formation in the southern part of the '+
+  'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+  'south west of the nearest large town, Alice Springs; 450&#160;km '+
+  '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+  'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+  'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+  'Aboriginal people of the area. It has many springs, waterholes, '+
+  'rock caves and ancient paintings. Uluru is listed as a World '+
+  'Heritage Site.</p>'+
+  '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+  'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+  '(last visited June 22, 2009).</p>'+
+  '</div>'+
+  '</div>';
 
   constructor
   (
@@ -130,6 +151,7 @@ export class GoogleMapComponent {
     })
   }
 
+
 // called once the sdk is loaded and responsible for setting up the current map
   private async initMap():Promise <any> {
     return new Promise ((resolve, reject) =>{
@@ -144,7 +166,10 @@ export class GoogleMapComponent {
             zoom: 15
         };
 
-        this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+        this.map         = new google.maps.Map(this.element.nativeElement, mapOptions);
+        
+        console.log('GoogleMapComponent.InitiMap.Infowindow')
+        console.log(this.infowindow)
         resolve(true);
 
     }, (err) => {
@@ -222,30 +247,95 @@ export class GoogleMapComponent {
   public addMarker(lat:number,lng:number){
 
     let latLng = new google.maps.LatLng(lat,lng);
+    console.log("GoogleMapComponent.addMarker: Latlng ")
+    console.log(latLng)
 
     let marker = new google.maps.Marker({
       map:this.map, 
       animation:google.maps.Animation.DROP,
-      position:latLng
+      position:latLng,
+      label:"L",
+      title: 'Hello World!'
     });
+    // marker.addListener('click', this.markerClicked);
+    marker.addListener('click', () => {
+
+      if(this.infowindow = "undefined"){
+        this.infowindow = new google.maps.InfoWindow({
+          content:  '<div id="siteNotice">'+
+          '</div>'+
+          '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+          '<div id="bodyContent">'+
+          '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+          'sandstone rock formation in the southern part of the '+
+          'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+          'south west of the nearest large town, Alice Springs; 450&#160;km '+
+          '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+          'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+          'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+          'Aboriginal people of the area. It has many springs, waterholes, '+
+          'rock caves and ancient paintings. Uluru is listed as a World '+
+          'Heritage Site.</p>'+
+          '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+          'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+          '(last visited June 22, 2009).</p>'+
+          '</div>'+
+          '</div>'
+        });
+      }
+      console.log("GoogleMapComponent.insideEventListner. Click occured")
+      console.log(this.infowindow)
+      this.infowindow.open(this.map, marker);
+
+  });
 
 
+    marker.setMap(this.map);
+
+    // var myLatLng = {lat: -25.363, lng: 131.044};
+
+    // var marker = new google.maps.Marker({
+    //   position: myLatLng,
+    //   map: this.map,
+    //   title: 'Hello World!'
+    // });
+
+    console.log("Marker added" + "Lat is "+lat+" long is"+lng);
     // remove marketer if exists
-    if(this.marker){
-      this.marker.setMap(null);
-    }
+    // if(this.marker){
+    //   this.marker.setMap(null);
+    // }
 
     // add new marker 
-    this.marker = marker;
+    // this.marker = marker;
 
   }
+
+  
+
+      // public map: any;
+
+  // public markerClicked(marker:any) {
+  //   console.log("GoogleMapComponent.markerClicked")
+  //   console.log(this.infowindow)
+  //   this.infowindow.open(this.map, marker);
+
+    
+  // }
+
+  
 
   ngOnInit() {
       this.init().then((res) => {
         console.log("Google Maps ready.")
+        
     }, (err) => {    
         console.log(err);
     });
   }
+
+
+
+
 
 }

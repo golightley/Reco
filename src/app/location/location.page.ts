@@ -66,11 +66,16 @@ export class LocationPage implements OnInit {
       recsArray.forEach(data => {
 
         
-        var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes);
+        var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes,data.data().location.lat,data.data().location.lng);
         this.results.push(newRec);
+        var myLatLng = {lat: -25.363, lng: 131.044};
+        // this.map.addMarker(myLatLng)
+  
+        this.map.addMarker(newRec.lat,newRec.lng);
       });
       console.log("LocationPage.GetReccomandations: Results");
       console.log(this.results)
+
       
     })
   }
@@ -113,6 +118,8 @@ export class LocationPage implements OnInit {
       });
     });
   }
+
+  
 
   takeMeHome():void {
 
