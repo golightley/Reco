@@ -27,7 +27,7 @@ export class GoogleMapComponent {
   public infowindows = [];
   public marker:any;
   public firstLoadFailed:boolean = false;
-  private mapsLoaded:boolean = false;
+  public mapsLoaded:boolean = false;
   private newtworkHandler = null;
   public connectionAvailable:boolean = true;
   constructor
@@ -67,6 +67,8 @@ export class GoogleMapComponent {
       }
     });
   }
+
+  
 
   // start loading the SDK, but only if there is an internet connection 
   private loadSDK():Promise <any> {
@@ -158,6 +160,11 @@ export class GoogleMapComponent {
 
     });
     });
+  }
+
+  public  moveCenter(lat,lng){
+    let latLng = new google.maps.LatLng(lat, lng);
+    this.map.setCenter(latLng)
   }
 
   disableMap():void {

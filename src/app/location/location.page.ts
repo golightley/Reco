@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Renderer2 } from '@angular/core';
 import { AlertController, LoadingController, Platform } from '@ionic/angular'
 import { Plugins } from '@capacitor/core'
 import { GoogleMapComponent } from '../components/google-map/google-map.component'
@@ -6,6 +6,7 @@ import { DataService } from '../services/data.service';
 import { RecommendationModel } from '../models/recommendation-model';
 
 const { Geolocation } = Plugins;
+declare var google;
 
 @Component({
   selector: 'app-location',
@@ -35,7 +36,9 @@ export class LocationPage implements OnInit {
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private dataService: DataService,
-    private platform: Platform
+    private platform: Platform,
+    private renderer: Renderer2,
+
 
   ) { }
 
@@ -129,6 +132,10 @@ export class LocationPage implements OnInit {
     });
   }
 
+  moveCity(lat,long):void {
+    this.map.moveCenter(lat,long);
+  }
+
   searchPlace(){
 
     try{
@@ -174,6 +181,11 @@ export class LocationPage implements OnInit {
 
 selectPlace(place){
 
+  let div = this.renderer.createElement('div');
+  div.id  = 'googleDiv';
+  this.service = new google.maps.places.PlacesService(div);
+
+
   this.places = [];
 
   let location = {
@@ -186,15 +198,15 @@ selectPlace(place){
   this.service.getDetails({placeId: place.place_id}, (details) => {
           console.log("CreatePlaceModal.SelectPlace")
           console.log(details)
-          console.log(details.address_components[3].short_name)
           location.name = details.name;
           location.lat  = details.geometry.location.lat();
           location.lng  = details.geometry.location.lng();
-          location.city = details.address_components[3].short_name;
-          this.saveDisabled = false;
 
           this.location = location;
+          console.log("location.selectPlace.GetDetails")
           console.log(this.location)
+          this.query = location.name;
+          this.moveCity(location.lat,location.lng);
 
       // });
 

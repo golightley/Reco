@@ -7,21 +7,19 @@
         <ion-button (click)="setLocation()"><ion-icon slot="icon-only" name="pin"></ion-icon></ion-button>    
       </ion-buttons>
       <ion-item>
-          <ion-label position="stacked">New Place</ion-label>
-          <ion-input  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-input>
-
-          <ion-list>
-              <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
-          </ion-list>
+          <ion-searchbar  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-searchbar>
         </ion-item>
-      <ion-buttons slot="end">
+      <!-- <ion-buttons slot="end">
           <ion-button (click)="takeMeHome()"><ion-icon slot="icon-only" name="walk"></ion-icon></ion-button>  
-      </ion-buttons>
+      </ion-buttons> -->
     </ion-toolbar>
   </ion-header>
 
   <ion-content>
 
+      <ion-list>
+          <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
+      </ion-list>
 
 <ion-grid>
   <ion-row>
