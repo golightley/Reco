@@ -1,61 +1,22 @@
 <ion-header>
     <ion-toolbar color="primary">
-      <ion-title>
+      <!-- <ion-title>
         <img src="assets/images/logo.png" class="logo" />
-      </ion-title>
+      </ion-title> -->
+      <!-- <ion-searchbar  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-searchbar> -->
+      <ion-searchbar   type="text"></ion-searchbar>
+      <ion-buttons slot="end">
+          <ion-button (click)="logout()"><ion-icon slot="icon-only" name="exit"></ion-icon></ion-button>    
+        </ion-buttons>
     </ion-toolbar>
   </ion-header>
-  
-  <ion-content padding>
-  
-    <ion-card>
-  
-      <ion-card-header>
-          TO do 
-      </ion-card-header>
-  
-      <!-- <ion-card-content>
-        Update this form with the details of your current camp so you have an easy reference for later.
-      </ion-card-content> -->
-  
-    </ion-card>	
-<!--   
-    <ion-list lines="none">
-  
-      <form [formGroup]="worldDetailsForm" (input)="saveForm()">
-  
-        <ion-item>
-          <ion-label position="stacked">Gate Access Code</ion-label>
-          <ion-input formControlName="gateAccessCode" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Ammenities Code</ion-label>
-          <ion-input formControlName="ammenitiesCode" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">WiFi Password</ion-label>
-          <ion-input formControlName="wifiPassword" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Phone Number</ion-label>
-          <ion-input formControlName="phoneNumber" type="text"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Departure Date</ion-label>
-          <ion-datetime formControlName="departure" displayFormat="DD/MM/YYYY"></ion-datetime>
-        </ion-item>
-  
-        <ion-item>
-          <ion-label position="stacked">Notes</ion-label>
-          <ion-textarea formControlName="notes" type="text"></ion-textarea>
-        </ion-item>
-  
-      </form>
-  
-    </ion-list> -->
-  
+
+  <ion-content>
+      <ion-list>
+          <ion-item *ngFor="let user of users">
+            <ion-label>{{user.data().handle}}</ion-label>
+            <ion-checkbox slot="start" (click)="toggleUserFollow(user)"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+    
   </ion-content>

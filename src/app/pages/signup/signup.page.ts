@@ -20,6 +20,9 @@ export class SignupPage implements OnInit {
     private router: Router
   ) {
     this.signupForm = this.formBuilder.group({
+      handle:[
+        '',
+      ],
       email: [
         '',
         Validators.compose([Validators.required, Validators.email]),
@@ -39,10 +42,12 @@ export class SignupPage implements OnInit {
         'Need to complete the form, current value: ', signupForm.value
       );
     } else {
+      const handle: string = signupForm.value.handle;
       const email: string = signupForm.value.email;
       const password: string = signupForm.value.password;
-  
-      this.authService.signupUser(email, password).then(
+       
+
+      this.authService.signupUser(email, password,handle).then(
         () => {
           this.loading.dismiss().then(() => {
             this.router.navigateByUrl('');

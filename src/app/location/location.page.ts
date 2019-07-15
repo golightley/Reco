@@ -4,6 +4,7 @@ import { Plugins } from '@capacitor/core'
 import { GoogleMapComponent } from '../components/google-map/google-map.component'
 import { DataService } from '../services/data.service';
 import { RecommendationModel } from '../models/recommendation-model';
+import { AuthService } from '../services/user/auth.service';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -38,6 +39,7 @@ export class LocationPage implements OnInit {
     private dataService: DataService,
     private platform: Platform,
     private renderer: Renderer2,
+    private authService: AuthService,
 
 
   ) { }
@@ -47,9 +49,14 @@ export class LocationPage implements OnInit {
     console.log("Location.NgOnInit: Google Variable status");
     // console.log(google)
     console.log("Location.NgOnInit: Map Variable status");
-    this.getRecommendations();
 
-  
+    this.authService.getUsersFolliowing().then((usersFollowingArray)=>{
+      console.log("GetUsersFollowing:")
+      console.log(usersFollowingArray)
+      this.getRecommendations(usersFollowingArray);
+    });
+
+
 
     //   this.map.init().then((res)=>{
 
@@ -68,8 +75,12 @@ export class LocationPage implements OnInit {
   }
 
 
-  getRecommendations(){
-    this.dataService.getReccos().then((recsArray)=>{
+  getRecommendations(users:any){
+    console.log("GetRecomendations array =>")
+    console.log(users)
+
+    
+    this.dataService.getReccos(users).then((recsArray)=>{
       console.log("Location.GetReccomandations: Results");
       console.log(recsArray)
 
@@ -79,6 +90,18 @@ export class LocationPage implements OnInit {
         // display cards with recommendations 
         this.results.push(newRec);
         console.log("Location.getRecommendations. Building array ")
+
+      });
+
+      this.dataService.getMyRecos().then((recsArray)=>{
+        recsArray.forEach(data => {
+          var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes,data.data().location.lat,data.data().location.lng);
+          
+          // display cards with recommendations 
+          this.results.push(newRec);
+          console.log("Location.getRecommendations. Building array ")
+  
+        });
 
       });
 

@@ -45,7 +45,7 @@ export class MyDetailsPage implements OnInit {
 
 
    getRecommendations(){
-    this.dataService.getReccos().then((recsArray)=>{
+    this.dataService.getReccos("").then((recsArray)=>{
 
       recsArray.forEach(data => {
         this.results.push(data);

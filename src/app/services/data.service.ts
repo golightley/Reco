@@ -54,12 +54,41 @@ export class DataService {
   }
 
 
-  getReccos() {
+  getReccos(users:any) {
     const recsArray: any[] = [];
     // pull each question from firebase
     return new Promise<any>((resolve, reject) => {
       // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
-      firebase.firestore().collection('recommendations').get()
+      try{
+        users.push(firebase.auth().currentUser.uid);
+      }catch{
+
+      }
+
+      firebase.firestore().collection('recommendations')
+        // .where("user","==",firebase.auth().currentUser.uid)
+        .where("following", "array-contains", firebase.auth().currentUser.uid)        // .where("user","==",users)
+        .get()
+        .then((recs) => {
+          recs.forEach((doc) => {
+            recsArray.push(doc);
+          });
+          resolve(recsArray);
+        }, err => reject(err));
+    });
+  }
+
+
+  public getMyRecos() {
+    const recsArray: any[] = [];
+    // pull each question from firebase
+    return new Promise<any>((resolve, reject) => {
+      // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
+
+      firebase.firestore().collection('recommendations')
+        .where("user","==",firebase.auth().currentUser.uid)
+        // .where("user", "array-contains", firebase.auth().currentUser.uid)        // .where("user","==",users)
+        .get()
         .then((recs) => {
           recs.forEach((doc) => {
             recsArray.push(doc);

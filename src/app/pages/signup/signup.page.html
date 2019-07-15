@@ -10,6 +10,14 @@
 
 <ion-content padding>
     <form [formGroup]="signupForm">
+        <ion-item>
+            <ion-label position="stacked">Handle</ion-label>
+            <ion-input
+              formControlName="handle"
+              placeholder="@LiamTravels"
+            >
+            </ion-input>
+          </ion-item>
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
         <ion-input

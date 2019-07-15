@@ -6,12 +6,14 @@
       <ion-buttons slot="start">
         <ion-button (click)="setLocation()"><ion-icon slot="icon-only" name="pin"></ion-icon></ion-button>    
       </ion-buttons>
-      <ion-item>
+      <!-- <ion-item> -->
+        
           <ion-searchbar  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-searchbar>
-        </ion-item>
+        <!-- </ion-item> -->
       <!-- <ion-buttons slot="end">
           <ion-button (click)="takeMeHome()"><ion-icon slot="icon-only" name="walk"></ion-icon></ion-button>  
       </ion-buttons> -->
+
     </ion-toolbar>
   </ion-header>
 
