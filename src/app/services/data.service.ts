@@ -54,22 +54,20 @@ export class DataService {
   }
 
 
-  getReccos(users:any) {
+  getReccos() {
     const recsArray: any[] = [];
     // pull each question from firebase
     return new Promise<any>((resolve, reject) => {
       // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
-      try{
-        users.push(firebase.auth().currentUser.uid);
-      }catch{
-
-      }
 
       firebase.firestore().collection('recommendations')
         // .where("user","==",firebase.auth().currentUser.uid)
         .where("following", "array-contains", firebase.auth().currentUser.uid)        // .where("user","==",users)
         .get()
         .then((recs) => {
+          console.log("getOtherReccos in service");
+          console.log(recs);
+
           recs.forEach((doc) => {
             recsArray.push(doc);
           });

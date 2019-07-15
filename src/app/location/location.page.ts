@@ -51,36 +51,24 @@ export class LocationPage implements OnInit {
     console.log("Location.NgOnInit: Map Variable status");
 
     this.authService.getUsersFolliowing().then((usersFollowingArray)=>{
-      console.log("GetUsersFollowing:")
-      console.log(usersFollowingArray)
-      this.getRecommendations(usersFollowingArray);
+      this.getRecommendations();
     });
+  }
+
+  ionViewWillEnter (){
 
 
+    this.getRecommendations();
 
-    //   this.map.init().then((res)=>{
 
-    //     if(location != null){
-    //       this.latitude = location.latitude;
-    //       this.longtitude = location.longitude;
-    //       this.map.changeMarker(this.latitude,this.longtitude);
-    //       console.log('Map Ready');
-    //     }
-    //   },(err)=>{
-    //     console.log(err)
-    //   });
-
-  // })
-    
   }
 
 
-  getRecommendations(users:any){
-    console.log("GetRecomendations array =>")
-    console.log(users)
+  getRecommendations(){
+
 
     
-    this.dataService.getReccos(users).then((recsArray)=>{
+    this.dataService.getReccos().then((recsArray)=>{
       console.log("Location.GetReccomandations: Results");
       console.log(recsArray)
 
@@ -88,8 +76,10 @@ export class LocationPage implements OnInit {
         var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes,data.data().location.lat,data.data().location.lng);
         
         // display cards with recommendations 
+        console.log("Location.getOtherRecos. Building array ")
         this.results.push(newRec);
-        console.log("Location.getRecommendations. Building array ")
+        console.log(this.results)
+
 
       });
 
@@ -98,16 +88,17 @@ export class LocationPage implements OnInit {
           var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes,data.data().location.lat,data.data().location.lng);
           
           // display cards with recommendations 
-          this.results.push(newRec);
-          console.log("Location.getRecommendations. Building array ")
+          console.log("Location.getMyRecos. Building array ")
+          console.log(this.results)         
+           this.results.push(newRec);
   
         });
+        this.map.addMarkers(this.results)
 
       });
 
       // after array is complete now send this array to the google map component to display markets 
       // this.map.addMarker(newRec.lat,newRec.lng);
-      this.map.addMarkers(this.results)
 
       console.log("LocationPage.GetReccomandations: Results");
       console.log(this.results)
