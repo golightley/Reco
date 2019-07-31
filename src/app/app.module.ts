@@ -19,6 +19,7 @@ import { CreatePlaceModalPageModule } from './pages/create-place-modal/create-pl
 
 
 import { HttpClientModule } from  '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { HttpClientModule } from  '@angular/common/http';
     AppRoutingModule,AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     CreatePlaceModalPageModule,
-    HttpClientModule
+    HttpClientModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     StatusBar,
