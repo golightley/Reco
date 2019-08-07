@@ -34,6 +34,8 @@ export class LocationPage implements OnInit {
   location: any; 
   autocompleteService: any;
 
+  FILTER_DISTANCE = 100;
+
   constructor(
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
@@ -91,7 +93,7 @@ export class LocationPage implements OnInit {
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
     // filter recommendation within 10 miles of selected city location
-    this.recCardResults = filterByHaversine(this.recMapResults, usersLocation, 100);
+    this.recCardResults = filterByHaversine(this.recMapResults, usersLocation, this.FILTER_DISTANCE);
     this.recCardResults.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
