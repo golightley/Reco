@@ -17,34 +17,31 @@ div[scrollx=true] {
 
   }
 
-//   .suggest-button-start {
-//     --background: white;
-//     --color:  black;
-//     padding: 4px;
-//     --box-shadow: 0 0 2px rgba(27, 168, 50, 0.8);  
-//     // --box-shadow: 0 0 7px rgba(66, 66, 66, 0.8);  
-//   }
-
-// .scrolling-wrapper-flexbox {
-//     display: flex;
-//     flex-wrap: nowrap;
-//     overflow-x: auto;
-//       &::-webkit-scrollbar {
-//        display: none;
-//     }
-//     .card {
-//       flex: 0 0 auto;
-//     }
-//   }
-//   div[scrollx=true] {
-//     overflow-x: auto;
-// }
-
-
-    #myFixZone {
-        height: 200px;
-
+  .horizontal-list{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .list-item{
+      height: 250px;
+      white-space: nowrap;
+      .suggestion-card{
+        display: inline-grid;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 3px;
+        width: 80%; 
+        height: calc(250px - 40px); // 35px is card margin, must change       
+        ion-card-header {
+          white-space: normal;
+        }
+        ion-card-content {
+          white-space: normal;
+        }
+      }
     }
+  }
+  ::-webkit-scrollbar { 
+    display: none; 
+  }
 
 
     // div[scrollx=true],div[scrolly=true] {
