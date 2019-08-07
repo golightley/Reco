@@ -5,6 +5,7 @@ import { GoogleMapComponent } from '../components/google-map/google-map.componen
 import { DataService } from '../services/data.service';
 import { RecommendationModel } from '../models/recommendation-model';
 import { AuthService } from '../services/user/auth.service';
+import { filterByHaversine } from 'src/app/utils/map-utils';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -19,11 +20,12 @@ export class LocationPage implements OnInit {
   @ViewChild(GoogleMapComponent) map: GoogleMapComponent;
 
   private latitude: number;
-  private longtitude: number;
+  private longitude: number;
   public stopSuggestions: any = ['Test','es','t','te','te','et']
-  public recResults: RecommendationModel[] = [];
-  public markersArray:any = [];
-  service:any;
+  public recMapResults: RecommendationModel[] = [];
+  public recCardResults: RecommendationModel[] = [];
+  public markersArray: any = [];
+  service: any;
   placesService: any;
   query: string = '';
   places: any = [];
@@ -64,18 +66,44 @@ export class LocationPage implements OnInit {
     const getType = 'all';
     const recsArray = await this.dataService.getRecommendations(getType);
     // console.log('recsArray', recsArray);
-    this.recResults = [];
+
+    this.recMapResults = [];
     recsArray.forEach( data => {
       const newRec = new RecommendationModel(
-            data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng
+            data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng, 0
           );
-      // display cards with recommendations
-      this.recResults.push(newRec);
-    });
-    console.log('Location.getAllRecos. Built Recos array => count: ' + recsArray.length);
-    console.log(this.recResults);
-    await this.map.addMarkers(this.recResults);
 
+      // make array for markers of Map
+      this.recMapResults.push(newRec);
+    });
+    console.log('Location.getMapRecos. Built Map Recos array => count: ' + this.recMapResults.length);
+    console.log(this.recMapResults);
+    await this.map.addMarkers(this.recMapResults);
+
+    // make array for cards with recommendations list
+    this.filterRecommendations();
+
+  }
+
+  // filter recommendation for cards
+  filterRecommendations() {
+    this.recCardResults = [];
+    const usersLocation = this.map.getCurrentLocation();
+    console.log('current usersLocation', usersLocation);
+    // filter recommendation within 10 miles of selected city location
+    this.recCardResults = filterByHaversine(this.recMapResults, usersLocation, 100);
+    this.recCardResults.sort((locationA, locationB) => {
+      return locationA.distance - locationB.distance;
+    });
+    console.log('Location.getCardRecos. Built Card Recos array => count: ' + this.recCardResults.length);
+    console.log(this.recCardResults);
+  }
+
+  loadRecsData() {
+    // move map by selected location
+    this.map.moveCenter();
+    // filter card data by selected location
+    this.filterRecommendations();
   }
 
   setLocation():void {
@@ -89,13 +117,13 @@ export class LocationPage implements OnInit {
         overlay.dismiss();
         
         this.latitude   = postition.coords.latitude;
-        this.longtitude = postition.coords.longitude;
+        this.longitude = postition.coords.longitude;
         
-        this.map.changeMarker(this.latitude,this.longtitude);
+        this.map.changeMarker(this.latitude, this.longitude);
 
         let data = {
           latitude: this.latitude,
-          longitude: this.longtitude
+          longitude: this.longitude
         };
 
         this.alertCtrl.create({
@@ -116,11 +144,7 @@ export class LocationPage implements OnInit {
       });
     });
   }
-
-  moveCity(lat,long):void {
-    this.map.moveCenter(lat,long);
-  }
-
+  
   searchPlace(){
 
     try{
@@ -162,46 +186,45 @@ export class LocationPage implements OnInit {
         this.places = [];
     }
 
-}
+  }
 
-selectPlace(place){
+  selectPlace(place){
 
-  let div = this.renderer.createElement('div');
-  div.id  = 'googleDiv';
-  this.service = new google.maps.places.PlacesService(div);
+    let div = this.renderer.createElement('div');
+    div.id  = 'googleDiv';
+    this.service = new google.maps.places.PlacesService(div);
 
 
-  this.places = [];
+    this.places = [];
 
-  let location = {
-      lat: null,
-      lng: null,
-      name: place.name,
-      city:null
-  };
+    let location = {
+        lat: null,
+        lng: null,
+        name: place.name,
+        city:null
+    };
 
-  this.service.getDetails({placeId: place.place_id}, (details) => {
-          console.log('CreatePlaceModal.SelectPlace')
-          console.log(details)
-          location.name = details.name;
-          location.lat  = details.geometry.location.lat();
-          location.lng  = details.geometry.location.lng();
+    this.service.getDetails({placeId: place.place_id}, (details) => {
+            console.log('CreatePlaceModal.SelectPlace')
+            console.log(details)
+            location.name = details.name;
+            location.lat  = details.geometry.location.lat();
+            location.lng  = details.geometry.location.lng();
 
-          this.location = location;
-          console.log('location.selectPlace.GetDetails')
-          console.log(this.location)
-          this.query = location.name;
-          this.moveCity(location.lat,location.lng);
+            this.location = location;
+            console.log('location.selectPlace.GetDetails')
+            console.log(this.location)
+            this.query = location.name;
+            this.map.setCurrentLocation(location.lat, location.lng);
+            this.loadRecsData();
 
-      // });
+    });
 
-  });
-
-}
+  }
 
   takeMeHome():void {
 
-    if(!this.latitude || !this.longtitude){
+    if(!this.latitude || !this.longitude){
 
       this.alertCtrl.create({
         header:'No where to go',
@@ -216,7 +239,7 @@ selectPlace(place){
       })
     }
     else{
-      let destination = this.latitude + ',' + this.longtitude;
+      let destination = this.latitude + ',' + this.longitude;
       if(this.platform.is('ios')){
         window.open('maps://?q='+destination+'_system')
       }else{
@@ -225,6 +248,6 @@ selectPlace(place){
       }
     }
 
-  }
+    }
 
 }
