@@ -22,6 +22,10 @@ export class MyDetailsPage implements OnInit {
   constructor(private dataService:DataService,public modalController: ModalController) {
    }
 
+  ngOnInit() {
+    this.getRecommendations();
+  }
+  
    // create the modal 
    async openModal() {
     const modal = await this.modalController.create({
@@ -45,7 +49,7 @@ export class MyDetailsPage implements OnInit {
 
 
    getRecommendations(){
-    this.dataService.getMyRecos().then((recsArray)=>{
+    this.dataService.getRecommendations('mine').then((recsArray)=>{
 
       recsArray.forEach(data => {
         this.results.push(data);
@@ -57,8 +61,6 @@ export class MyDetailsPage implements OnInit {
 
   }
 
-  ngOnInit() {
-    this.getRecommendations();
-  }
+
 
 }

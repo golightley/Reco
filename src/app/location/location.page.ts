@@ -20,9 +20,8 @@ export class LocationPage implements OnInit {
 
   private latitude: number;
   private longtitude: number;
-  // public results:any = [];
-  public stopSuggestions:any = ["Test","es","t","te","te","et"]
-  public results: RecommendationModel[]= [];
+  public stopSuggestions: any = ['Test','es','t','te','te','et']
+  public recResults: RecommendationModel[] = [];
   public markersArray:any = [];
   service:any;
   placesService: any;
@@ -46,65 +45,37 @@ export class LocationPage implements OnInit {
 
   ngOnInit() {
 
-    console.log("Location.NgOnInit: Google Variable status");
+    console.log('Location.NgOnInit: Google Variable status');
     // console.log(google)
-    console.log("Location.NgOnInit: Map Variable status");
+    console.log('Location.NgOnInit: Map Variable status');
 
-    this.authService.getUsersFolliowing().then((usersFollowingArray)=>{
+    /* this.authService.getUsersFolliowing().then((usersFollowingArray)=>{
       this.getRecommendations();
-    });
+    }); */
   }
 
-  ionViewWillEnter (){
-
-
+  ionViewWillEnter() {
     this.getRecommendations();
-
-
   }
 
 
-  getRecommendations(){
+  async getRecommendations() {
 
+    const getType = 'all';
+    const recsArray = await this.dataService.getRecommendations(getType);
+    // console.log('recsArray', recsArray);
+    this.recResults = [];
+    recsArray.forEach( data => {
+      const newRec = new RecommendationModel(
+            data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng
+          );
+      // display cards with recommendations
+      this.recResults.push(newRec);
+    });
+    console.log('Location.getAllRecos. Built Recos array => count: ' + recsArray.length);
+    console.log(this.recResults);
+    await this.map.addMarkers(this.recResults);
 
-    
-    this.dataService.getReccos().then((recsArray)=>{
-      console.log("Location.GetReccomandations: Results");
-      console.log(recsArray)
-
-      recsArray.forEach(data => {
-        var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes,data.data().location.lat,data.data().location.lng);
-        
-        // display cards with recommendations 
-        console.log("Location.getOtherRecos. Building array ")
-        this.results.push(newRec);
-        console.log(this.results)
-
-
-      });
-
-      this.dataService.getMyRecos().then((recsArray)=>{
-        recsArray.forEach(data => {
-          var newRec = new RecommendationModel(data.id,data.data().name, data.data().city, data.data().notes,data.data().location.lat,data.data().location.lng);
-          
-          // display cards with recommendations 
-          console.log("Location.getMyRecos. Building array ")
-          console.log(this.results)         
-           this.results.push(newRec);
-  
-        });
-        this.map.addMarkers(this.results)
-
-      });
-
-      // after array is complete now send this array to the google map component to display markets 
-      // this.map.addMarker(newRec.lat,newRec.lng);
-
-      console.log("LocationPage.GetReccomandations: Results");
-      console.log(this.results)
-
-      
-    })
   }
 
   setLocation():void {
@@ -155,11 +126,11 @@ export class LocationPage implements OnInit {
     try{
       this.autocompleteService = new google.maps.places.AutocompleteService()
     }catch(err){
-      console.log("Autocomplete service failed")
+      console.log('Autocomplete service failed')
       console.log(err)
     }
 
-    console.log("Searchplace")
+    console.log('Searchplace')
 
     this.saveDisabled = true;
 
@@ -172,7 +143,7 @@ export class LocationPage implements OnInit {
         }
 
           this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-          console.log("CreateModalPage.SearchPlace.Autocomplete")
+          console.log('CreateModalPage.SearchPlace.Autocomplete')
           console.log(predictions)
           console.log(status)
 
@@ -210,14 +181,14 @@ selectPlace(place){
   };
 
   this.service.getDetails({placeId: place.place_id}, (details) => {
-          console.log("CreatePlaceModal.SelectPlace")
+          console.log('CreatePlaceModal.SelectPlace')
           console.log(details)
           location.name = details.name;
           location.lat  = details.geometry.location.lat();
           location.lng  = details.geometry.location.lng();
 
           this.location = location;
-          console.log("location.selectPlace.GetDetails")
+          console.log('location.selectPlace.GetDetails')
           console.log(this.location)
           this.query = location.name;
           this.moveCity(location.lat,location.lng);
