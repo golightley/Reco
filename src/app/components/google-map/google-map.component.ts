@@ -30,6 +30,8 @@ export class GoogleMapComponent {
   public mapsLoaded:boolean = false;
   private newtworkHandler = null;
   public connectionAvailable:boolean = true;
+  public curLocationLat: number;
+  public curLocationLng: number;
   constructor
   (
     private renderer: Renderer2,
@@ -140,8 +142,10 @@ export class GoogleMapComponent {
       Geolocation.getCurrentPosition().then((position) => {
 
         console.log(position);
+        this.curLocationLat = position.coords.latitude;
+        this.curLocationLng = position.coords.longitude;
 
-        let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        let latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
         let mapOptions = {
             center: latLng,
@@ -162,9 +166,24 @@ export class GoogleMapComponent {
     });
   }
 
-  public  moveCenter(lat,lng){
-    let latLng = new google.maps.LatLng(lat, lng);
+  public  moveCenter() {
+    // move map by current location
+    const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+    console.log('move map', latLng);
     this.map.setCenter(latLng)
+  }
+
+  public getCurrentLocation() {
+    const location = {
+      lat: this.curLocationLat,
+      lng: this.curLocationLng
+    };
+    return location;
+  }
+
+  public setCurrentLocation(lat,lng) {
+    this.curLocationLat = lat;
+    this.curLocationLng = lng;
   }
 
   disableMap():void {
