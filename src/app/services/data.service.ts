@@ -1,3 +1,4 @@
+import { LoadingService } from './loading-service';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage'
 
@@ -13,7 +14,10 @@ export class DataService {
 
   public eventListRef: firebase.firestore.CollectionReference;
 
-  constructor(private storage:Storage) { 
+  constructor(
+    private storage: Storage,
+    private loadingService: LoadingService
+    ) {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.eventListRef = firebase
@@ -59,13 +63,13 @@ export class DataService {
     // pull each question from firebase
     return new Promise<any>((resolve, reject) => {
       // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
-
+      console.log('currentUser', firebase.auth().currentUser.uid);
       firebase.firestore().collection('recommendations')
         // .where("user","==",firebase.auth().currentUser.uid)
-        .where("following", "array-contains", firebase.auth().currentUser.uid)        // .where("user","==",users)
+        .where('following', 'array-contains', firebase.auth().currentUser.uid)        // .where("user","==",users)
         .get()
         .then((recs) => {
-          console.log("getOtherReccos in service");
+          console.log('getOtherReccos in service');
           console.log(recs);
 
           recs.forEach((doc) => {
@@ -76,24 +80,41 @@ export class DataService {
     });
   }
 
-
-  public getMyRecos() {
+  /**
+   * Get recommendation data
+   * If getType is "all" then get all recommendation data.
+   * If getType is "mine" then get my recommendation data.
+   * If getType is "friends" then get recommendation data that registered by following users
+   */
+  async getRecommendations(getType) {
     const recsArray: any[] = [];
-    // pull each question from firebase
-    return new Promise<any>((resolve, reject) => {
-      // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
+    var docRef;
+    if ( getType === 'all' ) {
+      docRef = firebase.firestore().collection('recommendations');
 
-      firebase.firestore().collection('recommendations')
-        .where("user","==",firebase.auth().currentUser.uid)
-        // .where("user", "array-contains", firebase.auth().currentUser.uid)        // .where("user","==",users)
-        .get()
-        .then((recs) => {
-          recs.forEach((doc) => {
-            recsArray.push(doc);
-          });
-          resolve(recsArray);
-        }, err => reject(err));
+    } else if ( getType === 'mine' ) {
+      docRef = firebase.firestore().collection('recommendations')
+                .where('user', '==', firebase.auth().currentUser.uid);
+
+    } else if ( getType === 'friends' ) {  // must change
+      docRef = firebase.firestore().collection('recommendations')
+                .where('user', '==', firebase.auth().currentUser.uid); 
+
+    }
+    const result = await this.loadingService.doFirebase( async() => {
+      return new Promise<any>((resolve, reject) => {
+        docRef.get().then(recs => {
+            if (recs.docs.length === 0) {
+              resolve(null);
+            } else {
+              resolve(recs.docs);
+            }
+        }).catch (error => {
+            reject(error);
+        });
+      });
     });
+    return result;
   }
 
   setMyDetails(data):void{

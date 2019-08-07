@@ -267,26 +267,26 @@ export class GoogleMapComponent {
         }
        })(markers[i], i));
     }
-  };  
+
+    console.log('Added markers on Map => count: ' + recosArray.length);
+  }
 
 
   formatContent(reco: RecommendationModel){
 
 
-    var content = 
-
-    '<div id="siteNotice">'+
-    '</div>'+
-    '<h1 id="firstHeading" class="firstHeading">'+reco.name + '</h1>'+
-    '<div id="bodyContent">'+
-    '<p>recommended by <b>'+ 'Liam</b>'+'</p>'+
-    '<p>'+reco.notes+'</p>'
-    // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
-    // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
-    // '(last visited June 22, 2009).</p>'+
-    '</div>'+
-    '</div>';
-
+    const content = 
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">'+ reco.name + '</h1>'+
+      '<div id="bodyContent">'+
+      '<p>recommended by <b>'+ 'Liam</b>'+'</p>'+
+      '<p>'+reco.notes+'</p>'
+      // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+      // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+      // '(last visited June 22, 2009).</p>'+
+      '</div>'+
+      '</div>';
     return content;
 
   }
