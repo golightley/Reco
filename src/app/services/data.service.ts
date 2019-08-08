@@ -6,6 +6,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
+import { async } from '@angular/core/testing';
 
 @Injectable({
   providedIn: 'root'
@@ -88,33 +89,49 @@ export class DataService {
    */
   async getRecommendations(getType) {
     const recsArray: any[] = [];
-    var docRef;
+    let query;
     if ( getType === 'all' ) {
-      docRef = firebase.firestore().collection('recommendations');
+      query = firebase.firestore().collection('recommendations');
 
     } else if ( getType === 'mine' ) {
-      docRef = firebase.firestore().collection('recommendations')
+      query = firebase.firestore().collection('recommendations')
                 .where('user', '==', firebase.auth().currentUser.uid);
 
     } else if ( getType === 'friends' ) {  // must change
-      docRef = firebase.firestore().collection('recommendations')
+      query = firebase.firestore().collection('recommendations')
                 .where('user', '==', firebase.auth().currentUser.uid); 
 
     }
-    const result = await this.loadingService.doFirebase( async() => {
-      return new Promise<any>((resolve, reject) => {
-        docRef.get().then(recs => {
-            if (recs.docs.length === 0) {
-              resolve(null);
-            } else {
-              resolve(recs.docs);
-            }
+    await this.loadingService.doFirebase(async() => {
+      await query.get().then(async (queryData) => {
+          await Promise.all(queryData.docs.map(async (rec) => {
+                  // get user name of recommendation
+                  const userName = await this.getUserByID(rec.data().user);
+                  rec.userName = userName;
+                  recsArray.push(rec);
+          }));
         }).catch (error => {
-            reject(error);
+            return error;
         });
+    });
+    return recsArray;
+  }
+
+  async getUserByID(userId: string) {
+    return new Promise<any> ((resolve, reject) => {
+      firebase.firestore().collection('userProfile').doc(userId).get().then(docUser => {
+        // console.log('[Get User Info] handle = ' + docUser.data().handle);
+        // if handle is exists then return handle, else return email
+        let userName = docUser.data().email;
+        if ( docUser.data().handle ) {
+          userName = docUser.data().handle;
+        }
+        resolve(userName);
+      }).catch(error => {
+        console.log('[Get User Info] error = ' + error);
+        reject(error);
       });
     });
-    return result;
   }
 
   setMyDetails(data):void{
