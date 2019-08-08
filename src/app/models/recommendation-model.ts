@@ -6,8 +6,9 @@ export class RecommendationModel {
     lat: number;
     lng: number;
     distance: number;
+    userName: string;
 
-    constructor(id: string, name: string, city: string, notes: string, lat: number, lng: number, distance: number) {
+    constructor(id: string, name: string, city: string, notes: string, lat: number, lng: number, distance: number, userName: string ) {
       this.id    = id;
       this.name  = name;
       this.city  = city;
@@ -15,5 +16,6 @@ export class RecommendationModel {
       this.lat   = lat;
       this.lng  = lng;
       this.distance = distance;
+      this.userName = userName;
     }
   }
