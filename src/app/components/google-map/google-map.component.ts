@@ -42,6 +42,7 @@ export class GoogleMapComponent {
 
   ) {}
 
+
   // public function intended to be called from location page 
   // promise returns to let location page the map has fully loaded 
   public init(): Promise <any> {
@@ -248,16 +249,26 @@ export class GoogleMapComponent {
 
   }
 
+  private getLabelString(str) {
+    for ( let i = 0; i < str.length; i++ ) {
+      const c = str.charAt(i);
+      if ( c !== '@' ) {
+        console.log('get label string:' + str + ',' + c);
+        return c.toUpperCase();
+      }
+    }
+  }
+
   // function used by location page to add reco markers and info window 
   public addMarkers(recosArray: RecommendationModel[]){
 
     // arrays to store the info 
-    var markers = [];
-    var infowindows = [];
+    let markers = [];
+    let infowindows = [];
 
 
     // create a marker and info window for each one 
-    for (var i = 0; i < recosArray.length; ++i) {
+    for (let i = 0; i < recosArray.length; ++i) {
 
 
       // create the info window for each   
@@ -267,14 +278,15 @@ export class GoogleMapComponent {
       });
 
       // get lat / long for the reco
-      var latLng = new google.maps.LatLng(recosArray[i].lat,recosArray[i].lng);
+      const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
+      const label = this.getLabelString(recosArray[i].userName);
 
       // create marker and add it to the array 
       markers[i] = new google.maps.Marker({
-        position:latLng,
-        map:this.map, 
-        animation:google.maps.Animation.DROP,
-        label:"L",
+        position: latLng,
+        map: this.map,
+        animation: google.maps.Animation.DROP,
+        label: label,
         title: 'Hello World!'
         // icon: fonekingiconsrc
       });
@@ -292,39 +304,29 @@ export class GoogleMapComponent {
 
 
   formatContent(reco: RecommendationModel){
-
-
-    const content = 
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">'+ reco.name + '</h1>'+
-      '<div id="bodyContent">'+
-      '<p>recommended by <b>'+ 'Liam</b>'+'</p>'+
-      '<p>'+reco.notes+'</p>'
+    const content =
+      '<div id="siteNotice">' +
+      '</div>' +
+      '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
+      '<div id="bodyContent">' +
+      '<p>recommended by <b>' + reco.userName + '</b></p>' +
+      '<p>' + reco.notes + '</p>' + 
+      '</div>' +
+      '</div>';
       // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
       // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
       // '(last visited June 22, 2009).</p>'+
-      '</div>'+
-      '</div>';
+
     return content;
 
   }
-
-
-
   
-
   ngOnInit() {
-      this.init().then((res) => {
-        console.log("Google Maps ready.")
-        
-    }, (err) => {    
+    this.init().then((res) => {
+      console.log('Google Maps ready.');
+    }, (err) => {
         console.log(err);
     });
   }
-
-
-
-
 
 }
