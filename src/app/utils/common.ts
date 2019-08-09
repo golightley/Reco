@@ -50,7 +50,7 @@ const clone = obj => {
   return _.clone(obj)
 }
 
-const makeUniqueId = length => {
+const generateUUID = length => {
   let result           = '';
   const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
@@ -70,5 +70,5 @@ export {
   stringifySubObj,
   range,
   clone,
-  makeUniqueId
+  generateUUID
 }

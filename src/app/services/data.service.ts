@@ -6,7 +6,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import { makeUniqueId } from 'src/app/utils/common';
+import { generateUUID } from 'src/app/utils/common';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +31,7 @@ export class DataService {
 
   async createNewRecommendation(
       name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
-      placeWebsite: any, placePhone: any, pictureDataUrl: any) {
+      placeWebsite: any, placePhone: any, pictureDataUrl: any, pictureDataThumbUrl: any) {
     // print the form results
     console.log('SERVICE.CreateNewRcommendations.FormGroup:');
     console.log(location);
@@ -39,9 +39,14 @@ export class DataService {
     const result = await this.loadingService.doFirebase(async () => {
       return new Promise<any>(async (resolve, reject) => {
         let pictureUrl = '';
+        let pictureThumbUrl = '';
         if ( pictureDataUrl ) {
-          pictureUrl = await this.uploadPicture(pictureDataUrl);
+          pictureUrl = await this.uploadPicture(pictureDataUrl, false);
           console.log('pictureUrl:' + pictureUrl);
+        }
+        if ( pictureDataThumbUrl ) {
+          pictureThumbUrl = await this.uploadPicture(pictureDataThumbUrl, true);
+          console.log('pictureThumbUrl:' + pictureThumbUrl);
         }
 
         firebase.firestore().collection('recommendations').add({
@@ -54,6 +59,7 @@ export class DataService {
           website: placeWebsite,
           phone: placePhone,
           picture: pictureUrl,
+          pictureThumb: pictureThumbUrl,
           user: firebase.auth().currentUser.uid,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(docRef => {
@@ -71,11 +77,19 @@ export class DataService {
   /**
    * Upload picture of recommendation
    */
-  async uploadPicture(pictureDataUrl) {
+  async uploadPicture(pictureDataUrl, isThumb) {
     return new Promise<any>((resolve, reject) => {
       const storageRef = firebase.storage().ref();
-      // Create a unique filename
-      const filename = `reco-pictures/${makeUniqueId(30)}.jpg`;
+      let filename = '';
+      
+      if ( !isThumb ) {
+        // Create name for a full image
+        filename = `reco-pictures/${generateUUID(30)}.jpg`;
+      } else {
+        // Create name for a thumbnail image
+        filename = `reco-pictures/thumb_${generateUUID(30)}.jpg`;
+      }
+      
       // Create a reference to reco-pictures
       const imageRef = storageRef.child(filename);
       imageRef.putString(pictureDataUrl, firebase.storage.StringFormat.DATA_URL)
