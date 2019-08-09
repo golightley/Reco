@@ -71,7 +71,8 @@ export class LocationPage implements OnInit {
 
     this.recMapResults = [];
     recsArray.forEach( data => {
-      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes,data.data().location.lat, data.data().location.lng, 0, data.userName, data.data().picture);
+      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat,
+                            data.data().location.lng, 0, data.userName, data.data().picture, data.data().pictureThumb);
       // make array for markers of Map
       this.recMapResults.push(newRec);
     });
