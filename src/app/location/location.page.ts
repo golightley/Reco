@@ -67,14 +67,11 @@ export class LocationPage implements OnInit {
 
     const getType = 'all';
     const recsArray = await this.dataService.getRecommendations(getType);
-    // console.log('recsArray', recsArray);
+    console.log('recsArray', recsArray);
 
     this.recMapResults = [];
     recsArray.forEach( data => {
-      const newRec = new RecommendationModel(
-            data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng, 0, data.userName
-          );
-
+      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes,data.data().location.lat, data.data().location.lng, 0, data.userName, data.data().picture);
       // make array for markers of Map
       this.recMapResults.push(newRec);
     });

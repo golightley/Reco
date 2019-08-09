@@ -23,13 +23,14 @@ div[scrollx=true] {
     .list-item{
       height: 250px;
       white-space: nowrap;
-      .suggestion-card{
+      .suggestion-card{        
         display: inline-grid;
         border: 1px solid #ddd;
         border-radius: 4px;
+        margin: 5px;
         padding: 3px;
-        width: 80%; 
-        height: calc(250px - 40px); // 35px is card margin, must change       
+        width: 90%; 
+        //height: calc(250px - 40px); // 35px is card margin, must change       
         ion-card-header {
           white-space: normal;
         }

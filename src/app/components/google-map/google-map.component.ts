@@ -253,7 +253,6 @@ export class GoogleMapComponent {
     for ( let i = 0; i < str.length; i++ ) {
       const c = str.charAt(i);
       if ( c !== '@' ) {
-        console.log('get label string:' + str + ',' + c);
         return c.toUpperCase();
       }
     }
