@@ -8,7 +8,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { generateThumbImage } from 'src/app/utils/image-utils';
 
 declare var google: any;
 
@@ -43,6 +43,9 @@ export class CreatePlaceModalPage implements OnInit {
   picture: SafeResourceUrl;
   toast: any;
   pictureDataUrl; string;
+  pictureDataThumbUrl: string;
+  ThumbnailSize = 200;
+
 
   constructor(
     private modalController: ModalController,
@@ -54,17 +57,16 @@ export class CreatePlaceModalPage implements OnInit {
     private sanitizer: DomSanitizer,
     @Inject(DOCUMENT) private _document,
     private platform: Platform,
-    private tc: ToastController,
-
+    private tc: ToastController
   ) { }
 
   ngOnInit() {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
 
-    console.log("CreatePlaceMOdal.NgOnInit: Google Variable status");
+    console.log('CreatePlaceMOdal.NgOnInit: Google Variable status');
     console.log(google)
-    console.log("CreatePlaceMOdal.NgOnInit: Google AutoComplete status");
+    console.log('CreatePlaceMOdal.NgOnInit: Google AutoComplete status');
     console.log(this.autocompleteService)
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService()
@@ -101,11 +103,19 @@ export class CreatePlaceModalPage implements OnInit {
       this.picture = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl));
       this.pictureDataUrl = image.dataUrl;
       // console.log('****image data*****');
-      // console.log(image.dataUrl);
+      // console.log(this.pictureDataUrl);
+
+      // create a thumbnail
+      generateThumbImage(this.pictureDataUrl, this.ThumbnailSize, this.ThumbnailSize, 1, data => {
+        this.pictureDataThumbUrl = data;
+        console.log('****thumb image data*****');
+        console.log(this.pictureDataThumbUrl);
+      });
     } else {
       await this.presentToast('Only available on mobile');
     }
   }
+
 
   async presentToast(message) {
     const closeText = 'close';
@@ -205,7 +215,7 @@ export class CreatePlaceModalPage implements OnInit {
     } */
     const result = await this.dataService.createNewRecommendation(
       this.query, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
-      this.placeWebsite, this.placePhone, this.pictureDataUrl);
+      this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
     console.log(result);
     if (result) {
       await this.presentToast('Successfully saved!');
