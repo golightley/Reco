@@ -50,22 +50,14 @@ const clone = obj => {
   return _.clone(obj)
 }
 
-const currency = region_id => {
-  switch (region_id) {
-    case 28:
-      return 'HK$'
-    case 89:
-      return 'MOP'
-    case 98:
-    case 100:
-    case 92:
-    case 99:
-    case 93:
-    case 101:
-      return 'THP'
-    default:
-      return '￥'
+const makeUniqueId = length => {
+  let result           = '';
+  const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
+  return result;
 }
 
 export {
@@ -78,5 +70,5 @@ export {
   stringifySubObj,
   range,
   clone,
-  currency,
+  makeUniqueId
 }
