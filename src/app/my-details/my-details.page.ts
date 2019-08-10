@@ -23,6 +23,10 @@ export class MyDetailsPage implements OnInit {
    }
 
   ngOnInit() {
+   // this.getRecommendations();
+  }
+
+  ionViewWillEnter() {
     this.getRecommendations();
   }
   
@@ -56,9 +60,7 @@ export class MyDetailsPage implements OnInit {
       });
       console.log("MyDetailsPage.GetReccomandations: Results");
       console.log(this.results[0].data())
-      
     })
-
   }
 
 

@@ -13,7 +13,7 @@
           <ion-card-subtitle>{{recs.data().city}}</ion-card-subtitle>
           <ion-card-title>{{recs.data().name}}</ion-card-title>
         </ion-card-header>
-      
+        <img *ngIf="recs.data().pictureThumb" src="{{recs.data().pictureThumb}}" />
         <ion-card-content>
             {{recs.data().notes}}
         </ion-card-content>

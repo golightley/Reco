@@ -52,6 +52,10 @@
             <ion-textarea [(ngModel)]="notes" type="text"></ion-textarea>
           </ion-item>
 
+          <section style="padding:15px;">            
+            <ion-button (click)="selectPicture()" expand="block"><ion-icon name="camera" style="margin-right: 20px;"></ion-icon>Upload picture</ion-button>
+            <img *ngIf="picture" [src]="picture">
+          </section>
     
         <!-- </form> -->
     
