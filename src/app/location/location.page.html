@@ -1,21 +1,29 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>
-      <!-- <img src="assets/images/logo.png" class="logo" /> -->
-    </ion-title>
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
       <ion-button (click)="setLocation()">
         <ion-icon slot="icon-only" name="pin"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
     <!-- <ion-item> -->
-
+  <ion-row>
     <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()" type="text"></ion-searchbar>
+  </ion-row>
     <!-- </ion-item> -->
     <!-- <ion-buttons slot="end">
           <ion-button (click)="takeMeHome()"><ion-icon slot="icon-only" name="walk"></ion-icon></ion-button>  
       </ion-buttons> -->
+      <ion-row>
+          <div class="horizontal-list-menu">
+            <div class="list-item">
+                <ion-button>Filter</ion-button>
 
+                <ion-button *ngFor="let friend of friendList" class="friend-filter-button">
+                    {{friend}}
+                </ion-button>
+            </div>
+          </div>
+        </ion-row>
   </ion-toolbar>
 </ion-header>
 

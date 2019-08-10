@@ -25,6 +25,8 @@ export class LocationPage implements OnInit {
   public recMapResults: RecommendationModel[] = [];
   public recCardResults: RecommendationModel[] = [];
   public markersArray: any = [];
+  // this is static and will need to be dynamically replaced 
+  public friendList: any = ['Kunal','Liam','Cynthia','Michael','Wang','JD','Kunal','Liam','Kunal','Liam'];
   service: any;
   placesService: any;
   query: string = '';
@@ -60,6 +62,7 @@ export class LocationPage implements OnInit {
 
   ionViewWillEnter() {
     this.getRecommendations();
+    console.log("Location.IonViewWillenter. friendList "+ this.friendList)
   }
 
 
