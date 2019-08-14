@@ -4,7 +4,6 @@ import { DOCUMENT } from '@angular/common';
 import { Plugins, Network }  from '@capacitor/core';
 import { inject } from '@angular/core/testing';
 import { reject } from 'q';
-import { DataService } from '../../services/data.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 
 const { Geolocation, Newtwork } = Plugins; 
@@ -36,8 +35,7 @@ export class GoogleMapComponent {
   (
     private renderer: Renderer2,
     private element: ElementRef,
-    private platform: Platform,
-    private dataService: DataService,
+    private platform: Platform,    
     @Inject(DOCUMENT) private _document
 
   ) {}

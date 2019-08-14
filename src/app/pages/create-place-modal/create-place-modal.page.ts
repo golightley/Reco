@@ -2,8 +2,7 @@ import { Component, OnInit, ɵConsole, Renderer2, Inject } from '@angular/core';
 import { ModalController, NavParams, Platform, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { formControlBinding } from '@angular/forms/src/directives/ng_model';
-import { DataService } from '../../services/data.service'
-import { RestService } from '../../services/rest.service'
+import { ExplorerService } from 'src/app/services/explorer.service';
 import { DOCUMENT } from '@angular/common';
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
@@ -51,8 +50,7 @@ export class CreatePlaceModalPage implements OnInit {
     private modalController: ModalController,
     private navParams: NavParams,
     private formBuilder: FormBuilder,
-    private dataService: DataService,
-    private restService: RestService,
+    private explorerService: ExplorerService,
     private renderer: Renderer2,
     private sanitizer: DomSanitizer,
     @Inject(DOCUMENT) private _document,
@@ -209,11 +207,11 @@ export class CreatePlaceModalPage implements OnInit {
 
   async createNewRec() {
     /* if (this.pictureDataUrl) {
-      const uploadState = await this.dataService.uploadPicture(this.pictureDataUrl);
+      const uploadState = await this.explorerService.uploadPicture(this.pictureDataUrl);
       // console.log(uploadPicture);
       await this.presentToast(uploadState.state);
     } */
-    const result = await this.dataService.createNewRecommendation(
+    const result = await this.explorerService.createNewRecommendation(
       this.query, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
       this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
     console.log(result);
@@ -226,7 +224,7 @@ export class CreatePlaceModalPage implements OnInit {
   }
 
   saveForm(): void {
-    this.dataService.setMyDetails(this.myDetailsForm);
+    this.explorerService.setMyDetails(this.myDetailsForm);
     console.log(this.myDetailsForm)
 
   }
