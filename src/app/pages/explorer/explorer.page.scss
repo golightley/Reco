@@ -1,0 +1,83 @@
+div[scrollx=true] {
+    position: relative;
+
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+       display: none;
+    }
+     .scroll-item {
+       flex: 0 0 auto;
+    }
+    .card {
+        flex: 0 0 auto;
+      }
+
+  }
+
+  .horizontal-list{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .list-item{
+      height: 250px;
+      white-space: nowrap;
+      .suggestion-card{        
+        display: inline-grid;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 5px;
+        padding: 3px;
+        width: 90%; 
+        //height: calc(250px - 40px); // 35px is card margin, must change       
+        ion-card-header {
+          white-space: normal;
+        }
+        ion-card-content {
+          white-space: normal;
+        }
+      }
+    }
+  }
+
+  .horizontal-list-menu{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .list-item{
+      height: 50px;
+      white-space: nowrap;
+      .suggestion-card{        
+        display: inline-grid;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 5px;
+        padding: 3px;
+        width: 90%; 
+        //height: calc(250px - 40px); // 35px is card margin, must change       
+        ion-card-header {
+          white-space: normal;
+        }
+        ion-card-content {
+          white-space: normal;
+        }
+      }
+    }
+  }
+  ::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  // .friend-filter-button{
+  //   --border-color:white;
+
+  // }
+
+  .suggest-button-stop {
+    --background: white;
+    --color: black;
+    padding: 4px;
+
+    // --box-shadow: 0 0 10px rgba(0,0,0,0.8);  
+    --box-shadow: 0 0 2px rgba(218, 50, 50, 0.8);  
+}
+
