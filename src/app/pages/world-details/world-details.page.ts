@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
-import { DataService } from '../services/data.service'
-import { AuthService } from '../services/user/auth.service';
+import { ExplorerService } from 'src/app/services/explorer.service';
+import { AuthService } from '../../services/user/auth.service';
 
 @Component({
   selector: 'app-world-details',
@@ -14,8 +14,8 @@ export class WorldDetailsPage implements OnInit {
   public users:any = [];
 
   constructor(
-    private formBuilder:FormBuilder, 
-    private dataService:DataService,
+    private formBuilder: FormBuilder,
+    private explorerService: ExplorerService,
     private authService: AuthService,
     ) {
 
@@ -48,7 +48,7 @@ export class WorldDetailsPage implements OnInit {
 
 
 
-    this.dataService.getWorldDetails().then((details)=>{
+    this.explorerService.getWorldDetails().then((details)=>{
       let formControls:any = this.worldDetailsForm.controls;
       
       if(details!=null){
@@ -78,7 +78,7 @@ export class WorldDetailsPage implements OnInit {
   }
 
   saveForm():void {
-    //this.dataService.setCampDetails(this.worldDetailsForm.value)
+    //this.explorerService.setCampDetails(this.worldDetailsForm.value)
 
   }
 

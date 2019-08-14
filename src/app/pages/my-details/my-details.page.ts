@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
-import { DataService } from '../services/data.service'
+import { ExplorerService } from 'src/app/services/explorer.service';
 import { formControlBinding } from '@angular/forms/src/directives/ng_model';
 
 // for the modal 
 import { ModalController } from '@ionic/angular';
-import { CreatePlaceModalPage } from '../pages/create-place-modal/create-place-modal.page'
+import { CreatePlaceModalPage } from '../create-place-modal/create-place-modal.page'
 
 @Component({
   selector: 'app-my-details',
@@ -19,7 +19,9 @@ export class MyDetailsPage implements OnInit {
   results:any = [];
 
 
-  constructor(private dataService:DataService,public modalController: ModalController) {
+  constructor(
+    private explorerService: ExplorerService,
+    public modalController: ModalController) {
    }
 
   ngOnInit() {
@@ -53,7 +55,7 @@ export class MyDetailsPage implements OnInit {
 
 
    getRecommendations(){
-    this.dataService.getRecommendations('mine').then((recsArray)=>{
+    this.explorerService.getRecommendations('mine').then((recsArray)=>{
 
       recsArray.forEach(data => {
         this.results.push(data);
