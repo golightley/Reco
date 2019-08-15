@@ -6,6 +6,7 @@ import { GoogleMapComponent } from 'src/app/components/google-map/google-map.com
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 import { filterByHaversine } from 'src/app/utils/map-utils';
+import { BlockerConfig } from '@ionic/core/dist/types/utils/gesture/gesture-controller';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -21,21 +22,21 @@ export class ExplorerPage implements OnInit {
 
   private latitude: number;
   private longitude: number;
-  public stopSuggestions: any = ['Test','es','t','te','te','et']
+  public stopSuggestions: any = ['Test', 'es', 't', 'te', 'te', 'et']
   public recMapResults: RecommendationModel[] = [];
   public recCardResults: RecommendationModel[] = [];
   public markersArray: any = [];
   // this is static and will need to be dynamically replaced 
-  public friendList: any = ['Kunal','Liam','Cynthia','Michael','Wang','JD','Kunal','Liam','Kunal','Liam'];
+  public friendList: any = ['Kunal', 'Liam', 'Cynthia', 'Michael', 'Wang', 'JD', 'Kunal', 'Liam', 'Kunal', 'Liam'];
   service: any;
   placesService: any;
   query: string = '';
   places: any = [];
   searchDisabled: boolean;
   saveDisabled: boolean;
-  location: any; 
+  location: any;
   autocompleteService: any;
-
+  focusedSearchBar: boolean;
   FILTER_DISTANCE = 100;
 
   constructor(
@@ -59,7 +60,7 @@ export class ExplorerPage implements OnInit {
 
   ionViewWillEnter() {
     this.getRecommendations();
-    console.log("Location.IonViewWillenter. friendList "+ this.friendList)
+    console.log("Location.IonViewWillenter. friendList " + this.friendList)
   }
 
 
@@ -70,9 +71,9 @@ export class ExplorerPage implements OnInit {
     console.log('recsArray', recsArray);
 
     this.recMapResults = [];
-    recsArray.forEach( data => {
+    recsArray.forEach(data => {
       const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat,
-                            data.data().location.lng, 0, data.userName, data.data().picture, data.data().pictureThumb);
+        data.data().location.lng, 0, data.userName, data.data().picture, data.data().pictureThumb);
       // make array for markers of Map
       this.recMapResults.push(newRec);
     });
@@ -106,19 +107,19 @@ export class ExplorerPage implements OnInit {
     this.filterRecommendations();
   }
 
-  setLocation():void {
+  setLocation(): void {
 
     this.loadingCtrl.create({
-      message:'Setting current location'
+      message: 'Setting current location'
 
-    }).then((overlay)=>{
+    }).then((overlay) => {
       overlay.present();
-      Geolocation.getCurrentPosition().then((postition)=>{
+      Geolocation.getCurrentPosition().then((postition) => {
         overlay.dismiss();
-        
-        this.latitude   = postition.coords.latitude;
+
+        this.latitude = postition.coords.latitude;
         this.longitude = postition.coords.longitude;
-        
+
         this.map.changeMarker(this.latitude, this.longitude);
 
         let data = {
@@ -127,127 +128,139 @@ export class ExplorerPage implements OnInit {
         };
 
         this.alertCtrl.create({
-          header:'location set',
-          message:'You are good!',
+          header: 'location set',
+          message: 'You are good!',
           buttons: [
             {
-              text:'ok'
+              text: 'ok'
             }
           ]
-        }).then((alert)=>{
+        }).then((alert) => {
           alert.present();
         })
 
-      },(err)=>{
+      }, (err) => {
         console.log(err)
         overlay.dismiss();
       });
     });
   }
-  
-  searchPlace(){
 
-    try{
-      this.autocompleteService = new google.maps.places.AutocompleteService()
-    }catch(err){
-      console.log('Autocomplete service failed')
-      console.log(err)
+  searchPlace() {
+
+    try {
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+    } catch (err) {
+      console.log('Autocomplete service failed');
+      console.log(err);
     }
 
-    console.log('Searchplace')
+    console.log('Searchplace');
 
     this.saveDisabled = true;
 
-    if(this.query.length > 0 && !this.searchDisabled) {
+    if (this.query.length > 0 && !this.searchDisabled) {
 
-        let config = {
-            types: ['geocode'],
-            // types: ['geocode'],
-            input: this.query
+      const config = {
+        types: ['geocode'],
+        // types: ['geocode'],
+        input: this.query
+      };
+
+      this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
+        console.log('CreateModalPage.SearchPlace.Autocomplete');
+        console.log(predictions);
+        console.log(status);
+
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+
+          this.places = [];
+
+          predictions.forEach((prediction) => {
+            this.places.push(prediction);
+          });
         }
 
-          this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-          console.log('CreateModalPage.SearchPlace.Autocomplete')
-          console.log(predictions)
-          console.log(status)
-
-            if(status == google.maps.places.PlacesServiceStatus.OK && predictions){
-
-                this.places = [];
-
-                predictions.forEach((prediction) => {
-                    this.places.push(prediction);
-                });
-            }
-
-        });
+      });
 
     } else {
-        this.places = [];
+      this.places = [];
     }
 
   }
 
-  selectPlace(place){
+  selectPlace(place) {
 
-    let div = this.renderer.createElement('div');
-    div.id  = 'googleDiv';
+    this.focusedSearchBar = false;
+
+    const div = this.renderer.createElement('div');
+    div.id = 'googleDiv';
     this.service = new google.maps.places.PlacesService(div);
 
 
     this.places = [];
 
     let location = {
-        lat: null,
-        lng: null,
-        name: place.name,
-        city:null
+      lat: null,
+      lng: null,
+      name: place.name,
+      city: null
     };
 
-    this.service.getDetails({placeId: place.place_id}, (details) => {
-            console.log('CreatePlaceModal.SelectPlace')
-            console.log(details)
-            location.name = details.name;
-            location.lat  = details.geometry.location.lat();
-            location.lng  = details.geometry.location.lng();
+    this.service.getDetails({ placeId: place.place_id }, (details) => {
+      console.log('CreatePlaceModal.SelectPlace')
+      console.log(details)
+      location.name = details.name;
+      location.lat = details.geometry.location.lat();
+      location.lng = details.geometry.location.lng();
 
-            this.location = location;
-            console.log('location.selectPlace.GetDetails')
-            console.log(this.location)
-            this.query = location.name;
-            this.map.setCurrentLocation(location.lat, location.lng);
-            this.loadRecsData();
+      this.location = location;
+      console.log('location.selectPlace.GetDetails')
+      console.log(this.location)
+      this.query = location.name;
+      this.map.setCurrentLocation(location.lat, location.lng);
+      this.loadRecsData();
 
     });
 
   }
 
-  takeMeHome():void {
+  takeMeHome(): void {
 
-    if(!this.latitude || !this.longitude){
+    if (!this.latitude || !this.longitude) {
 
       this.alertCtrl.create({
-        header:'No where to go',
-        message:'No location set!',
+        header: 'No where to go',
+        message: 'No location set!',
         buttons: [
           {
-            text:'ok'
+            text: 'ok'
           }
         ]
-      }).then((alert)=>{
+      }).then((alert) => {
         alert.present();
       })
     }
-    else{
+    else {
       let destination = this.latitude + ',' + this.longitude;
-      if(this.platform.is('ios')){
-        window.open('maps://?q='+destination+'_system')
-      }else{
+      if (this.platform.is('ios')) {
+        window.open('maps://?q=' + destination + '_system')
+      } else {
         let label = encodeURI('My location')
-        window.open('geo:0,0?q=' + destination + '('+label +')','_system')
+        window.open('geo:0,0?q=' + destination + '(' + label + ')', '_system')
       }
     }
 
-    }
+  }
+
+  // Emitted when the search input has focus.
+  focusSearchBar() {
+    console.log('focused search bar');
+    this.focusedSearchBar = true;
+  }
+  // Emitted when the cancel button is clicked.
+  cancelSearchBar() {
+    this.focusedSearchBar = false;
+  }
 
 }

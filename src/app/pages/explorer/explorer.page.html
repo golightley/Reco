@@ -1,18 +1,8 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-buttons slot="start">
-      <ion-button (click)="setLocation()">
-        <ion-icon slot="icon-only" name="pin"></ion-icon>
-      </ion-button>
-    </ion-buttons> -->
-    <!-- <ion-item> -->
   <ion-row>
     <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()" type="text"></ion-searchbar>
   </ion-row>
-    <!-- </ion-item> -->
-    <!-- <ion-buttons slot="end">
-          <ion-button (click)="takeMeHome()"><ion-icon slot="icon-only" name="walk"></ion-icon></ion-button>  
-      </ion-buttons> -->
       <ion-row>
           <div class="horizontal-list-menu">
             <div class="list-item">
@@ -26,9 +16,64 @@
         </ion-row>
   </ion-toolbar>
 </ion-header>
+ -->
+<ion-header>
+  <ion-toolbar>
+    <div class="search-bar">
+      <ion-searchbar [(ngModel)]="query" mode="md" type="text" showCancelButton="focus" (ionInput)="searchPlace()"
+        (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()"></ion-searchbar>
+    </div>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="explorer-content">
 
-<ion-content>
-  <ion-list *ngIf="places && places.length > 0 ">
+  <ion-list *ngIf="places && places.length > 0 && focusedSearchBar">
+    <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">
+      <ion-label>
+        <ion-icon color="medium" name="pin"></ion-icon>
+        {{place.description}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div class="map" [ngClass]=" {map_show: !focusedSearchBar, map_hidden: focusedSearchBar} ">
+    <!-- *ngIf="!focusedSearchBar" -->
+    <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
+  </div>
+
+  <div class="horizontal-list" *ngIf="!focusedSearchBar">
+    <div class="list-item">
+      <ion-card class="suggestion-card" *ngFor="let suggestion of recCardResults">
+        <ion-card-content>
+          <div class="reco-picture">
+            <img *ngIf="suggestion.pictureThumb" src="{{suggestion.pictureThumb}}" />
+          </div>
+          <div class="reco-data">
+            <h2 class="reco-name">
+              {{suggestion.city}}
+              <!-- {{suggestion.name}} -->
+            </h2>
+            <div class="reco-away">
+                <ion-icon name="pin"></ion-icon>
+                {{suggestion.distance}} miles away
+            </div>
+            <p class="reco-note">
+              {{suggestion.notes}}
+            </p>
+            <div class="friends-count">
+              <ion-icon name="people" size="small"></ion-icon>
+              &nbsp; 10 of your friends recommend it
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+
+</ion-content>
+
+
+<!-- <ion-list *ngIf="places && places.length > 0 ">
     <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
   </ion-list>
   <ion-grid>
@@ -51,33 +96,4 @@
     <ion-row>
       <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
     </ion-row>
-  </ion-grid>
-
-  <!-- <ion-row>
-    <div> -->
-  <!-- <ion-list> -->
-  <!-- <ion-list-header> -->
-  <!-- <ion-label>Popular Suggestions</ion-label>
-          </ion-list-header>
-            <ion-row>
-              <ion-col>
-                  <div scrollX="true" id="myFixZone" >
-                          <ion-card *ngFor="let suggestion of stopSuggestions" >
-                              <ion-card-header>
-                                <ion-card-subtitle>Liam </ion-card-subtitle>
-                                <ion-card-title>Test</ion-card-title>
-                              </ion-card-header>
-                            
-                              <ion-card-content>
-                                 Test
-                              </ion-card-content>
-                            </ion-card>
-                  </div>
-              </ion-col>
-            </ion-row> 
-          </div> -->
-  <!-- </ion-list>   -->
-  <!-- </ion-row> -->
-
-
-</ion-content>
+  </ion-grid> -->
