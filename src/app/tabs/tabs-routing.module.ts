@@ -18,20 +18,20 @@ const routes: Routes = [
                 ]
             },
             {
-                path: 'world',
+                path: 'my-trips',
                 children: [
                     {
                         path: '',
-                        loadChildren: '../pages/world-details/world-details.module#WorldDetailsPageModule'
+                        loadChildren: '../pages/my-trips/my-trips.module#MyTripsPageModule'
                     }
                 ]
             },
             {
-                path: 'me',
+                path: 'friends',
                 children: [
                     {
                         path: '',
-                        loadChildren: '../pages/my-details/my-details.module#MyDetailsPageModule'
+                        loadChildren: '../pages/friends/friends.module#FriendsPageModule'
                     }
                 ]
             }
@@ -40,7 +40,7 @@ const routes: Routes = [
     {
         path: '',
         redirectTo: '/tabs/explorer',
-        pathMatch: 'full' 
+        pathMatch: 'full'
     }
 ];
 

@@ -208,15 +208,15 @@ export class ExplorerPage implements OnInit {
     };
 
     this.service.getDetails({ placeId: place.place_id }, (details) => {
-      console.log('CreatePlaceModal.SelectPlace')
+      console.log('Map.SelectPlace');
       console.log(details)
       location.name = details.name;
       location.lat = details.geometry.location.lat();
       location.lng = details.geometry.location.lng();
 
       this.location = location;
-      console.log('location.selectPlace.GetDetails')
-      console.log(this.location)
+      console.log('Map.selectPlace.GetDetails');
+      console.log(this.location);
       this.query = location.name;
       this.map.setCurrentLocation(location.lat, location.lng);
       this.loadRecsData();
