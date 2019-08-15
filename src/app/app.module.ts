@@ -15,9 +15,6 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/firestore';
 
-import { CreatePlaceModalPageModule } from './pages/create-place-modal/create-place-modal.module'
-
-
 import { HttpClientModule } from  '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
@@ -31,7 +28,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     IonicStorageModule.forRoot(), 
     AppRoutingModule,AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    CreatePlaceModalPageModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
