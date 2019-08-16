@@ -188,10 +188,6 @@ export class ExplorerService {
 
   }
 
-  setWorldDetails(data): void {
-    this.storage.set('worldDetails', data);
-  }
-
   setLocation(data): void {
     this.storage.set('location', data);
   }
@@ -200,15 +196,9 @@ export class ExplorerService {
     return this.storage.get('myDetails');
   }
 
-  getWorldDetails(): Promise<any> {
-    return this.storage.get('worldDetails');
-  }
-
   getLocation(): Promise<any> {
     return this.storage.get('location');
   }
-
-
 
 }
 
