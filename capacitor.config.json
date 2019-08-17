@@ -1,6 +1,6 @@
 {
-  "appId": "com.bowieventures.www",
-  "appName": "rocco",
+  "appId": "com.bowieventures.recoapp",
+  "appName": "Reco",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"
