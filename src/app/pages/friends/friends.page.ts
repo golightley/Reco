@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
-import { DataService } from '../services/data.service'
-import { AuthService } from '../services/user/auth.service';
+import { FriendService } from 'src/app/services/friend.service';
+import { AuthService } from '../../services/user/auth.service';
 
 @Component({
-  selector: 'app-world-details',
-  templateUrl: './world-details.page.html',
-  styleUrls: ['./world-details.page.scss'],
+  selector: 'app-friends',
+  templateUrl: './friends.page.html',
+  styleUrls: ['./friends.page.scss'],
 })
-export class WorldDetailsPage implements OnInit {
+export class FriendsPage implements OnInit {
 
-  public worldDetailsForm: FormGroup;
+  public FriendsForm: FormGroup;
   public users:any = [];
 
   constructor(
-    private formBuilder:FormBuilder, 
-    private dataService:DataService,
+    private formBuilder: FormBuilder,
+    private friendService: FriendService,
     private authService: AuthService,
     ) {
 
     // initialize the form 
-    this.worldDetailsForm = formBuilder.group({
+    this.FriendsForm = formBuilder.group({
       gateAccessCode:[''],
       ammenetiesCode:[''],
       wifiPassword:[''],
@@ -39,7 +39,7 @@ export class WorldDetailsPage implements OnInit {
 
       this.users = recsArray;
 
-      console.log("WorldDetails.NgOnIt.AuthService.GetUsersWithName... function returned the following result")
+      console.log("Friends.NgOnIt.AuthService.GetUsersWithName... function returned the following result")
       console.log(this.users)
 
 
@@ -48,8 +48,8 @@ export class WorldDetailsPage implements OnInit {
 
 
 
-    this.dataService.getWorldDetails().then((details)=>{
-      let formControls:any = this.worldDetailsForm.controls;
+    this.friendService.getFriends().then((details)=>{
+      let formControls:any = this.FriendsForm.controls;
       
       if(details!=null){
           formControls.gateAccessCode.setValue(details.gateAccessCode);
@@ -72,13 +72,13 @@ export class WorldDetailsPage implements OnInit {
   }
 
   toggleUserFollow(user){
-    console.log("WorldDetails.ToggleUserFollow has been clicked");
+    console.log("Friends.ToggleUserFollow has been clicked");
     console.log(user);
     this.authService.toggleUserFollow(user);
   }
 
   saveForm():void {
-    //this.dataService.setCampDetails(this.worldDetailsForm.value)
+    //this.friendService.setCampDetails(this.FriendsForm.value)
 
   }
 

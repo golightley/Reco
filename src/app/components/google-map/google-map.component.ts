@@ -4,7 +4,6 @@ import { DOCUMENT } from '@angular/common';
 import { Plugins, Network }  from '@capacitor/core';
 import { inject } from '@angular/core/testing';
 import { reject } from 'q';
-import { DataService } from '../../services/data.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 
 const { Geolocation, Newtwork } = Plugins; 
@@ -36,8 +35,7 @@ export class GoogleMapComponent {
   (
     private renderer: Renderer2,
     private element: ElementRef,
-    private platform: Platform,
-    private dataService: DataService,
+    private platform: Platform,    
     @Inject(DOCUMENT) private _document
 
   ) {}
@@ -48,13 +46,13 @@ export class GoogleMapComponent {
   public init(): Promise <any> {
     return new Promise((resolve, reject) => {
       // make sure we don't load / inject the SDK twice 
-      if(typeof(google)=="undefined"){
-        console.log("GoogleMapComponent.google =")
+      if(typeof(google)=='undefined'){
+        console.log('GoogleMapComponent.google =')
 
         this.loadSDK().then((res)=>{
-           console.log("GoogleMapComponent.SDKLoaded")
+           console.log('GoogleMapComponent.SDKLoaded')
           this.initMap().then((res)=>{
-            console.log("GoogleMapComponent.MapInitialized")
+            console.log('GoogleMapComponent.MapInitialized')
             this.enableMap();
             resolve(true);
           },(err) => {
@@ -122,14 +120,14 @@ export class GoogleMapComponent {
         resolve(true)
       }
 
-      let script = this.renderer.createElement('script');
+      const script = this.renderer.createElement('script');
       script.id  = 'googleMaps';
 
-      if(this.apiKey){
+      if (this.apiKey) {
         // script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&callback=mapInit';
 
         script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&libraries=places&callback=mapInit';
-      }else{
+      } else {
         script.src = 'https://maps.googleapis.com/maps/api/js?callback=mapInit';
       }
       this.renderer.appendChild(this._document.body, script);
@@ -149,6 +147,14 @@ export class GoogleMapComponent {
         let latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
         let mapOptions = {
+          /*   zoomControl: boolean,
+            mapTypeControl: boolean,
+            scaleControl: boolean,
+            streetViewControl: boolean,
+            rotateControl: boolean,
+            fullscreenControl: boolean */
+            fullscreenControl: false,
+            mapTypeControl: false,
             center: latLng,
             zoom: 15
         };
@@ -208,7 +214,7 @@ export class GoogleMapComponent {
         if(status.connected){
           if(typeof google == 'undefined' && this.firstLoadFailed){
             this.init().then((res) => {
-              console.log("Google maps ready!")
+              console.log('Google maps ready!')
             }, (err) => {
               console.log(err)
             });

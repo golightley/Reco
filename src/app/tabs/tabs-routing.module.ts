@@ -1,37 +1,37 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomePage } from './home.page';
+import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
-    { 
-        path: 'tabs', 
-        component: HomePage,
+    {
+        path: 'tabs',
+        component: TabsPage,
         children: [
             {
-                path: 'location',
+                path: 'explorer',
                 children: [
                     {
                         path: '',
-                        loadChildren: '../location/location.module#LocationPageModule'
+                        loadChildren: '../pages/explorer/explorer.module#ExplorerPageModule'
                     }
                 ]
             },
             {
-                path: 'world',
+                path: 'my-trips',
                 children: [
                     {
                         path: '',
-                        loadChildren: '../world-details/world-details.module#WorldDetailsPageModule'
+                        loadChildren: '../pages/my-trips/my-trips.module#MyTripsPageModule'
                     }
                 ]
             },
             {
-                path: 'me',
+                path: 'friends',
                 children: [
                     {
                         path: '',
-                        loadChildren: '../my-details/my-details.module#MyDetailsPageModule'
+                        loadChildren: '../pages/friends/friends.module#FriendsPageModule'
                     }
                 ]
             }
@@ -39,8 +39,8 @@ const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: '/tabs/location',
-        pathMatch: 'full'  
+        redirectTo: '/tabs/explorer',
+        pathMatch: 'full'
     }
 ];
 
@@ -48,4 +48,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class HomePageRoutingModule { }
+export class TabsPageRoutingModule { }

@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators  } from '@angular/forms'
-import { DataService } from '../services/data.service'
-import { formControlBinding } from '@angular/forms/src/directives/ng_model';
+import { ExplorerService } from 'src/app/services/explorer.service';
 
 // for the modal 
 import { ModalController } from '@ionic/angular';
-import { CreatePlaceModalPage } from '../pages/create-place-modal/create-place-modal.page'
+import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.page';
 
 @Component({
-  selector: 'app-my-details',
-  templateUrl: './my-details.page.html',
-  styleUrls: ['./my-details.page.scss'],
+  selector: 'app-my-trips',
+  templateUrl: './my-trips.page.html',
+  styleUrls: ['./my-trips.page.scss'],
 })
-export class MyDetailsPage implements OnInit {
+export class MyTripsPage implements OnInit {
 
   dataReturned:any;
   recArray: any = [];
   results:any = [];
 
 
-  constructor(private dataService:DataService,public modalController: ModalController) {
+  constructor(
+    private explorerService: ExplorerService,
+    public modalController: ModalController) {
    }
 
   ngOnInit() {
@@ -35,8 +35,8 @@ export class MyDetailsPage implements OnInit {
     const modal = await this.modalController.create({
       component: CreatePlaceModalPage,
       componentProps: {
-        "paramID": 123,
-        "paramTitle": "Test Title"
+        'paramID': 123,
+        'paramTitle': 'Test Title'
       }
     });
  
@@ -52,14 +52,14 @@ export class MyDetailsPage implements OnInit {
   }
 
 
-   getRecommendations(){
-    this.dataService.getRecommendations('mine').then((recsArray)=>{
+   getRecommendations() {
+    this.explorerService.getRecommendations('mine').then((recsArray) => {
 
       recsArray.forEach(data => {
         this.results.push(data);
       });
-      console.log("MyDetailsPage.GetReccomandations: Results");
-      console.log(this.results[0].data())
+      console.log('MyTripsPage.GetReccomandations: Results');
+      console.log(this.results[0].data());
     })
   }
 

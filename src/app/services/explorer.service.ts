@@ -1,6 +1,6 @@
 import { LoadingService } from './loading-service';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage'
+import { Storage } from '@ionic/storage';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
@@ -11,7 +11,7 @@ import { generateUUID } from 'src/app/utils/common';
 @Injectable({
   providedIn: 'root'
 })
-export class DataService {
+export class ExplorerService {
 
   public eventListRef: firebase.firestore.CollectionReference;
 
@@ -188,10 +188,6 @@ export class DataService {
 
   }
 
-  setWorldDetails(data): void {
-    this.storage.set('worldDetails', data);
-  }
-
   setLocation(data): void {
     this.storage.set('location', data);
   }
@@ -200,15 +196,9 @@ export class DataService {
     return this.storage.get('myDetails');
   }
 
-  getWorldDetails(): Promise<any> {
-    return this.storage.get('worldDetails');
-  }
-
   getLocation(): Promise<any> {
     return this.storage.get('location');
   }
-
-
 
 }
 

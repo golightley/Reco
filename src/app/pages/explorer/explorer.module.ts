@@ -1,24 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MyDetailsPage } from './my-details.page';
+import { ExplorerPage } from './explorer.page';
+import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MyDetailsPage
+    component: ExplorerPage
   }
 ];
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MyDetailsPage]
+  declarations: [ExplorerPage, GoogleMapComponent]
 })
-export class MyDetailsPageModule {}
+export class ExplorerPageModule {}

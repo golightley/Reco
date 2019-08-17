@@ -1,5 +1,4 @@
 div[scrollx=true] {
-    // display: flex;
     position: relative;
 
     flex-wrap: nowrap;
@@ -18,24 +17,60 @@ div[scrollx=true] {
   }
 
   .horizontal-list{
+    position: absolute;
+    bottom: 10px;
     overflow-x: scroll;
     overflow-y: hidden;
     .list-item{
-      height: 250px;
+      width: 100vw;
+      // height: 250px;
       white-space: nowrap;
       .suggestion-card{        
         display: inline-grid;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        // border: 1px solid #ddd;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;
         margin: 5px;
-        padding: 3px;
-        width: 90%; 
-        //height: calc(250px - 40px); // 35px is card margin, must change       
-        ion-card-header {
+        padding: 0px;  
+        height: 130px;        
+               
+        //height: calc(250px - 40px); // 35px is card margin, must change               
+        ion-card-content {          
+          display: inline-flex;
           white-space: normal;
-        }
-        ion-card-content {
-          white-space: normal;
+          width: 90vw;
+          padding: 0px;
+          .reco-picture {            
+              width: 115px;
+              height: 130px;
+              img {
+                width: 115px;
+                height: 130px;
+              }
+          }
+          .reco-data {
+            padding: 10px;
+            width: calc(90vw - 115px);
+            .reco-name {
+              color:#373043;
+            }
+            .reco-away {
+              font-size: 10px;              
+            }
+            .reco-note {
+              height: 50px;
+              padding-bottom: 5px;
+              font-size: 12px;
+              color: #4a4a4a;
+            }
+            .friends-count {
+              display: inline-flex;
+              font-size: 10px; 
+              line-height: 20px;
+              // color: #b4b8ba
+            }
+          }
         }
       }
     }
@@ -82,26 +117,10 @@ div[scrollx=true] {
     --box-shadow: 0 0 2px rgba(218, 50, 50, 0.8);  
 }
 
+.map_show {
+  display: inherit
+}
+.map_hidden {
+  display: none
+}
 
-
-
-    // div[scrollx=true],div[scrolly=true] {
-    //   position: relative;
-    //   overflow: hidden;
-    // }
-    
-    // div[scrollx=true] {
-    //   overflow-x: auto;
-    // }
-    
-    // div[scrolly=true] {
-    //   overflow-y: auto;
-    // }
-    // .suggest-button-stop {
-    //     --background: white;
-    //     --color: black;
-    //     padding: 4px;
-    //     // width: 100px;    
-    //     // --box-shadow: 0 0 10px rgba(0,0,0,0.8);  
-    //     --box-shadow: 0 0 2px rgba(218, 50, 50, 0.8);  
-    // }
