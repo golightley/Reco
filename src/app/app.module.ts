@@ -26,7 +26,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     BrowserModule,
     IonicModule.forRoot(), 
     IonicStorageModule.forRoot(), 
-    AppRoutingModule,AngularFireModule.initializeApp(environment.firebase),
+    AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

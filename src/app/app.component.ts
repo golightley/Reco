@@ -4,7 +4,7 @@ import { Plugins }   from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 
 import * as firebase from 'firebase/app';
-import { firebaseConfig } from '../app/credentials'
+import { firebaseConfig } from '../app/credentials';
 
 // import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
@@ -21,15 +21,13 @@ export class AppComponent {
     firebase.initializeApp(firebaseConfig);
 
 
-    SplashScreen.hide().catch((err)=>{
-      console.warn(err)
+    SplashScreen.hide().catch((err) => {
+      console.warn(err);
     });
 
-    StatusBar.hide().catch((err)=>{
-      console.warn(err)
-    })
-
-
+    StatusBar.hide().catch((err) => {
+      console.warn(err);
+    });
   }
 
   initializeApp() {

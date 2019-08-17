@@ -6,9 +6,9 @@
   
       <ion-title>Login</ion-title>
     </ion-toolbar>
-  </ion-header>
-
-<form [formGroup]="loginForm">
+</ion-header>
+<ion-content>
+  <form [formGroup]="loginForm">
     <ion-item>
       <ion-label position="stacked">Email</ion-label>
       <ion-input
@@ -46,7 +46,9 @@
       <ion-label>Your password needs more than 6 characters.</ion-label>
     </ion-item>
   
-    <ion-button (click)="loginUser(loginForm)" expand="block" [disabled]="!loginForm.valid">
+    <ion-button (click)="emailLogin(loginForm)" expand="block" [disabled]="!loginForm.valid">
       Log In
     </ion-button>
   </form>
+  <ion-button (click)="capacitorFbLogin()">Connect with Facebook</ion-button>
+</ion-content>

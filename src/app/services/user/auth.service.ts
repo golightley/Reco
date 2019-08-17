@@ -1,3 +1,4 @@
+import { LoadingService } from './../loading-service';
 import { Injectable } from '@angular/core';
 
 import * as firebase from 'firebase/app';
@@ -9,22 +10,67 @@ import { reject } from 'q';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor() {}
+  constructor(
+    private loadingService: LoadingService
+  ) {}
 
-    loginUser(email:string, password:string): Promise<firebase.auth.UserCredential> {
-
-      return firebase.auth().signInWithEmailAndPassword(email, password);
+    // login by email
+    async loginWithEmail(email: string, password: string) {
+      const result = await this.loadingService.doFirebase(async() => {
+        return new Promise<any> ((resolve, reject) => {
+          firebase.auth().signInWithEmailAndPassword(email, password).then(res => {
+            resolve(res);
+          }).catch(error => {
+            reject(error);
+          });
+        });
+      });
+      return result;
     }
 
-    signupUser(email: string, password: string, handle:string): Promise<any> {
-      return firebase
-        .auth()
+    // login by facebook credential
+    async loginWithFacebookToken(facebookCredential: any) {
+      const result = await this.loadingService.doFirebase(async() => {
+        return new Promise<any> ((resolve, reject) => {
+          firebase.auth().signInWithCredential(facebookCredential)
+            .then((newUserCredential: firebase.auth.UserCredential) => {
+            // login success
+            console.log('[Facebook sign succeed]: response=> ', newUserCredential);
+            // register user to userProfile collection
+            const user = newUserCredential.user;
+            const handleName = user.displayName.replace(' ', '_');
+            firebase.firestore()
+              .doc(`/userProfile/${user.uid}`)
+              .set({
+                handle: handleName,
+                email: user.email,
+                photoURL: user.photoURL,
+                loginType: 'facebook',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            resolve(user);
+          }).catch(error => {
+            console.log('[Facebook sign failed]: error=> ', error);
+            reject(error);
+          });
+        });
+      });
+      return result;
+  }
+
+    signupUser(email: string, password: string, handle: string): Promise<any> {
+      return firebase.auth()
         .createUserWithEmailAndPassword(email, password)
         .then((newUserCredential: firebase.auth.UserCredential) => {
           firebase
             .firestore()
             .doc(`/userProfile/${newUserCredential.user.uid}`)
-            .set({ email,handle });
+            .set({
+              email,
+              handle,
+              loginType: 'email',
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
         })
         .catch(error => {
           console.error(error);
