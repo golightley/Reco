@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 export class SignupPage implements OnInit {
   public signupForm: FormGroup;
   public loading: any;
+  showPass: boolean;
+  
   constructor(
     private authService: AuthService,
     private loadingCtrl: LoadingController,
@@ -66,6 +68,10 @@ export class SignupPage implements OnInit {
       this.loading = await this.loadingCtrl.create({});
       await this.loading.present();
     }
+  }
+
+  toggleShowPass() {
+    this.showPass = !this.showPass;
   }
 
 }
