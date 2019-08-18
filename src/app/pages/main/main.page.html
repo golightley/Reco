@@ -1,0 +1,22 @@
+<!-- Main Screen ( Logo and Facebook login) -->
+<ion-content class="main-content">
+  <div class="overlay">
+  </div>
+  <div class="logo-container">
+    <div class="logo">
+      <img src="assets/images/logo.png" class="logo" />
+    </div>
+    <h1 class="title">Recommendations you can trust</h1>
+  </div>
+  <div class="facebook-login">
+    <ion-button (click)="capacitorFbLogin()" expand="block">
+        <ion-icon slot="start" name="logo-facebook"></ion-icon>        
+        Connect with Facebook
+    </ion-button>
+  </div>
+  
+  <div class="email-login-link">
+    <span>Or use your email</span>
+    <span class="link" (click)="gotoEmailLogin()"> here</span>
+  </div>
+</ion-content>

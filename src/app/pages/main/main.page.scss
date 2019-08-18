@@ -1,0 +1,61 @@
+.main-content {
+    --background: url(/assets/images/background.png) no-repeat center/cover fixed;
+    justify-content: center;
+    .overlay {
+        position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+        /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#1e5799+0,207cca+100,2989d8+100,242a37+100&0+0,1+100 */
+        background: -moz-linear-gradient(top,  rgba(30,87,153,0) 0%, rgba(36,42,55,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  rgba(30,87,153,0) 0%,rgba(36,42,55,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  rgba(30,87,153,0) 0%,rgba(36,42,55,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001e5799', endColorstr='#242a37',GradientType=0 ); /* IE6-9 */
+
+    }
+    .logo-container {
+        margin: auto;
+        margin-top: 32vh;
+        width: 80vw;
+        position: relative;    
+        .logo {
+            width: 111px;
+            height: 111px;
+            /* background: rgb(243, 226, 6); 
+            border-radius: 30px; */
+            margin: auto;
+        }
+        .title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+    }
+    .facebook-login {
+        margin-top: 10vh;
+        ion-button {
+            ion-icon {
+                padding-right: 4vw;
+            }
+            font-size: 16px;
+            text-transform: initial;
+            --color: #fff;            
+            --background: rgb(12,102,255);
+            width: 80vw;
+            height: 40px;
+            margin: auto;
+        }
+    }
+    .email-login-link {        
+        margin-top:20px;
+        text-align: center;        
+        font-size: 17px;
+        position: relative;    
+        color: rgba(255, 255, 255, 0.5);
+        .link {            
+            color: rgb(253, 255, 3);
+        }
+    }
+}
