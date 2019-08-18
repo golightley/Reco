@@ -15,6 +15,7 @@ import * as firebase from 'firebase/app';
 })
 export class LoginPage implements OnInit {
 
+  showPass: boolean;
   public loginForm: FormGroup;
   public loading: HTMLIonLoadingElement;
 
@@ -102,6 +103,14 @@ export class LoginPage implements OnInit {
       // error code : "auth/account-exists-with-different-credential"
       this.showErrorAlert(errorMessage);
     }
+  }
+
+  toggleShowPass() {
+    this.showPass = !this.showPass;
+  }
+
+  gotoSignUp() {
+    this.router.navigateByUrl('/signup');
   }
 
 }
