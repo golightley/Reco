@@ -10,10 +10,29 @@
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
 
+/* ion-header {
+    
+} */
+
+ion-title {
+    font-size: 20px;
+    color: rgb(55,48,67);
+}
 
 ion-title img {
     max-height: 39px;
     margin-top:6px;
+}
+
+ion-back-button {
+    padding-left: 10px;
+    --icon-font-size: 24px !important;
+}
+
+ion-buttons {
+    .back-button-icon {
+        font-size: 24px !important;
+    }
 }
 
 ion-item{
@@ -34,4 +53,26 @@ ion-textarea{
 
 textarea{
     height: 180px;
+}
+
+.nolines {
+    --border-width: 0 !important;
+    border-bottom: none;
+}
+
+.footer-button {
+    margin: 0px;
+    height: 70px;   
+    font-size: 17px;
+    font-weight: bold;    
+    --background: rgb(243,226,6);
+    --background-activated: #ffd31a;    
+    --background-hover: #e0b500;
+    --color: #000;
+    --color-activated:#000;
+}
+.footer-button:disabled, .footer-button[disabled]{
+    color: rgb(150, 154, 156);
+    opacity: .94;
+    --background: rgba(210, 213, 219, .94) !important;
 }
