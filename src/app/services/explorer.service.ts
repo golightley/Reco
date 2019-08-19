@@ -153,11 +153,9 @@ export class ExplorerService {
       await query.get().then(async (queryData) => {
           await Promise.all(queryData.docs.map(async (rec) => {
                   // get user name of recommendation
-                  const userName = await this.getUserByID(rec.data().user);
-                  rec.userName = userName;
-                  console.log('userName', userName);
+                  const user = await this.getUserByID(rec.data().user);
+                  rec.userName = user.userName;
                   recsArray.push(rec);
-                  console.log('recs data add');
           }));
         }).catch (error => {
             return error;
@@ -167,15 +165,25 @@ export class ExplorerService {
     return recsArray;
   }
 
+
+  // return username and photoURL by user id
   async getUserByID(userId: string) {
     return new Promise<any> ((resolve, reject) => {
       firebase.firestore().collection('userProfile').doc(userId).get().then(docUser => {
-        // if handle is exists then return handle, else return email
+        // if handle is exists then username is handle, else username is email
         let userName = docUser.data().email;
+        let photoURL = '';
         if ( docUser.data().handle ) {
           userName = docUser.data().handle;
         }
-        resolve(userName);
+        if (docUser.data().photoURL) {
+          photoURL = docUser.data().photoURL;
+        }
+        const user = {
+          userName,
+          photoURL
+        };
+        resolve(user);
       }).catch(error => {
         console.log('[Get User Info] error = ' + error);
         reject(error);

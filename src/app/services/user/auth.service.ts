@@ -131,7 +131,6 @@ export class AuthService {
       const users: any[] = [];
       // pull each question from firebase
       return new Promise<any>((resolve, reject) => {
-        // firebase.firestore().collection('recommendations').where('questionId', '==', questionID).get()
         firebase.firestore().collection('userProfile').get()
           .then((recs) => {
             recs.forEach((doc) => {
