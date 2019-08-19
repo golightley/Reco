@@ -86,12 +86,13 @@ export class AuthService {
 
     // register username
     async registerUsername(userId: string, handle: string): Promise<any> {
+      const handleName = handle.replace(' ', '_');
       const result = await this.loadingService.doFirebase(async() => {
         return new Promise<any> ((resolve, reject) => {
           firebase
             .firestore()
             .collection('userProfile')
-            .where('handle', '==', handle)
+            .where('handle', '==', handleName)
             .get().then(async function (res) {
               if (res.size === 0) {
                 // update user profile
@@ -99,7 +100,7 @@ export class AuthService {
                   .firestore()
                   .collection('userProfile')
                   .doc(userId).update({
-                    handle: handle
+                    handle: handleName
                 }).then(res => {
                   resolve('success');
                 }).catch(error => {
