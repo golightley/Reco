@@ -48,7 +48,7 @@ export class FriendsPage implements OnInit {
 
 
 
-    this.friendService.getFriends().then((details)=>{
+    /* this.friendService.getFriends().then((details)=>{
       let formControls:any = this.FriendsForm.controls;
       
       if(details!=null){
@@ -61,7 +61,7 @@ export class FriendsPage implements OnInit {
 
          
       }
-    })
+    }) */
 
   }
 
