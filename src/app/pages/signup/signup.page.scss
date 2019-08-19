@@ -8,10 +8,7 @@
       }
       ion-input {      
         border: none;      
-      }      
-      .email {
-        margin-top: 20px;  // must be remove
-      }
+      }            
       .password {
         margin-top:20px;
         div{
@@ -20,6 +17,10 @@
         ion-input {
           width: 80vw;
         }
+      }
+      .username-desc {
+        font-size: 12px;
+        color: rgba(32, 34, 36, 0.6);
       }
     }
     

@@ -1,61 +1,73 @@
 <ion-header>
   <ion-toolbar class="nolines">
     <ion-buttons slot="start">
-      <ion-back-button class="back-button" text="" icon="/assets/images/back.svg" color="dark" defaultHref="/login">
+      <ion-back-button class="back-button" text="" icon="/assets/images/left-arrow.svg" color="dark" defaultHref="/login">
       </ion-back-button>
     </ion-buttons>
-    <ion-title>Create Account</ion-title>
+    <ion-title *ngIf="step==='email-register'">Create Account</ion-title>
+    <ion-title *ngIf="step==='username-register'">Username</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="signup-content" padding>
-  <form [formGroup]="signupForm">
-    <ion-item>
-      <ion-label position="stacked">Handle</ion-label>
-      <ion-input formControlName="handle" placeholder="@LiamTravels">
-      </ion-input>
-    </ion-item>
-    <ion-item class="email" [class.invalid]="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
-      <ion-label position="stacked">Email</ion-label>
-      <ion-input formControlName="email" type="email" placeholder="Your email address">
-      </ion-input>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!signupForm.controls['email'].valid
-        && signupForm.controls['email'].touched">
-      <ion-label>Please enter a valid email.</ion-label>
-    </ion-item>
 
-    <ion-item class="password" [class.invalid]="!signupForm.controls['password'].valid && signupForm.controls['password'].touched">
-      <ion-label position="stacked">Password</ion-label>      
-      <div>
-          <ion-input
-            formControlName="password"
-            type="{{ showPass ? 'text' : 'password' }}"
-            placeholder="Your password"      
-          >
+  <div class="email-register" *ngIf="step==='email-register'">
+    <form [formGroup]="emailForm">
+      <ion-item class="email"
+        [class.invalid]="!emailForm.controls['email'].valid && emailForm.controls['email'].touched">
+        <ion-label position="stacked">EMAIL</ion-label>
+        <ion-input formControlName="email" type="email" placeholder="Your email address">
+        </ion-input>
+      </ion-item>
+      <ion-item class="error-message" *ngIf="!emailForm.controls['email'].valid
+              && emailForm.controls['email'].touched">
+        <ion-label>Please enter a valid email.</ion-label>
+      </ion-item>
+
+      <ion-item class="password"
+        [class.invalid]="!emailForm.controls['password'].valid && emailForm.controls['password'].touched">
+        <ion-label position="stacked">PASSWORD</ion-label>
+        <div>
+          <ion-input formControlName="password" type="{{ showPass ? 'text' : 'password' }}" placeholder="Your password">
           </ion-input>
-          <ion-button
-            (click)="toggleShowPass()"
-            fill="clear"
-            color="{{ showPass ? 'danger' : 'medium' }}"
-            size="small"
-          >
-            <ion-icon
-              size="small"
-              class="input-inside-icon"
-              src="assets/images/reveal.svg"
-            ></ion-icon>
+          <ion-button (click)="toggleShowPass()" fill="clear" color="{{ showPass ? 'danger' : 'medium' }}" size="small">
+            <ion-icon size="small" class="input-inside-icon" src="assets/images/reveal.svg"></ion-icon>
           </ion-button>
-      </div>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!signupForm.controls['password'].valid  &&
-        signupForm.controls['password'].touched">
-      <ion-label>Your password needs more than 6 characters.</ion-label>
-    </ion-item>
-  </form>
+        </div>
+      </ion-item>
+      <ion-item class="error-message" *ngIf="!emailForm.controls['password'].valid  &&
+          emailForm.controls['password'].touched">
+        <ion-label>Your password needs more than 6 characters.</ion-label>
+      </ion-item>
+    </form>
+  </div>
+  <div class="username-register" *ngIf="step==='username-register'">
+    <form [formGroup]="usernameForm">
+      <ion-item>
+        <ion-label position="stacked">YOUR USERNAME WILL BE</ion-label>
+        <ion-input formControlName="handle" placeholder="Your name">
+        </ion-input>
+      </ion-item>
+      <ion-item lines="none" class="error-message" *ngIf="!usernameForm.controls['handle'].valid  &&
+          usernameForm.controls['handle'].touched">
+        <ion-label>Your must input user name.</ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <span class="username-desc">This is how people find you on RECO</span>
+      </ion-item>
+    </form>
+  </div>
+
 </ion-content>
 <ion-footer>
-  <ion-button (click)="signupUser(signupForm)" expand="full" [disabled]="!signupForm.valid" class="footer-button">
-    Create new account
-  </ion-button>
+  <div *ngIf="step==='email-register'">
+    <ion-button (click)="registerEmail(emailForm)" expand="full" [disabled]="!emailForm.valid" class="footer-button">
+      Next <ion-icon slot="end" style="margin-left:15px;" src="assets/images/right-arrow.svg"></ion-icon>
+    </ion-button>
+  </div>
+  <div *ngIf="step==='username-register'">
+    <ion-button (click)="registerUsername(usernameForm)" expand="full" [disabled]="!usernameForm.valid" class="footer-button">
+      Done
+    </ion-button>
+  </div>
 </ion-footer>

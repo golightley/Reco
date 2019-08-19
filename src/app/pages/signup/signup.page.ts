@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/user/auth.service';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -10,21 +10,20 @@ import { Router } from '@angular/router';
   styleUrls: ['./signup.page.scss'],
 })
 export class SignupPage implements OnInit {
-  public signupForm: FormGroup;
+  public emailForm: FormGroup;
+  public usernameForm: FormGroup;
   public loading: any;
-  showPass: boolean;
-  
+  private showPass: boolean;
+  userId: string;
+  step: string;
+
   constructor(
     private authService: AuthService,
-    private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private formBuilder: FormBuilder,
     private router: Router
   ) {
-    this.signupForm = this.formBuilder.group({
-      handle:[
-        '',
-      ],
+    this.emailForm = this.formBuilder.group({
       email: [
         '',
         Validators.compose([Validators.required, Validators.email]),
@@ -34,40 +33,76 @@ export class SignupPage implements OnInit {
         Validators.compose([Validators.minLength(6), Validators.required]),
       ],
     });
+    this.usernameForm = this.formBuilder.group({
+      handle: [
+        '',
+        Validators.compose([Validators.required]),
+      ]
+    });
   }
 
-  ngOnInit() {}
+  ngOnInit( ) {
+    this.step = 'email-register';
+    this.userId = '';
+  }
 
-  async signupUser(signupForm: FormGroup): Promise<void> {
-    if (!signupForm.valid) {
+  async registerEmail(emailForm: FormGroup): Promise<void> {
+    if (!emailForm.valid) {
       console.log(
-        'Need to complete the form, current value: ', signupForm.value
+        'Need to complete the form, current value: ', emailForm.value
       );
     } else {
-      const handle: string = signupForm.value.handle;
-      const email: string = signupForm.value.email;
-      const password: string = signupForm.value.password;
-       
-
-      this.authService.signupUser(email, password,handle).then(
-        () => {
-          this.loading.dismiss().then(() => {
-            this.router.navigateByUrl('');
-          });
-        },
-        error => {
-          this.loading.dismiss().then(async () => {
-            const alert = await this.alertCtrl.create({
-              message: error.message,
-              buttons: [{ text: 'Ok', role: 'cancel' }],
-            });
-            await alert.present();
-          });
+      const email: string = emailForm.value.email;
+      const password: string = emailForm.value.password;
+      const result = await this.authService.registerEmail(email, password);
+      console.log('result', result);
+      if ( result.user ) {
+        // success
+        this.step = 'username-register';
+        this.userId = result.user.uid;
+      } else {
+        let errorMessage = 'Email register failed. Try again later';
+        if ( result.error.message ) {
+          errorMessage = result.error.message;
         }
-      );
-      this.loading = await this.loadingCtrl.create({});
-      await this.loading.present();
+        this.showErrorAlert(errorMessage);
+      }
     }
+  }
+
+  async registerUsername(usernameForm: FormGroup): Promise<void> {
+    if (!usernameForm.valid || !this.userId) {
+      console.log(
+        'Need to complete the form, current value: ', usernameForm.value
+      );
+    } else {
+      // username field
+      const handle: string = usernameForm.value.handle;
+
+      const result = await this.authService.registerUsername(this.userId, handle);
+      console.log('result=> ', result);
+      if ( result === 'success' ) {
+        // if success, navigate to explorer page
+        this.router.navigateByUrl('');
+      } else if ( result ==='duplicate' ){
+        const errorMessage = 'Username already exists. please input another username.'
+        this.showErrorAlert(errorMessage);
+      } else {
+        let errorMessage = 'Username register failed. Try again later';
+        if ( result.error.message ) {
+          errorMessage = result.error.message;
+        }
+        this.showErrorAlert(errorMessage);
+      }
+    }
+  }
+
+  async showErrorAlert(msg: string) {
+    const alert = await this.alertCtrl.create({
+      message: msg,
+      buttons: [{ text: 'Ok', role: 'cancel' }],
+    });
+    await alert.present();
   }
 
   toggleShowPass() {
