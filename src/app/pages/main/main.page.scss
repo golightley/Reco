@@ -34,7 +34,7 @@
         }
     }
     .facebook-login {
-        margin-top: 10vh;
+        margin-top: 8vh;
         ion-button {
             ion-icon {
                 padding-right: 4vw;
@@ -54,7 +54,8 @@
         font-size: 17px;
         position: relative;    
         color: rgba(255, 255, 255, 0.5);
-        .link {            
+        .link {     
+            margin-left: 10px;       
             color: rgb(253, 255, 3);
         }
     }
