@@ -35,12 +35,32 @@
       </ion-label>
     </ion-item>
   </ion-list>
+  <!-- Friend List -->
+  <div class="horizontal-friend-list" *ngIf="!focusedSearchBar">
+    <div class="list-item">
+      <div class="friend-item">
+          <div class="username selected">All</div>
+      </div>
+      <div class="friend-item" *ngFor="let friend of friendList">
+        <div class="avatar">
+            <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.png' }}" />
+        </div>
+        <div class="username">
+            {{friend.userName}}
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- // Friend List -->
+  <!-- Google Map -->
   <div class="map" [ngClass]=" {map_show: !focusedSearchBar, map_hidden: focusedSearchBar} ">
     <!-- *ngIf="!focusedSearchBar" -->
     <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
   </div>
-
-  <div class="horizontal-list" *ngIf="!focusedSearchBar">
+  <!-- // Google Map -->
+  <!-- Recommendation Card List  : will be replace place card list -->
+  <div class="horizontal-card-list" *ngIf="!focusedSearchBar">
     <div class="list-item">
       <ion-card class="suggestion-card" *ngFor="let suggestion of recCardResults">
         <ion-card-content>
@@ -68,7 +88,7 @@
       </ion-card>
     </div>
   </div>
-
+  <!-- // Recommendation Card List-->
 
 </ion-content>
 

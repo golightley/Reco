@@ -16,7 +16,7 @@ div[scrollx=true] {
 
   }
 
-  .horizontal-list{
+  .horizontal-card-list{
     position: absolute;
     bottom: 10px;
     overflow-x: scroll;
@@ -33,9 +33,7 @@ div[scrollx=true] {
         box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;
         margin: 5px;
         padding: 0px;  
-        height: 130px;        
-               
-        //height: calc(250px - 40px); // 35px is card margin, must change               
+        height: 130px;                  
         ion-card-content {          
           display: inline-flex;
           white-space: normal;
@@ -76,37 +74,62 @@ div[scrollx=true] {
     }
   }
 
-  .horizontal-list-menu{
+  .horizontal-friend-list{
+    // position: absolute;
+    // top: 10px;
+    padding-left: 5px;
     overflow-x: scroll;
     overflow-y: hidden;
     .list-item{
-      height: 50px;
+      width: 100vw;
+      display: inline-flex;
+      // height: 250px;
       white-space: nowrap;
-      .suggestion-card{        
-        display: inline-grid;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        margin: 5px;
+      .friend-item{        
+        display: inline-flex;
+        // border: 1px solid #ddd;
+        border-radius: 5px;
         padding: 3px;
-        width: 90%; 
-        //height: calc(250px - 40px); // 35px is card margin, must change       
-        ion-card-header {
-          white-space: normal;
-        }
-        ion-card-content {
-          white-space: normal;
-        }
+        background: #ffffff;
+        box-shadow: 0 0 6px rgba(100, 100, 100, 0.5) !important;
+        margin: 8px 5px;  
+        height: 35px;              
+        .avatar {
+          width: 29px;
+          height: 29px;
+          margin-right: 5px;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: flex-end;
+          cursor: pointer;
+          .user-avatar-photo {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+          }
+        } 
+        .username {
+          min-width: 40px;
+          text-align: center;
+          line-height: 29px;
+          font-size: 16px;
+          padding-right: 3px;
+          color: rgb(74, 74, 74);
+        }  
+      }
+
+      // selected friend
+      .selected {
+        background: rgb(255, 235, 59);
+        box-shadow: 0 0 10px rgba(100, 100, 100, 0.7) !important;
       }
     }
   }
+
   ::-webkit-scrollbar { 
     display: none; 
   }
-
-  // .friend-filter-button{
-  //   --border-color:white;
-
-  // }
 
   .suggest-button-stop {
     --background: white;

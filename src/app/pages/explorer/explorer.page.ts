@@ -1,3 +1,4 @@
+import { FriendService } from 'src/app/services/friend.service';
 
 import { Component, ViewChild, OnInit, Renderer2 } from '@angular/core';
 import { AlertController, LoadingController, Platform } from '@ionic/angular';
@@ -26,8 +27,7 @@ export class ExplorerPage implements OnInit {
   public recMapResults: RecommendationModel[] = [];
   public recCardResults: RecommendationModel[] = [];
   public markersArray: any = [];
-  // this is static and will need to be dynamically replaced 
-  public friendList: any = ['Kunal', 'Liam', 'Cynthia', 'Michael', 'Wang', 'JD', 'Kunal', 'Liam', 'Kunal', 'Liam'];
+  friendList: any[] = [];
   service: any;
   placesService: any;
   query: string = '';
@@ -43,6 +43,7 @@ export class ExplorerPage implements OnInit {
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private explorerService: ExplorerService,
+    private friendService: FriendService,
     private platform: Platform,
     private renderer: Renderer2,
   ) { }
@@ -58,11 +59,15 @@ export class ExplorerPage implements OnInit {
     }); */
   }
 
-  ionViewWillEnter() {
-    this.getRecommendations();
-    console.log("Location.IonViewWillenter. friendList " + this.friendList)
+  async ionViewWillEnter() {
+    await this.getFriends();
+    await this.getRecommendations();
   }
 
+  async getFriends() {
+    this.friendList = await this.friendService.getFriends();
+    console.log('Explorer Friends list => ', this.friendList);
+  }
 
   async getRecommendations() {
 
@@ -97,7 +102,7 @@ export class ExplorerPage implements OnInit {
       return locationA.distance - locationB.distance;
     });
     console.log('Location.getCardRecos. Built Card Recos array => count: ' + this.recCardResults.length);
-    console.log(this.recCardResults);
+    console.log('card result=>',this.recCardResults);
   }
 
   loadRecsData() {
