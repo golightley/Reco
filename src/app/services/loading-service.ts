@@ -25,7 +25,8 @@ export class LoadingService {
   }
 
   public async doFirebase(fn) {
-    await this.presentLoading('Please waiting...');
+    // await this.presentLoading('Please waiting...');
+    await this.presentLoading('');
     try {
       return await fn();
     } catch (error) {
@@ -56,8 +57,8 @@ export class LoadingService {
       }
     }
     return {
-      error: error,
-      errorMessage: errorMessage
+      error,
+      errorMessage
     };
   }
 }
