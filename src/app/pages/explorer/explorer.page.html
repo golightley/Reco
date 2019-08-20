@@ -38,10 +38,14 @@
   <!-- Friend List -->
   <div class="horizontal-friend-list" *ngIf="!focusedSearchBar">
     <div class="list-item">
-      <div class="friend-item">
-          <div class="username selected">All</div>
+      <div class="friend-item" (click)="selectFriend(-1)">
+          <div class="username" [ngClass] ="{selected: selectedAllFriend}">All</div>
       </div>
-      <div class="friend-item" *ngFor="let friend of friendList">
+      <div class="friend-item" 
+          (click)="selectFriend(i)"
+          *ngFor="let friend of friendList; let i = index" 
+          [ngClass] ="{selected: friend.selected}"
+           >
         <div class="avatar">
             <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.png' }}" />
         </div>
