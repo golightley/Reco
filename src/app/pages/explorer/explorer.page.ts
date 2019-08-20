@@ -38,6 +38,7 @@ export class ExplorerPage implements OnInit {
   autocompleteService: any;
   focusedSearchBar: boolean;
   FILTER_DISTANCE = 100;
+  selectedAllFriend: boolean;
 
   constructor(
     private alertCtrl: AlertController,
@@ -60,6 +61,7 @@ export class ExplorerPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.selectedAllFriend = true;
     await this.getFriends();
     await this.getRecommendations();
   }
@@ -91,25 +93,18 @@ export class ExplorerPage implements OnInit {
 
   }
 
-  // filter recommendation for cards
+  // filter recommendation for Card list
   filterRecommendations() {
     this.recCardResults = [];
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
-    // filter recommendation within 10 miles of selected city location
+    // filter recommendation within 100 miles of selected city location
     this.recCardResults = filterByHaversine(this.recMapResults, usersLocation, this.FILTER_DISTANCE);
     this.recCardResults.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
     console.log('Location.getCardRecos. Built Card Recos array => count: ' + this.recCardResults.length);
-    console.log('card result=>',this.recCardResults);
-  }
-
-  loadRecsData() {
-    // move map by selected location
-    this.map.moveCenter();
-    // filter card data by selected location
-    this.filterRecommendations();
+    console.log('card result=>', this.recCardResults);
   }
 
   setLocation(): void {
@@ -224,10 +219,16 @@ export class ExplorerPage implements OnInit {
       console.log(this.location);
       this.query = location.name;
       this.map.setCurrentLocation(location.lat, location.lng);
-      this.loadRecsData();
+      this.reloadRecsDataByPlace();
 
     });
+  }
 
+  reloadRecsDataByPlace() {
+    // move map by selected location
+    this.map.moveCenter();
+    // filter card data by selected location
+    this.filterRecommendations();
   }
 
   takeMeHome(): void {
@@ -266,6 +267,25 @@ export class ExplorerPage implements OnInit {
   // Emitted when the cancel button is clicked.
   cancelSearchBar() {
     this.focusedSearchBar = false;
+  }
+
+  // Emitted when the friend item is clicked on friend list.
+  selectFriend(index) {
+    if ( index < 0 ) {
+      // clicked All button.
+      this.selectedAllFriend = !this.selectedAllFriend;
+      // if All button is enable, disable all friends item
+      if ( this.selectedAllFriend ) {
+        for ( let i=0; i < this.friendList.length; i++ ) {
+          this.friendList[i].selected = false;
+        }
+      }
+    } else {
+      this.friendList[index].selected = !this.friendList[index].selected;
+      if ( this.friendList[index].selected ) {
+        this.selectedAllFriend = false;
+      }
+    }
   }
 
 }

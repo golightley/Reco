@@ -180,6 +180,7 @@ export class ExplorerService {
           photoURL = docUser.data().photoURL;
         }
         const user = {
+          userId,
           userName,
           photoURL
         };
