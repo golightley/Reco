@@ -59,7 +59,7 @@ export class MyTripsPage implements OnInit {
         this.results.push(data);
       });
       console.log('MyTripsPage.GetReccomandations: Results');
-      console.log(this.results[0].data());
+      // console.log(this.results[0].data());
     })
   }
 

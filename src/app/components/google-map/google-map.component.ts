@@ -1,4 +1,4 @@
-import { Component,Input, Renderer2, ElementRef, Inject } from '@angular/core';
+import { Component,Input, Renderer2, ElementRef, Inject, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Plugins, Network }  from '@capacitor/core';
@@ -6,8 +6,7 @@ import { inject } from '@angular/core/testing';
 import { reject } from 'q';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 
-const { Geolocation, Newtwork } = Plugins; 
-
+const { Geolocation} = Plugins;
 
 declare var google;
 
@@ -16,55 +15,56 @@ declare var google;
   templateUrl: './google-map.component.html',
   styleUrls: ['./google-map.component.scss'],
 })
-export class GoogleMapComponent {
+export class GoogleMapComponent implements OnInit {
 
   @Input('apiKey') apiKey: string;
 
   // variables
-  public map:any;
-  public infowindow:any;
-  public infowindows = [];
-  public marker:any;
-  public firstLoadFailed:boolean = false;
-  public mapsLoaded:boolean = false;
+  public map: any;
+  public infoWindow: any;
+  public infoWindows = [];
+  public marker: any;
+  public firstLoadFailed: boolean = false;
+  public mapsLoaded: boolean = false;
   private newtworkHandler = null;
-  public connectionAvailable:boolean = true;
+  public connectionAvailable: boolean = true;
   public curLocationLat: number;
   public curLocationLng: number;
-  constructor
-  (
+
+  googleMapMarkers: any[] = [];
+
+  constructor(
     private renderer: Renderer2,
     private element: ElementRef,
-    private platform: Platform,    
+    private platform: Platform,
     @Inject(DOCUMENT) private _document
-
   ) {}
 
 
   // public function intended to be called from location page 
   // promise returns to let location page the map has fully loaded 
-  public init(): Promise <any> {
+  public init(): Promise<any> {
     return new Promise((resolve, reject) => {
       // make sure we don't load / inject the SDK twice 
-      if(typeof(google)=='undefined'){
-        console.log('GoogleMapComponent.google =')
+      if (typeof (google) === 'undefined') {
+        console.log('GoogleMapComponent.google =');
 
-        this.loadSDK().then((res)=>{
-           console.log('GoogleMapComponent.SDKLoaded')
-          this.initMap().then((res)=>{
-            console.log('GoogleMapComponent.MapInitialized')
+        this.loadSDK().then((res) => {
+          console.log('GoogleMapComponent.SDKLoaded');
+          this.initMap().then((res) => {
+            console.log('GoogleMapComponent.MapInitialized');
             this.enableMap();
             resolve(true);
-          },(err) => {
+          }, (err) => {
             this.disableMap();
             reject(err);
           });
-        }, (err) =>{
+        }, (err) => {
           this.firstLoadFailed = true;
           reject(err);
         });
-      }else{
-          reject('Google Maps Already running')
+      } else {
+        reject('Google Maps Already running');
       }
     });
   }
@@ -72,7 +72,7 @@ export class GoogleMapComponent {
   
 
   // start loading the SDK, but only if there is an internet connection 
-  private loadSDK():Promise <any> {
+  private loadSDK(): Promise <any> {
     console.log('Loading Google Maps SDK');
     // connectivity listner will automatically load the SDK when an internet connection is ready
     this.addConnectivityListeners();
@@ -162,8 +162,8 @@ export class GoogleMapComponent {
         };
 
         this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
-        console.log('GoogleMapComponent.InitiMap.Infowindow')
-        console.log(this.infowindow);
+        console.log('GoogleMapComponent.InitiMap.infoWindow')
+        console.log(this.infoWindow);
         resolve(true);
 
     }, (err) => {
@@ -231,9 +231,9 @@ export class GoogleMapComponent {
   }
 
   // utility function to drop a new pin
-  public changeMarker(lat: number, lng: number){
+  public changeMarker(lat: number, lng: number) {
 
-    const latLng = new google.maps.LatLng(lat,lng);
+    const latLng = new google.maps.LatLng(lat, lng);
 
     const marker = new google.maps.Marker({
       map: this.map, 
@@ -243,7 +243,7 @@ export class GoogleMapComponent {
 
 
     // remove marketer if exists
-    if(this.marker){
+    if (this.marker) {
       this.marker.setMap(null);
     }
 
@@ -262,19 +262,18 @@ export class GoogleMapComponent {
   }
 
   // function used by location page to add reco markers and info window 
-  public addMarkers(recosArray: RecommendationModel[]){
+  addMarkers(recosArray: RecommendationModel[]) {
 
-    // arrays to store the info 
-    const markers = [];
-    const infowindows = [];
+    
+    this.deleteMarkers();
+    const that = this;
 
-
-    // create a marker and info window for each one 
+    // create a marker and info window for each one
     for (let i = 0; i < recosArray.length; ++i) {
         // create the info window for each
-        infowindows[i] = new google.maps.InfoWindow({
+        this.infoWindows[i] = new google.maps.InfoWindow({
             // content: recosArray[i].name
-            content:this.formatContent(recosArray[i])
+            content: this.formatContent(recosArray[i])
         });
 
         // get lat / long for the reco
@@ -282,26 +281,63 @@ export class GoogleMapComponent {
         const label = this.getLabelString(recosArray[i].userName);
 
         // create marker and add it to the array
-        markers[i] = new google.maps.Marker({
+        this.googleMapMarkers[i] = new google.maps.Marker({
           position: latLng,
           map: this.map,
           animation: google.maps.Animation.DROP,
+          recoId: recosArray[i].id,
           label: label,
-          title: 'Hello World!'
+          // title: 'Hello World!'
           // icon: fonekingiconsrc
         });
-
+        
         // add listener to the map
-        google.maps.event.addListener(markers[i], 'click', (function(marker, i) {
+        google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( function (marker, i) {
           return function() {
-            infowindows[i].open(this.map, markers[i]);
+            this.infoWindows[i].open(this.map, that.googleMapMarkers[i]);
           };
-        })(markers[i], i));
+        })(that.googleMapMarkers[i], i));
     }
 
     console.log('Added markers on Map => count: ' + recosArray.length);
+    console.log('google marker count: ' + this.googleMapMarkers.length);
   }
 
+  // filter marker by selected friend
+  async displayMarkers(recosArray: RecommendationModel[]) {
+    await recosArray.map( async (reco, index) => {
+      if ( reco.visible ) {
+        this.googleMapMarkers[index].setVisible(true);
+      } else {
+        this.googleMapMarkers[index].setVisible(false);
+      }
+    });
+  }
+
+  // Sets the map on all markers in the array.
+  setMapOnAll(map) {
+    for (var i = 0; i < this.googleMapMarkers.length; i++) {
+      this.googleMapMarkers[i].setMap(map);
+    }
+  }
+
+  // Removes the markers from the map, but keeps them in the array.
+  clearMarkers() {
+    this.setMapOnAll(null);
+  }
+
+  // Shows any markers currently in the array.
+  showMarkers() {
+    this.setMapOnAll(this.map);
+  }
+
+  // Deletes all markers in the array by removing references to them.
+  deleteMarkers() {
+    this.clearMarkers();
+    this.googleMapMarkers = [];
+    // arrays to store the info 
+    this.infoWindows = [];
+  }
 
   formatContent(reco: RecommendationModel){
     const content =
@@ -320,7 +356,7 @@ export class GoogleMapComponent {
     return content;
 
   }
-  
+
   ngOnInit() {
     this.init().then((res) => {
       console.log('Google Maps ready.');
