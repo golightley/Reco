@@ -136,7 +136,7 @@ export class GoogleMapComponent {
 
 
 // called once the sdk is loaded and responsible for setting up the current map
-  private async initMap():Promise <any> {
+  private async initMap(): Promise <any> {
     return new Promise ((resolve, reject) =>{
       Geolocation.getCurrentPosition().then((position) => {
 
@@ -144,31 +144,30 @@ export class GoogleMapComponent {
         this.curLocationLat = position.coords.latitude;
         this.curLocationLng = position.coords.longitude;
 
-        let latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+        const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
-        let mapOptions = {
+        const mapOptions = {
           /*   zoomControl: boolean,
             mapTypeControl: boolean,
             scaleControl: boolean,
             streetViewControl: boolean,
             rotateControl: boolean,
             fullscreenControl: boolean */
+            zoomControl : false,
+            streetViewControl: false,
             fullscreenControl: false,
             mapTypeControl: false,
             center: latLng,
-            zoom: 15
+            zoom: 12
         };
 
-        this.map         = new google.maps.Map(this.element.nativeElement, mapOptions);
-        
+        this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
         console.log('GoogleMapComponent.InitiMap.Infowindow')
-        console.log(this.infowindow)
+        console.log(this.infowindow);
         resolve(true);
 
     }, (err) => {
-
         reject('Could not initialise map');
-
     });
     });
   }
@@ -193,37 +192,35 @@ export class GoogleMapComponent {
     this.curLocationLng = lng;
   }
 
-  disableMap():void {
+  disableMap(): void {
     this.connectionAvailable = false;
 
   }
 
-  enableMap():void {
+  enableMap(): void {
     this.connectionAvailable = true;
 
 
   }
 
   // triggers each time the network status changes
-  addConnectivityListeners():void {
+  addConnectivityListeners(): void {
 
     console.warn('Capacitor API does not currently have a web implementation. This will only work when running as an ios / android app');
 
-    if(this.platform.is('cordova')){
+    if (this.platform.is('cordova')){
       this.newtworkHandler = Network.addListener('networkStatusChange', (status) =>{
-        if(status.connected){
-          if(typeof google == 'undefined' && this.firstLoadFailed){
+        if (status.connected){
+          if (typeof google === 'undefined' && this.firstLoadFailed) {
             this.init().then((res) => {
-              console.log('Google maps ready!')
+              console.log('Google maps ready!');
             }, (err) => {
-              console.log(err)
+              console.log(err);
             });
-          }
-          else{
+          } else {
             this.enableMap();
           }
-        }
-        else{
+        } else {
           this.disableMap();
         }
       });
@@ -234,14 +231,14 @@ export class GoogleMapComponent {
   }
 
   // utility function to drop a new pin
-  public changeMarker(lat:number,lng:number){
+  public changeMarker(lat: number, lng: number){
 
-    let latLng = new google.maps.LatLng(lat,lng);
+    const latLng = new google.maps.LatLng(lat,lng);
 
-    let marker = new google.maps.Marker({
-      map:this.map, 
-      animation:google.maps.Animation.DROP,
-      position:latLng
+    const marker = new google.maps.Marker({
+      map: this.map, 
+      animation: google.maps.Animation.DROP,
+      position: latLng
     });
 
 
@@ -268,40 +265,38 @@ export class GoogleMapComponent {
   public addMarkers(recosArray: RecommendationModel[]){
 
     // arrays to store the info 
-    let markers = [];
-    let infowindows = [];
+    const markers = [];
+    const infowindows = [];
 
 
     // create a marker and info window for each one 
     for (let i = 0; i < recosArray.length; ++i) {
+        // create the info window for each
+        infowindows[i] = new google.maps.InfoWindow({
+            // content: recosArray[i].name
+            content:this.formatContent(recosArray[i])
+        });
 
+        // get lat / long for the reco
+        const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
+        const label = this.getLabelString(recosArray[i].userName);
 
-      // create the info window for each   
-      infowindows[i] = new google.maps.InfoWindow({
-          // content:recosArray[i].name
-          content:this.formatContent(recosArray[i])
-      });
+        // create marker and add it to the array
+        markers[i] = new google.maps.Marker({
+          position: latLng,
+          map: this.map,
+          animation: google.maps.Animation.DROP,
+          label: label,
+          title: 'Hello World!'
+          // icon: fonekingiconsrc
+        });
 
-      // get lat / long for the reco
-      const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
-      const label = this.getLabelString(recosArray[i].userName);
-
-      // create marker and add it to the array 
-      markers[i] = new google.maps.Marker({
-        position: latLng,
-        map: this.map,
-        animation: google.maps.Animation.DROP,
-        label: label,
-        title: 'Hello World!'
-        // icon: fonekingiconsrc
-      });
-
-      // add listener to the map
-      google.maps.event.addListener(markers[i], 'click', (function(marker, i) {
-        return function() {
-         infowindows[i].open(this.map, markers[i]);
-        }
-       })(markers[i], i));
+        // add listener to the map
+        google.maps.event.addListener(markers[i], 'click', (function(marker, i) {
+          return function() {
+            infowindows[i].open(this.map, markers[i]);
+          };
+        })(markers[i], i));
     }
 
     console.log('Added markers on Map => count: ' + recosArray.length);

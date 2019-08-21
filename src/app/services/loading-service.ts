@@ -19,7 +19,7 @@ export class LoadingService {
       message: message,
       mode: 'ios',
       // spinner: 'dots',
-      cssClass: 'offsite-loading'
+      // cssClass: 'reco-loading'
     });
     return await this.loading.present();
   }
