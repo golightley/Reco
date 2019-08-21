@@ -25,9 +25,6 @@ export class ExplorerPage implements OnInit {
   private longitude: number;
   recMapArray: RecommendationModel[] = [];
   recCardArray: RecommendationModel[] = [];
-  // filteredRecMapArray: RecommendationModel[] = [];
-  // filteredRecCardArray: RecommendationModel[] = [];
-  markersArray: any = [];
   friendList: any[] = [];
   service: any;
   placesService: any;
@@ -57,8 +54,12 @@ export class ExplorerPage implements OnInit {
 
   async ionViewWillEnter() {
     this.selectedAllFriend = true;
+    this.recMapArray = [];
+    this.recCardArray = [];
     // await this.getFriends();
     await this.getFriendsAndRecos();
+    // make array for cards with recommendations list
+    await this.filterRecoByDistance();
   }
 
   async getFriends() {
@@ -74,7 +75,7 @@ export class ExplorerPage implements OnInit {
     const recsArray = result.recos;
     console.log('recsArray', recsArray);
 
-    this.recMapArray = [];
+    
     recsArray.forEach(data => {
       const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat,
         data.data().location.lng, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
@@ -85,14 +86,10 @@ export class ExplorerPage implements OnInit {
     console.log('Map array result=>', this.recMapArray);
     await this.map.addMarkers(this.recMapArray);
 
-    // make array for cards with recommendations list
-    this.filterRecoByDistance();
-
   }
 
   // filter recommendation by distance for Card list
   filterRecoByDistance() {
-    this.recCardArray = [];
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
     // filter recommendation within 100 miles of selected place's location
@@ -102,13 +99,11 @@ export class ExplorerPage implements OnInit {
     });
     console.log('Filtered Card result by distance => count: ' + this.recCardArray.length);
     console.log('Card array result=>', this.recCardArray);
-    /* this.filteredRecCardArray = JSON.parse(JSON.stringify(this.recCardArray)); // array clone
-    console.log('Filtered Card array cloned!'); */
   }
 
-  // filter recommendation by selected friend for Card list and Map markers
+  // filter recommendation of Card list and Map markers by selected friend
   async filterRecoByFriend() {
-    await this.showDealyLoading(300);
+    await this.showDealyLoading(400);
     if (this.selectedAllFriend) {
       console.log('-- All data showed --');
       // change all visible value to 'true'
@@ -123,20 +118,15 @@ export class ExplorerPage implements OnInit {
       console.log('-- clicked a friend --');
       // filter recommendation map array
       this.changeVisibleByFriend(this.recMapArray);
-      /* await this.recMapArray.map(async (rec) => {
-        const friend = this.friendList.find( (f) => {
-            return f.userId === rec.userId;
-        });
-        if ( friend !== undefined ) {
-          rec.visible = friend.selected;
-          console.log('Changed visible of Map arry, by ' + friend.userName);
-        }
-      }); */
-      // console.log('Changed card array:', this.recMapArray);
+      console.log('Changed map array:', this.recMapArray);
+
       // filter recommendation card array
       this.changeVisibleByFriend(this.recCardArray);
-      // console.log('Changed card array:', this.recCardArray);
+      console.log('Changed card array:', this.recCardArray);
     }
+
+    // update Google Map Markers
+    await this.map.displayMarkers(this.recMapArray);
   }
 
   // change visible value by selected friend
@@ -177,7 +167,6 @@ export class ExplorerPage implements OnInit {
       };
 
       this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-        // console.log('CreateModalPage.SearchPlace.Autocomplete');
         // console.log(predictions);
         // console.log(status);
 
@@ -202,9 +191,7 @@ export class ExplorerPage implements OnInit {
   async showDealyLoading(time) {
     const loading = await this.loadingCtrl.create({
       message: '',
-      mode: 'ios',
-      // spinner: 'dots',
-      // cssClass: 'reco-loading'
+      mode: 'ios'
     });
     loading.present();
     setTimeout(() => loading.dismiss(), time);
