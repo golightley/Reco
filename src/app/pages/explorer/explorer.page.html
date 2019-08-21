@@ -38,13 +38,13 @@
   <!-- Friend List -->
   <div class="horizontal-friend-list" *ngIf="!focusedSearchBar">
     <div class="list-item">
-      <div class="friend-item" (click)="selectFriend(-1)">
-          <div class="username" [ngClass] ="{selected: selectedAllFriend}">All</div>
+      <div class="friend-item" (click)="selectFriend(-1)" [ngClass] ="{selected: selectedAllFriend}">
+          <div class="username">All</div>
       </div>
-      <div class="friend-item" 
+      <div class="friend-item"       
+          [ngClass] ="{selected: friend.selected}"  
           (click)="selectFriend(i)"
           *ngFor="let friend of friendList; let i = index" 
-          [ngClass] ="{selected: friend.selected}"
            >
         <div class="avatar">
             <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.png' }}" />
@@ -95,29 +95,3 @@
   <!-- // Recommendation Card List-->
 
 </ion-content>
-
-
-<!-- <ion-list *ngIf="places && places.length > 0 ">
-    <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
-  </ion-list>
-  <ion-grid>
-    <ion-row>
-      <div class="horizontal-list">
-        <div class="list-item">
-          <ion-card class="suggestion-card" *ngFor="let suggestion of recCardResults">
-            <ion-card-header>
-              <ion-card-subtitle>{{suggestion.city}} </ion-card-subtitle>
-              <ion-card-title>{{suggestion.name}}</ion-card-title>
-            </ion-card-header>
-            <img *ngIf="suggestion.pictureThumb" src="{{suggestion.pictureThumb}}" />
-            <ion-card-content>
-              {{suggestion.notes}}
-            </ion-card-content>
-          </ion-card>
-        </div>
-      </div>
-    </ion-row>
-    <ion-row>
-      <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
-    </ion-row>
-  </ion-grid> -->

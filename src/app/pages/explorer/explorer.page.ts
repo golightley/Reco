@@ -7,7 +7,6 @@ import { GoogleMapComponent } from 'src/app/components/google-map/google-map.com
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 import { filterByHaversine } from 'src/app/utils/map-utils';
-import { BlockerConfig } from '@ionic/core/dist/types/utils/gesture/gesture-controller';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -51,9 +50,9 @@ export class ExplorerPage implements OnInit {
 
   ngOnInit() {
 
-    console.log('Location.NgOnInit: Google Variable status');
+    console.log('Explorer.NgOnInit: Google Variable status');
     // console.log(google)
-    console.log('Location.NgOnInit: Map Variable status');
+    console.log('Explorer.NgOnInit: Map Variable status');
 
     /* this.authService.getUsersFolliowing().then((usersFollowingArray)=>{
       this.getRecommendations();
@@ -84,7 +83,7 @@ export class ExplorerPage implements OnInit {
       // make array for markers of Map
       this.recMapResults.push(newRec);
     });
-    console.log('Location.getMapRecos. Built Map Recos array => count: ' + this.recMapResults.length);
+    console.log('Returned Map Recos array => count: ' + this.recMapResults.length);
     console.log(this.recMapResults);
     await this.map.addMarkers(this.recMapResults);
 
@@ -98,16 +97,16 @@ export class ExplorerPage implements OnInit {
     this.recCardResults = [];
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
-    // filter recommendation within 100 miles of selected city location
+    // filter recommendation within 100 miles of selected place's location
     this.recCardResults = filterByHaversine(this.recMapResults, usersLocation, this.FILTER_DISTANCE);
     this.recCardResults.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
-    console.log('Location.getCardRecos. Built Card Recos array => count: ' + this.recCardResults.length);
-    console.log('card result=>', this.recCardResults);
+    console.log('Filtered Card result => count: ' + this.recCardResults.length);
+    console.log('Card result=>', this.recCardResults);
   }
 
-  setLocation(): void {
+  /* setLocation(): void {
 
     this.loadingCtrl.create({
       message: 'Setting current location'
@@ -137,25 +136,23 @@ export class ExplorerPage implements OnInit {
           ]
         }).then((alert) => {
           alert.present();
-        })
+        });
 
       }, (err) => {
-        console.log(err)
+        console.log(err);
         overlay.dismiss();
       });
     });
-  }
+  } */
 
   searchPlace() {
-
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
     } catch (err) {
       console.log('Autocomplete service failed');
       console.log(err);
     }
-
-    console.log('Searchplace');
+    // console.log('Search place function');
 
     this.saveDisabled = true;
 
@@ -163,7 +160,6 @@ export class ExplorerPage implements OnInit {
 
       const config = {
         types: ['geocode'],
-        // types: ['geocode'],
         input: this.query
       };
 
@@ -189,18 +185,18 @@ export class ExplorerPage implements OnInit {
 
   }
 
-  selectPlace(place) {
+  // clicked a place in place list
 
+  selectPlace(place) {
+    this.selectedAllFriend = true;
     this.focusedSearchBar = false;
 
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
     this.service = new google.maps.places.PlacesService(div);
 
-
     this.places = [];
-
-    let location = {
+    const location = {
       lat: null,
       lng: null,
       name: place.name,
@@ -224,6 +220,7 @@ export class ExplorerPage implements OnInit {
     });
   }
 
+  // Recommendations are shown for a selected place without API.
   reloadRecsDataByPlace() {
     // move map by selected location
     this.map.moveCenter();
@@ -245,14 +242,13 @@ export class ExplorerPage implements OnInit {
         ]
       }).then((alert) => {
         alert.present();
-      })
-    }
-    else {
-      let destination = this.latitude + ',' + this.longitude;
+      });
+    } else {
+      const destination = this.latitude + ',' + this.longitude;
       if (this.platform.is('ios')) {
         window.open('maps://?q=' + destination + '_system')
       } else {
-        let label = encodeURI('My location')
+        const label = encodeURI('My location')
         window.open('geo:0,0?q=' + destination + '(' + label + ')', '_system')
       }
     }

@@ -74,29 +74,27 @@ div[scrollx=true] {
     }
   }
 
-  .horizontal-friend-list{
-    // position: absolute;
-    // top: 10px;
+  .horizontal-friend-list{    
+    // height: 50px;
     padding-left: 5px;
     overflow-x: scroll;
     overflow-y: hidden;
     .list-item{
       width: 100vw;
-      display: inline-flex;
-      // height: 250px;
+      display: inline-flex;      
       white-space: nowrap;
       .friend-item{        
         display: inline-flex;
         // border: 1px solid #ddd;
         border-radius: 5px;
-        padding: 3px;
+        padding: 3px 10px; 
         background: #ffffff;
-        box-shadow: 0 0 6px rgba(100, 100, 100, 0.5) !important;
+        box-shadow: 0 0 4px rgba(100, 100, 100, 0.5) !important;
         margin: 8px 5px;  
-        height: 35px;              
+        height: 34px;              
         .avatar {
-          width: 29px;
-          height: 29px;
+          width: 24px;
+          height: 28px;
           margin-right: 5px;
           display: flex;
           flex-flow: row nowrap;
@@ -112,9 +110,8 @@ div[scrollx=true] {
         .username {
           min-width: 40px;
           text-align: center;
-          line-height: 29px;
+          line-height: 28px;
           font-size: 16px;
-          padding-right: 3px;
           color: rgb(74, 74, 74);
         }  
       }
@@ -122,7 +119,7 @@ div[scrollx=true] {
       // selected friend
       .selected {
         background: rgb(255, 235, 59);
-        box-shadow: 0 0 10px rgba(100, 100, 100, 0.7) !important;
+        box-shadow: 0 0 8px rgba(100, 100, 100, 0.6) !important;
       }
     }
   }
