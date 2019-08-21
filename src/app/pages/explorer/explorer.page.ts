@@ -57,8 +57,8 @@ export class ExplorerPage implements OnInit {
 
   async ionViewWillEnter() {
     this.selectedAllFriend = true;
-    await this.getFriends();
-    await this.getRecommendations();
+    // await this.getFriends();
+    await this.getFriendsAndRecos();
   }
 
   async getFriends() {
@@ -66,10 +66,12 @@ export class ExplorerPage implements OnInit {
     console.log('Explorer Friends list => ', this.friendList);
   }
 
-  async getRecommendations() {
+  async getFriendsAndRecos() {
 
-    const getType = 'all';
-    const recsArray = await this.explorerService.getRecommendations(getType);
+    // get recommendations of all friends
+    const result = await this.explorerService.getFriendsAndRecos();
+    this.friendList = result.friends;
+    const recsArray = result.recos;
     console.log('recsArray', recsArray);
 
     this.recMapArray = [];
@@ -81,8 +83,6 @@ export class ExplorerPage implements OnInit {
     });
     console.log('Returned Map Recos array => count: ' + this.recMapArray.length);
     console.log('Map array result=>', this.recMapArray);
-    /* this.filteredRecMapArray = JSON.parse(JSON.stringify(this.recMapArray)); // array clone
-    console.log('Filtered Map array cloned!'); */
     await this.map.addMarkers(this.recMapArray);
 
     // make array for cards with recommendations list
@@ -177,9 +177,9 @@ export class ExplorerPage implements OnInit {
       };
 
       this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-        console.log('CreateModalPage.SearchPlace.Autocomplete');
-        console.log(predictions);
-        console.log(status);
+        // console.log('CreateModalPage.SearchPlace.Autocomplete');
+        // console.log(predictions);
+        // console.log(status);
 
         if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
 
