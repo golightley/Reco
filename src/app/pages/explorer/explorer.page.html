@@ -1,22 +1,3 @@
-<!-- <ion-header>
-  <ion-toolbar color="primary">
-  <ion-row>
-    <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()" type="text"></ion-searchbar>
-  </ion-row>
-      <ion-row>
-          <div class="horizontal-list-menu">
-            <div class="list-item">
-                <ion-button>Filter</ion-button>
-
-                <ion-button *ngFor="let friend of friendList" class="friend-filter-button">
-                    {{friend}}
-                </ion-button>
-            </div>
-          </div>
-        </ion-row>
-  </ion-toolbar>
-</ion-header>
- -->
 <ion-header>
   <ion-toolbar>
     <div class="search-bar">
@@ -65,31 +46,33 @@
   <!-- // Google Map -->
   <!-- Recommendation Card List  : will be replace place card list -->
   <div class="horizontal-card-list" *ngIf="!focusedSearchBar">
-    <div class="list-item">
-      <ion-card class="suggestion-card" *ngFor="let suggestion of recCardResults">
-        <ion-card-content>
-          <div class="reco-picture">
-            <img *ngIf="suggestion.pictureThumb" src="{{suggestion.pictureThumb}}" />
-          </div>
-          <div class="reco-data">
-            <h2 class="reco-name">
-              {{suggestion.city}}
-              <!-- {{suggestion.name}} -->
-            </h2>
-            <div class="reco-away">
-                <ion-icon name="pin"></ion-icon>
-                {{suggestion.distance}} miles away
+    <div class="list-content">
+      <div class="card-item" *ngFor="let suggestion of recCardArray">
+        <ion-card class="suggestion-card"  *ngIf="suggestion.visible">
+          <ion-card-content >
+            <div class="reco-picture">
+              <img *ngIf="suggestion.pictureThumb" src="{{suggestion.pictureThumb}}" />
             </div>
-            <p class="reco-note">
-              {{suggestion.notes}}
-            </p>
-            <div class="friends-count">
-              <ion-icon name="people" size="small"></ion-icon>
-              &nbsp; 10 of your friends recommend it
+            <div class="reco-data">
+              <h2 class="reco-name">
+                {{suggestion.city}}
+                <!-- {{suggestion.name}} -->
+              </h2>
+              <div class="reco-away">
+                  <ion-icon name="pin"></ion-icon>
+                  {{suggestion.distance}} miles away
+              </div>
+              <p class="reco-note">
+                {{suggestion.notes}}
+              </p>
+              <div class="friends-count">
+                <ion-icon name="people" size="small"></ion-icon>
+                &nbsp; 10 of your friends recommend it
+              </div>
             </div>
-          </div>
-        </ion-card-content>
-      </ion-card>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </div>
   </div>
   <!-- // Recommendation Card List-->

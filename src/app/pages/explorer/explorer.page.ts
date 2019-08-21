@@ -7,6 +7,7 @@ import { GoogleMapComponent } from 'src/app/components/google-map/google-map.com
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 import { filterByHaversine } from 'src/app/utils/map-utils';
+import { async } from 'q';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -22,10 +23,11 @@ export class ExplorerPage implements OnInit {
 
   private latitude: number;
   private longitude: number;
-  public stopSuggestions: any = ['Test', 'es', 't', 'te', 'te', 'et']
-  public recMapResults: RecommendationModel[] = [];
-  public recCardResults: RecommendationModel[] = [];
-  public markersArray: any = [];
+  recMapArray: RecommendationModel[] = [];
+  recCardArray: RecommendationModel[] = [];
+  // filteredRecMapArray: RecommendationModel[] = [];
+  // filteredRecCardArray: RecommendationModel[] = [];
+  markersArray: any = [];
   friendList: any[] = [];
   service: any;
   placesService: any;
@@ -49,14 +51,8 @@ export class ExplorerPage implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    console.log('Explorer.NgOnInit: Google Variable status');
+    // console.log('Explorer.NgOnInit: Google Variable status');
     // console.log(google)
-    console.log('Explorer.NgOnInit: Map Variable status');
-
-    /* this.authService.getUsersFolliowing().then((usersFollowingArray)=>{
-      this.getRecommendations();
-    }); */
   }
 
   async ionViewWillEnter() {
@@ -76,75 +72,92 @@ export class ExplorerPage implements OnInit {
     const recsArray = await this.explorerService.getRecommendations(getType);
     console.log('recsArray', recsArray);
 
-    this.recMapResults = [];
+    this.recMapArray = [];
     recsArray.forEach(data => {
       const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat,
-        data.data().location.lng, 0, data.userName, data.data().picture, data.data().pictureThumb);
+        data.data().location.lng, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
       // make array for markers of Map
-      this.recMapResults.push(newRec);
+      this.recMapArray.push(newRec);
     });
-    console.log('Returned Map Recos array => count: ' + this.recMapResults.length);
-    console.log(this.recMapResults);
-    await this.map.addMarkers(this.recMapResults);
+    console.log('Returned Map Recos array => count: ' + this.recMapArray.length);
+    console.log('Map array result=>', this.recMapArray);
+    /* this.filteredRecMapArray = JSON.parse(JSON.stringify(this.recMapArray)); // array clone
+    console.log('Filtered Map array cloned!'); */
+    await this.map.addMarkers(this.recMapArray);
 
     // make array for cards with recommendations list
-    this.filterRecommendations();
+    this.filterRecoByDistance();
 
   }
 
-  // filter recommendation for Card list
-  filterRecommendations() {
-    this.recCardResults = [];
+  // filter recommendation by distance for Card list
+  filterRecoByDistance() {
+    this.recCardArray = [];
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
     // filter recommendation within 100 miles of selected place's location
-    this.recCardResults = filterByHaversine(this.recMapResults, usersLocation, this.FILTER_DISTANCE);
-    this.recCardResults.sort((locationA, locationB) => {
+    this.recCardArray = filterByHaversine(this.recMapArray, usersLocation, this.FILTER_DISTANCE);
+    this.recCardArray.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
-    console.log('Filtered Card result => count: ' + this.recCardResults.length);
-    console.log('Card result=>', this.recCardResults);
+    console.log('Filtered Card result by distance => count: ' + this.recCardArray.length);
+    console.log('Card array result=>', this.recCardArray);
+    /* this.filteredRecCardArray = JSON.parse(JSON.stringify(this.recCardArray)); // array clone
+    console.log('Filtered Card array cloned!'); */
   }
 
-  /* setLocation(): void {
-
-    this.loadingCtrl.create({
-      message: 'Setting current location'
-
-    }).then((overlay) => {
-      overlay.present();
-      Geolocation.getCurrentPosition().then((postition) => {
-        overlay.dismiss();
-
-        this.latitude = postition.coords.latitude;
-        this.longitude = postition.coords.longitude;
-
-        this.map.changeMarker(this.latitude, this.longitude);
-
-        let data = {
-          latitude: this.latitude,
-          longitude: this.longitude
-        };
-
-        this.alertCtrl.create({
-          header: 'location set',
-          message: 'You are good!',
-          buttons: [
-            {
-              text: 'ok'
-            }
-          ]
-        }).then((alert) => {
-          alert.present();
-        });
-
-      }, (err) => {
-        console.log(err);
-        overlay.dismiss();
+  // filter recommendation by selected friend for Card list and Map markers
+  async filterRecoByFriend() {
+    await this.showDealyLoading(300);
+    if (this.selectedAllFriend) {
+      console.log('-- All data showed --');
+      // change all visible value to 'true'
+      await this.recMapArray.map(async (rec) => {
+        rec.visible = true;
       });
-    });
-  } */
+      // change all visible value to 'true'
+      await this.recCardArray.map(async (rec) => {
+        rec.visible = true;
+      });
+    } else {
+      console.log('-- clicked a friend --');
+      // filter recommendation map array
+      this.changeVisibleByFriend(this.recMapArray);
+      /* await this.recMapArray.map(async (rec) => {
+        const friend = this.friendList.find( (f) => {
+            return f.userId === rec.userId;
+        });
+        if ( friend !== undefined ) {
+          rec.visible = friend.selected;
+          console.log('Changed visible of Map arry, by ' + friend.userName);
+        }
+      }); */
+      // console.log('Changed card array:', this.recMapArray);
+      // filter recommendation card array
+      this.changeVisibleByFriend(this.recCardArray);
+      // console.log('Changed card array:', this.recCardArray);
+    }
+  }
 
+  // change visible value by selected friend
+  async changeVisibleByFriend(recAry) {
+    await recAry.map(async (rec) => {
+      const friend = this.friendList.find( (f) => {
+          return f.userId === rec.userId;
+      });
+      if ( friend !== undefined ) {
+        rec.visible = friend.selected;
+        if ( friend.selected ) {
+          console.log('Changed visible to TRUE by ' + friend.userName);
+        }
+      } else {
+        // if it's a recommendation from not friend
+        rec.visible = false;
+      }
+    });
+  }
+
+  // search place in search box
   searchPlace() {
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
@@ -185,12 +198,23 @@ export class ExplorerPage implements OnInit {
 
   }
 
+  // delay time with loading control
+  async showDealyLoading(time) {
+    const loading = await this.loadingCtrl.create({
+      message: '',
+      mode: 'ios',
+      // spinner: 'dots',
+      // cssClass: 'reco-loading'
+    });
+    loading.present();
+    setTimeout(() => loading.dismiss(), time);
+  }
+
   // clicked a place in place list
-
-  selectPlace(place) {
-    this.selectedAllFriend = true;
+  async selectPlace(place) {
+    this.enableSelectAllFriend();
     this.focusedSearchBar = false;
-
+    await this.showDealyLoading(300);
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
     this.service = new google.maps.places.PlacesService(div);
@@ -225,13 +249,90 @@ export class ExplorerPage implements OnInit {
     // move map by selected location
     this.map.moveCenter();
     // filter card data by selected location
-    this.filterRecommendations();
+    this.filterRecoByDistance();
   }
 
-  takeMeHome(): void {
 
+  // Emitted when the search input has focus.
+  focusSearchBar() {
+    console.log('focused search bar');
+    this.focusedSearchBar = true;
+  }
+  // Emitted when the cancel button is clicked.
+  cancelSearchBar() {
+    this.focusedSearchBar = false;
+  }
+
+  // Emitted when the friend item is clicked on friend list.
+  async selectFriend(index) {
+    if ( index < 0 ) {
+      // clicked All button.
+      if ( !this.selectedAllFriend ) {
+        // if disable, enable all button
+        await this.enableSelectAllFriend();
+      } else {
+        // this.selectedAllFriend = false;
+        return;
+      }
+    } else {
+      this.friendList[index].selected = !this.friendList[index].selected;
+      if ( this.friendList[index].selected ) {
+        this.selectedAllFriend = false;
+      }
+    }
+    // filter reco data by selected friend list.
+    await this.filterRecoByFriend();
+  }
+
+  // enable select all button and disable other friends buttons
+  async enableSelectAllFriend() {
+    this.selectedAllFriend = true;
+    await this.friendList.map (async (friend) => {
+      friend.selected = false;
+    });
+
+  }
+
+  /* setLocation(): void {
+    this.loadingCtrl.create({
+      message: 'Setting current location'
+
+    }).then((overlay) => {
+      overlay.present();
+      Geolocation.getCurrentPosition().then((postition) => {
+        overlay.dismiss();
+
+        this.latitude = postition.coords.latitude;
+        this.longitude = postition.coords.longitude;
+
+        this.map.changeMarker(this.latitude, this.longitude);
+
+        let data = {
+          latitude: this.latitude,
+          longitude: this.longitude
+        };
+
+        this.alertCtrl.create({
+          header: 'location set',
+          message: 'You are good!',
+          buttons: [
+            {
+              text: 'ok'
+            }
+          ]
+        }).then((alert) => {
+          alert.present();
+        });
+
+      }, (err) => {
+        console.log(err);
+        overlay.dismiss();
+      });
+    });
+  } */
+
+  /* takeMeHome(): void {
     if (!this.latitude || !this.longitude) {
-
       this.alertCtrl.create({
         header: 'No where to go',
         message: 'No location set!',
@@ -252,36 +353,6 @@ export class ExplorerPage implements OnInit {
         window.open('geo:0,0?q=' + destination + '(' + label + ')', '_system')
       }
     }
-
-  }
-
-  // Emitted when the search input has focus.
-  focusSearchBar() {
-    console.log('focused search bar');
-    this.focusedSearchBar = true;
-  }
-  // Emitted when the cancel button is clicked.
-  cancelSearchBar() {
-    this.focusedSearchBar = false;
-  }
-
-  // Emitted when the friend item is clicked on friend list.
-  selectFriend(index) {
-    if ( index < 0 ) {
-      // clicked All button.
-      this.selectedAllFriend = !this.selectedAllFriend;
-      // if All button is enable, disable all friends item
-      if ( this.selectedAllFriend ) {
-        for ( let i=0; i < this.friendList.length; i++ ) {
-          this.friendList[i].selected = false;
-        }
-      }
-    } else {
-      this.friendList[index].selected = !this.friendList[index].selected;
-      if ( this.friendList[index].selected ) {
-        this.selectedAllFriend = false;
-      }
-    }
-  }
+  } */
 
 }
