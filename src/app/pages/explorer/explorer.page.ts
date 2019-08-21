@@ -226,8 +226,10 @@ export class ExplorerPage implements OnInit {
       console.log(this.location);
       this.query = location.name;
       this.map.setCurrentLocation(location.lat, location.lng);
-      this.reloadRecsDataByPlace();
 
+      // reload reco data
+      this.reloadRecsDataByPlace();
+      this.filterRecoByFriend();
     });
   }
 
