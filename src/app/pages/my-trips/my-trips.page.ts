@@ -16,6 +16,8 @@ export class MyTripsPage implements OnInit {
   recArray: any = [];
   results:any = [];
 
+  selectedRecs: any[] = [];
+  _backdropOn:boolean;
 
   constructor(
     private explorerService: ExplorerService,
@@ -31,7 +33,8 @@ export class MyTripsPage implements OnInit {
   }
   
    // create the modal 
-   async openModal() {
+  async addReco() {
+    this._backdropOn = false;
     const modal = await this.modalController.create({
       component: CreatePlaceModalPage,
       componentProps: {
@@ -51,6 +54,11 @@ export class MyTripsPage implements OnInit {
     return await modal.present();
   }
 
+  // show modal for send SMS to friend 
+  async sendReco() {
+    this._backdropOn = false;
+  }
+
 
    getRecommendations() {
     this.explorerService.getRecommendations('mine').then((recsArray) => {
@@ -61,6 +69,14 @@ export class MyTripsPage implements OnInit {
       console.log('MyTripsPage.GetReccomandations: Results');
       // console.log(this.results[0].data());
     })
+  }
+
+  showMoreActions() {
+    this._backdropOn = !this._backdropOn
+  }
+
+  dismissMoreActions() {
+    this._backdropOn = false
   }
 
 
