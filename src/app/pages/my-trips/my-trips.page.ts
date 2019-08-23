@@ -18,7 +18,7 @@ export class MyTripsPage implements OnInit {
   recoArray: any = [];
   _backdropOn: boolean;
   smsContent = 'Hey! Checkout my Travel recommendation and sign in to the Reco app to see more ';
-  fdlUrl: string;  // firebase dynamic link url
+  fdlUrl: any;  // firebase dynamic link url
   
   constructor(
     private explorerService: ExplorerService,
