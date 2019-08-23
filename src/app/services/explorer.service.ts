@@ -146,7 +146,6 @@ export class ExplorerService {
     } else if (getType === 'mine') {
       query = firebase.firestore().collection('recommendations')
         .where('user', '==', firebase.auth().currentUser.uid);
-
     }
     await this.loadingService.doFirebase(async () => {
       await query.get().then(async (queryData) => {
@@ -154,6 +153,7 @@ export class ExplorerService {
               // get user name of recommendation
               const user = await this.friendService.getUserByID(rec.data().user);
               rec.userName = user.userName;
+              rec.selected = false;
               recsArray.push(rec);
           }));
         }).catch (error => {
@@ -173,17 +173,17 @@ export class ExplorerService {
     await this.loadingService.doFirebase( async () => {
       // get following friends
       friendsArray = await this.friendService.getFriends();
-      console.log('** Get Friend Recos **');
+      // console.log('** Get Friend Recos **');
       await Promise.all(friendsArray.map(async (friend) => {
           console.log(' == friend loop == ');
           console.log(friend);
           query = firebase.firestore().collection('recommendations').where('user', '==', friend.userId);
           await query.get().then(async (queryData) => {
-            console.log('Got recos data');
+            // console.log('Got recos data');
             await Promise.all(queryData.docs.map(async (rec) => {
               rec.userName = friend.userName;
               recsArray.push(rec);
-              console.log('friend recos push');
+              // console.log('friend recos push');
             }));
           });
       }));

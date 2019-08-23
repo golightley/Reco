@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Plugins }   from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 
-import { Platform } from '@ionic/angular';
+import {registerWebPlugin} from '@capacitor/core';
+import {SmsManager} from '@byteowls/capacitor-sms';
 
 import * as firebase from 'firebase/app';
 import { firebaseConfig } from '../app/credentials';
@@ -20,7 +21,6 @@ export class AppComponent {
 
     firebase.initializeApp(firebaseConfig);
 
-
     SplashScreen.hide().catch((err) => {
       console.warn(err);
     });
@@ -28,10 +28,12 @@ export class AppComponent {
     StatusBar.hide().catch((err) => {
       console.warn(err);
     });
+
+    console.log('Register sms capacitor plugins');
+    registerWebPlugin(SmsManager);
   }
 
   initializeApp() {
-
 
   }
 }

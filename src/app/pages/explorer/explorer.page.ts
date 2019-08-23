@@ -73,7 +73,7 @@ export class ExplorerPage implements OnInit {
     const result = await this.explorerService.getFriendsAndRecos();
     this.friendList = result.friends;
     const recsArray = result.recos;
-    console.log('recsArray', recsArray);
+    // console.log('recsArray', recsArray);
 
     
     recsArray.forEach(data => {
@@ -118,11 +118,11 @@ export class ExplorerPage implements OnInit {
       console.log('-- clicked a friend --');
       // filter recommendation map array
       this.changeVisibleByFriend(this.recMapArray);
-      console.log('Changed map array:', this.recMapArray);
+      // console.log('Changed map array:', this.recMapArray);
 
       // filter recommendation card array
       this.changeVisibleByFriend(this.recCardArray);
-      console.log('Changed card array:', this.recCardArray);
+      // console.log('Changed card array:', this.recCardArray);
     }
 
     // update Google Map Markers
@@ -137,9 +137,9 @@ export class ExplorerPage implements OnInit {
       });
       if ( friend !== undefined ) {
         rec.visible = friend.selected;
-        if ( friend.selected ) {
+        /*if ( friend.selected ) {
           console.log('Changed visible to TRUE by ' + friend.userName);
-        }
+        }*/
       } else {
         // if it's a recommendation from not friend
         rec.visible = false;
@@ -216,7 +216,7 @@ export class ExplorerPage implements OnInit {
 
     this.service.getDetails({ placeId: place.place_id }, (details) => {
       console.log('Map.SelectPlace');
-      console.log(details)
+      console.log(details);
       location.name = details.name;
       location.lat = details.geometry.location.lat();
       location.lng = details.geometry.location.lng();
