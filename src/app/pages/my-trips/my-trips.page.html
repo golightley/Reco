@@ -1,28 +1,26 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <!-- <ion-searchbar placeholder="City"></ion-searchbar> -->
-        <ion-title style="color:#eee">My Trip</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <!-- <ion-button (click)="openModal()">Create new place</ion-button> -->
+  <ion-toolbar color="primary">    
+    <ion-title style="color:#eee">My Trip</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-  <ion-content class="my-trip-content">
-  
-    <ion-card *ngFor="let recs of results" id="myFixZone">
-        <ion-card-header>
-          <ion-card-subtitle>{{recs.data().city}}</ion-card-subtitle>
-          <ion-card-title>{{recs.data().name}}</ion-card-title>
-        </ion-card-header>
-        <img class="thumb-img" *ngIf="recs.data().pictureThumb" src="{{recs.data().pictureThumb}}" />
-        <ion-card-content>
-            {{recs.data().notes}}
-        </ion-card-content>
-    </ion-card>
+<ion-content class="my-trip-content">
+  <ion-card *ngFor="let reco of recoArray; let i = index" id="myFixZone" (click)="selectReco(i)" class="reco-card" [ngClass] ="{selected: reco.selected}" >
+    <ion-card-header>
+      <ion-card-subtitle class="city">{{reco.data().city}}</ion-card-subtitle>
+      <ion-card-title class="title">{{reco.data().name}}</ion-card-title>
+    </ion-card-header>
+    <img class="thumb-img" *ngIf="reco.data().pictureThumb" src="{{reco.data().pictureThumb}}" />
+    <ion-card-content class="notes">
+      {{reco.data().notes}}
+    </ion-card-content>
+  </ion-card>
 
   <div class="footer" slot="fixed">
     <div class="operations">
       <button type="button" class="op-button" *ngIf="_backdropOn" (click)="addReco()">Add Reco</button>
-      <button type="button" class="op-button send-button" *ngIf="_backdropOn" (click)="sendReco()">Send to friend</button>      
+      <button type="button" class="op-button send-button" *ngIf="_backdropOn" (click)="sendReco()">Send to
+        friend</button>
       <button type="button" class="more-button" (click)="showMoreActions()">
         <ion-icon name="add" size="large"></ion-icon>
       </button>

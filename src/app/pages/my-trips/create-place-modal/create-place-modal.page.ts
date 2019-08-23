@@ -43,7 +43,7 @@ export class CreatePlaceModalPage implements OnInit {
   toast: any;
   pictureDataUrl; string;
   pictureDataThumbUrl: string;
-  ThumbnailSize = 200;
+  ThumbnailSize = 300;
 
 
   constructor(
