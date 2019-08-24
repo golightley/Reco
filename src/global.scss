@@ -10,9 +10,9 @@
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
 
-/* ion-header {
-    
-} */
+ion-toolbar {
+    --background: rgb(242,242,242);
+}
 
 ion-title {
     font-size: 20px;
@@ -76,4 +76,37 @@ textarea{
     color: rgb(150, 154, 156);
     opacity: .94;
     --background: rgba(210, 213, 219, .94) !important;
+}
+
+.reco-searchbar {
+    padding: 0;
+    .searchbar-input {
+      --background: #fff;
+      --placeholder-color: rgb(160 160 160);
+      border-radius: 5px !important;
+      // border-bottom: 1px solid #333333 !important;      
+      box-shadow: 0 0px 3px rgba(0, 0, 0, 0.2) !important;
+      font-size: 17px;
+  
+      &.sc-ion-searchbar-ios {
+        color: #222222;
+      }
+  
+      &.sc-ion-searchbar-md {
+        padding-inline-start: 45px;
+        -webkit-padding-start: 45px;
+      }
+    }
+  
+    &.searchbar-has-focus {
+      .searchbar-input {
+        border-bottom: 2px solid #b5d0f7 !important;
+      }
+    }
+
+    .searchbar-search-icon {
+        &.sc-ion-searchbar-md {
+            color:rgb(150,150,150);
+        }
+    }
 }

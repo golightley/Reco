@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar>
     <div class="search-bar">
-      <ion-searchbar [(ngModel)]="query" mode="md" type="text" showCancelButton="focus" (ionInput)="searchPlace()"
-        (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="query" class="reco-searchbar" mode="md" type="text" showCancelButton="focus" (ionInput)="searchPlace()"
+        (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a location"></ion-searchbar>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -28,7 +28,7 @@
           *ngFor="let friend of friendList; let i = index" 
            >
         <div class="avatar">
-            <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.png' }}" />
+            <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.svg' }}" />
         </div>
         <div class="username">
             {{friend.userName}}
