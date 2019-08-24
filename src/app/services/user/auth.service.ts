@@ -187,26 +187,5 @@ export class AuthService {
       }, err => reject(err));
     }
 
-    getUsersFolliowing(){
-      var docRef = firebase.firestore().collection('userProfile').doc(firebase.auth().currentUser.uid)
 
-      return new Promise<any>((resolve, reject) => {
-
-      docRef.get().then(function(doc) {
-          if (doc.exists) {
-              console.log('Document data:', doc.data().following);
-              resolve(doc.data().following);
-
-          } else {
-              // doc.data() will be undefined in this case
-              console.log('No such document!');
-          }
-      }).catch(function(error) {
-          console.log('Error getting document:', error);
-      });
-    });
-
-  }
-
-  
 }

@@ -34,6 +34,15 @@ const routes: Routes = [
                         loadChildren: '../pages/friends/friends.module#FriendsPageModule'
                     }
                 ]
+            },
+            {
+                path: 'me',
+                children: [
+                    {
+                        path: '',
+                        loadChildren: '../pages/me/me.module#MePageModule'
+                    }
+                ]
             }
         ]
     },
