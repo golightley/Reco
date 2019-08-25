@@ -6,6 +6,7 @@ import { ExplorerService } from 'src/app/services/explorer.service';
 // for the modal 
 import { ModalController } from '@ionic/angular';
 import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.page';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-my-trips',
@@ -79,14 +80,14 @@ export class MyTripsPage implements OnInit {
     this._backdropOn = false;
     const selRecos = this.getSelectedRecos();
     console.log('Selected Recos' , selRecos);
-    // const numbers = ['+8613688888888'];
-    this.fdlUrl = await this.mytripService.getFdlURL(selRecos);
-    const content = this.smsContent + this.fdlUrl;
+    // this.fdlUrl = await this.mytripService.getFdlURL(selRecos);
+    const content = this.smsContent; // + this.fdlUrl;
     Plugins.SmsManager.send({
-      numbers: [],
+      numbers: [''],
       text: content,
-    }).then(() => {
+    }).then(async () => {
       // SMS app was opened
+      this.fdlUrl = await this.mytripService.getFdlURL(selRecos);
       console.log('sms app wes opened');
     }).catch(error => {
         // see error codes below

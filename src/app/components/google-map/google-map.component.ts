@@ -290,11 +290,11 @@ export class GoogleMapComponent implements OnInit {
           // title: 'Hello World!'
           // icon: fonekingiconsrc
         });
-        
+
         // add listener to the map
         google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( function (marker, i) {
           return function() {
-            this.infoWindows[i].open(this.map, that.googleMapMarkers[i]);
+            that.infoWindows[i].open(that.map, that.googleMapMarkers[i]);
           };
         })(that.googleMapMarkers[i], i));
     }
@@ -335,7 +335,7 @@ export class GoogleMapComponent implements OnInit {
   deleteMarkers() {
     this.clearMarkers();
     this.googleMapMarkers = [];
-    // arrays to store the info 
+    // arrays to store the info
     this.infoWindows = [];
   }
 

@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
-      <div class="search-bar">
-        <ion-searchbar [(ngModel)]="query" class="reco-searchbar" mode="md" type="text" showCancelButton="focus" (ionInput)="searchFriend()"
+      <div class="search-bar"> <!-- mode="md"  showCancelButton="focus"  -->
+        <ion-searchbar [(ngModel)]="query" mode="md" class="reco-searchbar" type="text" (ionInput)="searchFriend()"
           (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a friend"></ion-searchbar>
       </div>
     </ion-toolbar>
