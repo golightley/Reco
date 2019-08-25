@@ -9,8 +9,9 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
+    implementation project(':byteowls-capacitor-sms')
     implementation project(':rdlabo-capacitor-facebook-login')
-    implementation "com.facebook.android:facebook-android-sdk:5.0.2"
+
 }
 
 
