@@ -49,14 +49,15 @@ export class FriendService {
     let friends: any[] = [];
     await this.loadingService.doFirebase ( async () => {
       await firebase.firestore().collection('userProfile').doc(userId).get().then( async user => {
-        if ( friends = user.data().following ) {
+          // get friends
+          friends = user.data().following;
           // get all users
           await firebase.firestore().collection('userProfile').where('public', '==', true).get()
             .then( async (docUser) => {
               docUser.forEach((doc) => {
                 if (doc.data().handle) {
                   // if user isn't his friend or himself, add to suggestion
-                  if ( friends.indexOf(doc.id) === -1 && doc.id !== userId ) {
+                  if ( (!friends || friends.indexOf(doc.id) === -1) && doc.id !== userId ) {
                     const d = {
                       userId: doc.id,
                       userName: doc.data().handle,
@@ -71,7 +72,7 @@ export class FriendService {
             }).catch (error => {
               console.log('[Get Suggestion] error => ' + error);
             });
-        }
+        
       });
     });
     console.log('Finish get suggestion');
