@@ -175,8 +175,8 @@ export class ExplorerService {
       friendsArray = await this.friendService.getFriends();
       // console.log('** Get Friend Recos **');
       await Promise.all(friendsArray.map(async (friend) => {
-          console.log(' == friend loop == ');
-          console.log(friend);
+          // console.log(' == friend loop == ');
+          // console.log(friend);
           query = firebase.firestore().collection('recommendations').where('user', '==', friend.userId);
           await query.get().then(async (queryData) => {
             // console.log('Got recos data');
@@ -188,7 +188,7 @@ export class ExplorerService {
           });
       }));
     });
-    console.log('Return recos and friends array!');
+    // console.log('Return recos and friends array!');
     return {recos: recsArray, friends: friendsArray};
   }
 

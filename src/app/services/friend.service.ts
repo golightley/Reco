@@ -51,7 +51,7 @@ export class FriendService {
       await firebase.firestore().collection('userProfile').doc(userId).get().then( async user => {
         if ( friends = user.data().following ) {
           // get all users
-          await firebase.firestore().collection('userProfile').get()
+          await firebase.firestore().collection('userProfile').where('public', '==', true).get()
             .then( async (docUser) => {
               docUser.forEach((doc) => {
                 if (doc.data().handle) {
