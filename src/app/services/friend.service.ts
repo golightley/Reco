@@ -97,19 +97,18 @@ export class FriendService {
     const userId = firebase.auth().currentUser.uid;
     await this.loadingService.doFirebaseWithoutLoading( async () => {
         await firebase.firestore().collection('userProfile').doc(userId).get().then( async docUser => {
+            if (withMe) {
+              // added current user data
+              const user = {
+                userId: docUser.id,
+                userName: docUser.data().handle,
+                email: docUser.data().email,
+                photoURL: docUser.data().photoURL,
+                selected: false
+              };
+              friendsArray.push(user);
+            }
             if ( docUser.data().following ) {
-              if (withMe) {
-                // added current user data
-                const user = {
-                  userId: docUser.id,
-                  userName: docUser.data().handle,
-                  email: docUser.data().email,
-                  photoURL: docUser.data().photoURL,
-                  selected: false
-                };
-                friendsArray.push(user);
-              }
-
               await Promise.all(docUser.data().following.map(async (friendId) => {
                   // get friend details
                   const friend = await this.getUserByID(friendId);
