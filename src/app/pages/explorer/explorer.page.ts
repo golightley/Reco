@@ -63,7 +63,7 @@ export class ExplorerPage implements OnInit {
   }
 
   async getFriends() {
-    this.friendList = await this.friendService.getFriends();
+    this.friendList = await this.friendService.getFriends(true);
     console.log('Explorer Friends list => ', this.friendList);
   }
 
