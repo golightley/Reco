@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from 'src/app/services/explorer.service';
 
 // for the modal 
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.page';
 import { async } from '@angular/core/testing';
 
@@ -23,6 +23,7 @@ export class MyTripsPage implements OnInit {
   
   constructor(
     private explorerService: ExplorerService,
+    public alertCtrl: AlertController,
     private mytripService: MytripService,
     public modalController: ModalController) {
    }
@@ -36,6 +37,7 @@ export class MyTripsPage implements OnInit {
   }
 
   getRecommendations() {
+    this.recoArray = [];
     this.explorerService.getRecommendations('mine').then((recos) => {
       recos.forEach(data => {
         this.recoArray.push(data);
@@ -64,7 +66,7 @@ export class MyTripsPage implements OnInit {
     return await modal.present();
   }
 
-  // get selected rocos
+  // Get selected rocos
   getSelectedRecos() {
     const selRecos: any[] = [];
     this.recoArray.forEach( r => {
@@ -75,20 +77,49 @@ export class MyTripsPage implements OnInit {
     return selRecos;
   }
 
+  // Release selected all recos
+  releaseSelectedRecos() {
+    this.recoArray.map( r => {
+      if (r.selected) {
+        r.selected = false;
+      }
+    });
+  }
+
+  async showErrorAlert(msg: string) {
+    const alert = await this.alertCtrl.create({
+      message: msg,
+      buttons: [{ text: 'Ok', role: 'cancel' }],
+    });
+    await alert.present();
+  }
+
   // show modal for send SMS to friends
   async sendReco() {
     this._backdropOn = false;
     const selRecos = this.getSelectedRecos();
-    console.log('Selected Recos' , selRecos);
-    // this.fdlUrl = await this.mytripService.getFdlURL(selRecos);
-    const content = this.smsContent; // + this.fdlUrl;
+    if (!selRecos.length) {
+      const msg = 'Please select recommendations you want to send to friend.';
+      this.showErrorAlert(msg);
+      return;
+    }
+    const result = await this.mytripService.createShareReco(selRecos);
+    // if error occurred
+    if ( result.error) {
+      const msg = 'Unable to send selected recommendations via SMS. Please try again later.';
+      this.showErrorAlert(msg);
+      return;
+    }
+    const shareUrl = 'www.recoapp.com/reco_share?id=' + result;
+    const content = this.smsContent + shareUrl;
+    console.log(shareUrl);
+    console.log(content);
     Plugins.SmsManager.send({
       numbers: [''],
       text: content,
     }).then(async () => {
-      // SMS app was opened
-      this.fdlUrl = await this.mytripService.getFdlURL(selRecos);
-      console.log('sms app wes opened');
+      // call back after sent sms
+      this.releaseSelectedRecos();
     }).catch(error => {
         // see error codes below
         if (error === 'ERR_NO_NUMBERS') {

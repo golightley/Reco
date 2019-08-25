@@ -31,6 +31,27 @@ export class MytripService {
     });
   }
 
+  // create shared recommendation for share via sms.
+  async createShareReco(selRecos) {
+    const uid = firebase.auth().currentUser.uid;
+    const result = await this.loadingService.doFirebase(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+          firebase.firestore().collection('sharedRecommendations').add({
+            user: uid,
+            sharedRecos: selRecos,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(docRef => {
+            console.log('SERVICE.createShareReco:', docRef.id);
+            resolve(docRef.id);
+          }).catch(error => {
+            console.error('SERVICE.createShareReco.Error adding document: ', error);
+            reject(error);
+          });
+      });
+    });
+    return result;
+  }
+
   async getFdlURL(selRecos) {
     const apiKey = environment.firebase.apiKey;
     const headers = new HttpHeaders({
