@@ -137,9 +137,6 @@ export class ExplorerPage implements OnInit {
       });
       if ( friend !== undefined ) {
         rec.visible = friend.selected;
-        /*if ( friend.selected ) {
-          console.log('Changed visible to TRUE by ' + friend.userName);
-        }*/
       } else {
         // if it's a recommendation from not friend
         rec.visible = false;

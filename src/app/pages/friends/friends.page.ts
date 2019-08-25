@@ -10,7 +10,6 @@ import { AuthService } from '../../services/user/auth.service';
 })
 export class FriendsPage implements OnInit {
 
-  public FriendsForm: FormGroup;
   public users: any = [];
   page: string;
   followings: any[] = [];
@@ -23,17 +22,6 @@ export class FriendsPage implements OnInit {
     private friendService: FriendService,
     private authService: AuthService,
     ) {
-
-    // initialize the form 
-    this.FriendsForm = formBuilder.group({
-      gateAccessCode:[''],
-      ammenetiesCode:[''],
-      wifiPassword:[''],
-      phoneNumber:[''],
-      depature:[''],
-      notes:['']
-    });
-
    }
 
   ngOnInit() {

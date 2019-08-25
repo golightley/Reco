@@ -37,7 +37,7 @@ export class FriendService {
   async getFollowings() {
     let result: any[];
     await this.loadingService.doFirebase ( async () => {
-      result = await this.getFriends();
+      result = await this.getFriends(false);
     });
     return result;
   }
@@ -55,8 +55,8 @@ export class FriendService {
             .then( async (docUser) => {
               docUser.forEach((doc) => {
                 if (doc.data().handle) {
-                  // if user isn't his friend, add to suggestion
-                  if ( friends.indexOf(doc.id) === -1 ) {
+                  // if user isn't his friend or himself, add to suggestion
+                  if ( friends.indexOf(doc.id) === -1 && doc.id !== userId ) {
                     const d = {
                       userId: doc.id,
                       userName: doc.data().handle,
@@ -91,14 +91,25 @@ export class FriendService {
   }
 
   // get friends of user
-  async getFriends() {
+  async getFriends(withMe) {
     const friendsArray: any[] = [];
     // no loading bar
     const userId = firebase.auth().currentUser.uid;
     await this.loadingService.doFirebaseWithoutLoading( async () => {
         await firebase.firestore().collection('userProfile').doc(userId).get().then( async docUser => {
             if ( docUser.data().following ) {
-              // resolve(docUser.data().following);
+              if (withMe) {
+                // added current user data
+                const user = {
+                  userId: docUser.id,
+                  userName: docUser.data().handle,
+                  email: docUser.data().email,
+                  photoURL: docUser.data().photoURL,
+                  selected: false
+                };
+                friendsArray.push(user);
+              }
+
               await Promise.all(docUser.data().following.map(async (friendId) => {
                   // get friend details
                   const friend = await this.getUserByID(friendId);
@@ -126,7 +137,7 @@ export class FriendService {
         if ( docUser.data().handle ) {
           userName = docUser.data().handle;
         }*/
-        if (docUser.data().handle) {
+        if (docUser.data().handle !== undefined) {
           const userName = docUser.data().handle;
           const email = docUser.data().email;
           let photoURL = '';

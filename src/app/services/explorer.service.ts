@@ -171,12 +171,11 @@ export class ExplorerService {
     let query;
     let friendsArray: any[] = [];
     await this.loadingService.doFirebase( async () => {
-      // get following friends
-      friendsArray = await this.friendService.getFriends();
+      // get following friends and me
+      friendsArray = await this.friendService.getFriends(true);
       // console.log('** Get Friend Recos **');
       await Promise.all(friendsArray.map(async (friend) => {
           // console.log(' == friend loop == ');
-          // console.log(friend);
           query = firebase.firestore().collection('recommendations').where('user', '==', friend.userId);
           await query.get().then(async (queryData) => {
             // console.log('Got recos data');
