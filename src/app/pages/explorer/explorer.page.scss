@@ -1,7 +1,15 @@
 
 .search-bar{
   margin:4px 4px;
+  display: flex;
 }
+.filter-icon {
+  width: 30px;
+  height: 27px;
+  margin-top: 10px;
+  padding: 5px;
+}
+
 .horizontal-card-list{
   position: absolute;
   bottom: 10px;
