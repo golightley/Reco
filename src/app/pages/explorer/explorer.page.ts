@@ -1,13 +1,15 @@
+import { FilterModalComponent } from './filter-modal/filter-modal.component';
 import { FriendService } from 'src/app/services/friend.service';
 
 import { Component, ViewChild, OnInit, Renderer2 } from '@angular/core';
-import { AlertController, LoadingController, Platform } from '@ionic/angular';
+import { AlertController, LoadingController, Platform, ModalController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 import { filterByHaversine } from 'src/app/utils/map-utils';
 import { async } from 'q';
+import { PARAMETERS } from '@angular/core/src/util/decorators';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -35,11 +37,13 @@ export class ExplorerPage implements OnInit {
   location: any;
   autocompleteService: any;
   focusedSearchBar: boolean;
-  FILTER_DISTANCE = 100;
+  FILTER_DISTANCE = -1; // all data load
   selectedAllFriend: boolean;
+  selectedCategory: any;
 
   constructor(
     private alertCtrl: AlertController,
+    private modalController: ModalController,
     private loadingCtrl: LoadingController,
     private explorerService: ExplorerService,
     private friendService: FriendService,
@@ -54,6 +58,7 @@ export class ExplorerPage implements OnInit {
 
   async ionViewWillEnter() {
     this.selectedAllFriend = true;
+    this.selectedCategory = 'everything';
     this.recMapArray = [];
     this.recCardArray = [];
     // await this.getFriends();
@@ -77,8 +82,11 @@ export class ExplorerPage implements OnInit {
 
     
     recsArray.forEach(data => {
-      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat,
-        data.data().location.lng, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
+      if (!data.data().gType) {
+        return;
+      }
+      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng,
+        data.data().gType, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
       // make array for markers of Map
       this.recMapArray.push(newRec);
     });
@@ -101,45 +109,50 @@ export class ExplorerPage implements OnInit {
     console.log('Card array result=>', this.recCardArray);
   }
 
-  // filter recommendation of Card list and Map markers by selected friend
-  async filterRecoByFriend() {
-    await this.showDealyLoading(400);
-    if (this.selectedAllFriend) {
-      console.log('-- All data showed --');
-      // change all visible value to 'true'
-      await this.recMapArray.map(async (rec) => {
-        rec.visible = true;
-      });
-      // change all visible value to 'true'
-      await this.recCardArray.map(async (rec) => {
-        rec.visible = true;
-      });
-    } else {
-      console.log('-- clicked a friend --');
-      // filter recommendation map array
-      this.changeVisibleByFriend(this.recMapArray);
-      // console.log('Changed map array:', this.recMapArray);
+  // filter recommendation of Card list and Map markers by select friend and category
+  async filterRecoBySelected() {
+    this.showDealyLoading(400);
+    console.log('-- Filter reco data by category and friend --');
+    // filter recommendation map array
+    this.changeVisibleBySelected(this.recMapArray);
+    // console.log('Changed map array:', this.recMapArray);
 
-      // filter recommendation card array
-      this.changeVisibleByFriend(this.recCardArray);
-      // console.log('Changed card array:', this.recCardArray);
-    }
-
+    // filter recommendation card array
+    this.changeVisibleBySelected(this.recCardArray);
+    // console.log('Changed card array:', this.recCardArray);
+   
     // update Google Map Markers
     await this.map.displayMarkers(this.recMapArray);
   }
 
-  // change visible value by selected friend
-  async changeVisibleByFriend(recAry) {
+  // change visible value by selected friend and category
+  async changeVisibleBySelected(recAry) {
     await recAry.map(async (rec) => {
       const friend = this.friendList.find( (f) => {
           return f.userId === rec.userId;
       });
-      if ( friend !== undefined ) {
-        rec.visible = friend.selected;
-      } else {
-        // if it's a recommendation from not friend
-        rec.visible = false;
+
+      if (this.selectedCategory === 'everything') { // if selected 'everything' category
+        if ( this.selectedAllFriend ) { // if selected 'All' friend
+          rec.visible = true;
+        } else { // if selected any friend
+          if ( friend !== undefined) { // recommendation of friend
+            rec.visible = friend.selected;
+          } else {
+              rec.visible = false;
+          }
+        }
+      } else { // if selected any category
+        const catIndex = rec.gtype.indexOf(this.selectedCategory);
+        if ( this.selectedAllFriend && catIndex !== -1) { // if selected 'All' friend
+          rec.visible = true;
+        } else {
+          if ( friend !== undefined && catIndex !== -1) {
+            rec.visible = friend.selected;
+          } else {
+            rec.visible = false;
+          }
+        }
       }
     });
   }
@@ -226,7 +239,7 @@ export class ExplorerPage implements OnInit {
 
       // reload reco data
       this.reloadRecsDataByPlace();
-      this.filterRecoByFriend();
+      this.filterRecoBySelected();
     });
   }
 
@@ -267,7 +280,7 @@ export class ExplorerPage implements OnInit {
       }
     }
     // filter reco data by selected friend list.
-    await this.filterRecoByFriend();
+    await this.filterRecoBySelected();
   }
 
   // enable select all button and disable other friends buttons
@@ -277,6 +290,23 @@ export class ExplorerPage implements OnInit {
       friend.selected = false;
     });
 
+  }
+
+  async showFilterModal() {
+    const modal = await this.modalController.create({
+      component: FilterModalComponent,
+      componentProps: {
+        selCategory: this.selectedCategory
+      }
+    });
+    modal.onDidDismiss().then((param) => {
+      if (param !== null && param.data) {
+        this.selectedCategory = param.data.selCategory;
+      }
+      console.log(this.selectedCategory);
+      this.filterRecoBySelected();
+    });
+    return await modal.present();
   }
 
   /* setLocation(): void {
