@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ExplorerPage } from './explorer.page';
 import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
-
+import {FilterModalComponent} from './filter-modal/filter-modal.component';
 const routes: Routes = [
   {
     path: '',
@@ -22,6 +22,11 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ExplorerPage, GoogleMapComponent]
+  declarations: [
+    ExplorerPage, 
+    GoogleMapComponent,
+    FilterModalComponent
+  ],
+  entryComponents: [FilterModalComponent]
 })
 export class ExplorerPageModule {}
