@@ -11,8 +11,9 @@ export class RecommendationModel {
   picture: string;
   pictureThumb: string;
   visible: boolean;
+  gtype: any[];
 
-  constructor(id: string, name: string, city: string, notes: string, lat: number, lng: number,
+  constructor(id: string, name: string, city: string, notes: string, lat: number, lng: number, gtype: any[],
               distance: number, userName: string, userId: string, picture: string, pictureThumb: string, visible: boolean) {
     this.id = id;
     this.name = name;
@@ -26,5 +27,6 @@ export class RecommendationModel {
     this.picture = picture;
     this.pictureThumb = pictureThumb;
     this.visible = visible;
+    this.gtype = gtype;
   }
 }
