@@ -1,5 +1,5 @@
 import { Component,Input, Renderer2, ElementRef, Inject, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, Events } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Plugins, Network }  from '@capacitor/core';
 import { inject } from '@angular/core/testing';
@@ -34,6 +34,7 @@ export class GoogleMapComponent implements OnInit {
   googleMapMarkers: any[] = [];
 
   constructor(
+    private ev: Events,
     private renderer: Renderer2,
     private element: ElementRef,
     private platform: Platform,
@@ -295,6 +296,10 @@ export class GoogleMapComponent implements OnInit {
         google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( function (marker, i) {
           return function() {
             that.infoWindows[i].open(that.map, that.googleMapMarkers[i]);
+            // publish event
+            that.ev.publish('select-marker', {
+              reco_id: recosArray[i].id
+            });
           };
         })(that.googleMapMarkers[i], i));
     }
