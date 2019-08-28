@@ -32,7 +32,7 @@
         ion-card-content {          
           display: inline-flex;
           white-space: normal;
-          width: 90vw;
+          width: 320px;
           padding: 0px;
           .reco-picture {            
               width: 115px;
@@ -51,12 +51,43 @@
             .reco-away {
               font-size: 10px;              
             }
+            .reco-note-div {
+              min-height: 40px;
+            }
+            /* mixin for multiline */
+            @mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: white){
+              overflow: hidden;
+              position: relative;
+              line-height: $lineHeight;
+              max-height: $lineHeight * $lineCount; 
+              // min-height: $lineHeight * $lineCount; 
+              word-break: break-all;
+              // margin-right: -1em;
+              padding-right: 1em;
+              &:before {
+                content: '...';
+                position: absolute;
+                right: 0;
+                bottom: 0;
+              }
+              &:after {
+                content: '';
+                position: absolute;
+                right: 0;
+                width: 1em;
+                height: 1em;
+                margin-top: 0.2em;
+                background: $bgColor;
+              }
+            }
+
             .reco-note {
-              height: 50px;
-              padding-bottom: 5px;
+              @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 2, $bgColor: white);  
               font-size: 12px;
               color: #4a4a4a;
+              margin-top: 10px;
             }
+            
             .friends-count {
               display: inline-flex;
               font-size: 10px; 
@@ -66,9 +97,17 @@
           }
         }
       }
+      // activated reco card when click marker on Map
+      .activated-card{
+        background: rgb(255, 251, 192);
+        box-shadow: 0 0 8px rgba(100, 100, 100, 0.6) !important;
+      }
     }
   }
 }
+
+
+
 
 .horizontal-friend-list{    
   // height: 50px;
