@@ -1,64 +1,68 @@
-<!-- <ion-header>
-    <ion-toolbar>
-        <ion-searchbar [(ngModel)]="query" (ionInput)="searchPlace()"></ion-searchbar>
-    </ion-toolbar>
-
-    <ion-list>
-        <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
-    </ion-list>
-</ion-header> -->
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-buttons slot="start">
-            <ion-button (click)="closeModal()">Cancel</ion-button>    
-        </ion-buttons>
-        <b>Recommendation</b> 
-         <ion-buttons slot="end">
-            <ion-button (click)="createNewRec()">Create</ion-button>  
-        </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-
-
-<div id="service-helper"></div>
+  <ion-toolbar class="nolines">
+      <ion-buttons slot="start">
+        <ion-back-button class="back-button" text="" icon="/assets/images/left-arrow.svg" color="dark" (click)="dismiss()" defaultHref="/tabs/my-trips"></ion-back-button>
+      </ion-buttons>
+    <ion-title>Add Place</ion-title>
+  </ion-toolbar>
+</ion-header>
   
 <ion-content>
-
-    <ion-list lines="none">
-  
-        <!-- <form [formGroup]="myDetailsForm" (input)="saveForm()"> -->
-    
-          <!-- <ion-item>
-            <ion-label position="stacked">New Place</ion-label>
-            <ion-input  [(ngModel)]="name"  type="text"></ion-input>
-          </ion-item> -->
-
-          <ion-item>
-            <ion-label position="stacked">New Place</ion-label>
-            <ion-input  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-input>
-
-            <ion-list>
+    <ion-list lines="none" class="create-place-content">
+          <ion-item lines="none">
+            <ion-label position="stacked" class="title">NEW PLACE NAME</ion-label>
+            <ion-input  [(ngModel)]="queryPlace" (ionInput)="searchPlace()"  type="text"></ion-input>            
+            <ion-list [ngClass]="{'place-list': places.length>0, 'empty-place-list': places.length==0}">
                 <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
             </ion-list>
           </ion-item>
+          <ion-item
+              lines="none"
+              class="tooltip"
+              *ngIf="!queryPlace"
+            >
+            <ion-label>The name of the recommended place.</ion-label>
+          </ion-item>
     
-          <ion-item>
-            <ion-label position="stacked">City</ion-label>
+          <ion-item lines="none">
+            <ion-label position="stacked" class="title">CITY</ion-label>
             <ion-input  [(ngModel)]="city" type="text"></ion-input>
           </ion-item>
 
-          <ion-item>
-            <ion-label position="stacked">Notes</ion-label>
+          <ion-item  lines="none">
+            <ion-label position="stacked" class="title notes">NOTES</ion-label>
             <ion-textarea [(ngModel)]="notes" type="text"></ion-textarea>
           </ion-item>
 
-          <section style="padding:15px;">            
-            <ion-button (click)="selectPicture()" expand="block"><ion-icon name="camera" style="margin-right: 20px;"></ion-icon>Upload picture</ion-button>
+          <ion-item class="photo-item">
+            <ion-label position="stacked" class="title">PHOTO</ion-label>            
+          </ion-item>
+          <div class="photo-content">
             <img *ngIf="picture" [src]="picture">
-          </section>
-    
-        <!-- </form> -->
-    
-      </ion-list>
+          </div>
+          
+          <!-- <ion-item
+              lines="none"
+              class="tooltip"
+              *ngIf="!picture"
+            >
+            <ion-label>Please insert recommended your photo.</ion-label>            
+          </ion-item> -->
+          <div *ngIf="!picture" class="add-photo-placeholder" (click)="selectPicture()">
+            <ion-icon name="add" size="large"></ion-icon>            
+          </div>
+   
+    </ion-list>
 
-    </ion-content>
+</ion-content>
+
+<ion-footer>
+  <ion-button 
+    (click)="createNewRec()" 
+    expand="full" 
+    [disabled]="!queryPlace || !city" 
+    class="footer-button" 
+    >
+      Done
+  </ion-button>    
+</ion-footer>

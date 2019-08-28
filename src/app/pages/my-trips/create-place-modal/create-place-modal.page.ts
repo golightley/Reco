@@ -25,7 +25,7 @@ export class CreatePlaceModalPage implements OnInit {
   autocompleteService: any;
   service: any;
   placesService: any;
-  query: string = '';
+  queryPlace: string = '';
   places: any = [];
   searchDisabled: boolean;
   saveDisabled: boolean;
@@ -137,12 +137,12 @@ export class CreatePlaceModalPage implements OnInit {
 
     this.saveDisabled = true;
 
-    if (this.query.length > 0 && !this.searchDisabled) {
+    if (this.queryPlace.length > 0 && !this.searchDisabled) {
 
       let config = {
         types: ['establishment'],
         // types: ['geocode'],
-        input: this.query
+        input: this.queryPlace
       }
 
       this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
@@ -188,7 +188,7 @@ export class CreatePlaceModalPage implements OnInit {
       location.city = details.address_components[3].short_name;
       this.saveDisabled = false;
 
-      this.query = location.name;
+      this.queryPlace = location.name;
       this.city = location.city;
       this.googlePlaceId = details.place_id;
       this.googleTypes = details.types;
@@ -196,9 +196,7 @@ export class CreatePlaceModalPage implements OnInit {
       this.placePhone = details.international_phone_number;
 
       this.location = location;
-      console.log(this.location)
-
-      // });
+      console.log(this.location);
 
     });
 
@@ -212,14 +210,14 @@ export class CreatePlaceModalPage implements OnInit {
       await this.presentToast(uploadState.state);
     } */
     const result = await this.explorerService.createNewRecommendation(
-      this.query, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
+      this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
       this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
     console.log(result);
     if (result) {
       await this.presentToast('Successfully saved!');
     }
 
-    this.closeModal();
+    this.dismiss();
 
   }
 
@@ -229,7 +227,7 @@ export class CreatePlaceModalPage implements OnInit {
 
   }
 
-  async closeModal() {
+  async dismiss() {
     const onClosedData: string = 'Wrapped Up!';
     await this.modalController.dismiss(onClosedData);
   }
