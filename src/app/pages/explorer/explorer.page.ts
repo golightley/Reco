@@ -1,16 +1,17 @@
 import { FilterModalComponent } from './filter-modal/filter-modal.component';
 import { FriendService } from 'src/app/services/friend.service';
 
-import { Component, ViewChild, OnInit, Renderer2 } from '@angular/core';
-import { AlertController, LoadingController, Platform, ModalController } from '@ionic/angular';
+import { Component, ViewChild, OnInit, Renderer2, ElementRef } from '@angular/core';
+import { AlertController, LoadingController, Platform, ModalController, Events } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 import { filterByHaversine } from 'src/app/utils/map-utils';
+import { IonContent } from '@ionic/angular';
+
 import { async } from 'q';
 import { PARAMETERS } from '@angular/core/src/util/decorators';
-
 const { Geolocation } = Plugins;
 declare var google;
 
@@ -22,6 +23,8 @@ declare var google;
 export class ExplorerPage implements OnInit {
 
   @ViewChild(GoogleMapComponent) map: GoogleMapComponent;
+  @ViewChild('recoCardList', { read: ElementRef }) private cardListElem: ElementRef;
+  @ViewChild('recoCardItem', { read: ElementRef }) private cardItemElem: ElementRef;
 
   private latitude: number;
   private longitude: number;
@@ -37,19 +40,30 @@ export class ExplorerPage implements OnInit {
   location: any;
   autocompleteService: any;
   focusedSearchBar: boolean;
-  FILTER_DISTANCE = -1; // all data load
   selectedAllFriend: boolean;
   selectedCategory: any;
+  activatedRecoId: any;
+  activatedRecoIndex: any;
+  FILTER_DISTANCE = -1; // all data load
+  CardItemWidth = 330;
 
   constructor(
+    private ev: Events,
     private alertCtrl: AlertController,
     private modalController: ModalController,
     private loadingCtrl: LoadingController,
     private explorerService: ExplorerService,
     private friendService: FriendService,
-    private platform: Platform,
     private renderer: Renderer2,
-  ) { }
+  ) {
+    this.ev.subscribe('select-marker', async (params) => {
+      console.log('Subscribe select marker event: ', params);
+      if (params && params.reco_id) {
+        this.activatedRecoId = params.reco_id;
+        this.activateRecoCard();
+      }
+    });
+  }
 
   ngOnInit() {
     // console.log('Explorer.NgOnInit: Google Variable status');
@@ -65,6 +79,34 @@ export class ExplorerPage implements OnInit {
     await this.getFriendsAndRecos();
     // make array for cards with recommendations list
     await this.filterRecoByDistance();
+  }
+
+  async ionViewDidEnter() {
+    // this.CardItemWidth = this.cardItemElem.nativeElement.offsetWidth;
+    // console.log('this.CardItemWidth');
+    // console.log(this.CardItemWidth);
+  }
+  async activateRecoCard() {
+    console.log('Activate reco on card list: reco id=>' + this.activatedRecoId);
+    const showIndex = await this.getRecoIndexOnCardList(this.activatedRecoId);
+    const xPoint = this.CardItemWidth * showIndex - 15;
+    // console.log(this.CardItemWidth, xPoint);
+    this.moveScollCardList(xPoint);
+  }
+
+  getRecoIndexOnCardList(recoId): number {
+    let j = 0;
+    for (let i = 0; i < this.recCardArray.length; i++ ) {
+      if (this.recCardArray[i].visible) {
+        if ( this.recCardArray[i].id === recoId ) {
+          console.log('Activated card index:' + i);
+          console.log('show index:' + j);
+          this.activatedRecoIndex = i; // index of activated recommendation on all card list
+          return j;
+        }
+        j++;
+      }
+    }
   }
 
   async getFriends() {
@@ -93,9 +135,12 @@ export class ExplorerPage implements OnInit {
     console.log('Returned Map Recos array => count: ' + this.recMapArray.length);
     console.log('Map array result=>', this.recMapArray);
     await this.map.addMarkers(this.recMapArray);
-
+    this.moveScollCardList(0);
   }
 
+  async moveScollCardList(x) {
+    this.cardListElem.nativeElement.scrollTo(x, 0, 5000);
+  }
   // filter recommendation by distance for Card list
   filterRecoByDistance() {
     const usersLocation = this.map.getCurrentLocation();
