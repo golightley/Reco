@@ -46,7 +46,7 @@
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
       font-size: 16px;
       font-weight: bold;
-      background: linear-gradient(320deg, #ffffff, #c0cbff);
+      background: linear-gradient(320deg, #ffffff, #fffb7d);
       // color: white;
     }
 
@@ -56,7 +56,7 @@
     }
 
     .send-button {
-        background: linear-gradient(320deg,  #c0cbff, #ffffff);
+        background: linear-gradient(320deg,  #fffb7d, #ffffff);
         // color: white;
     }
 
@@ -64,10 +64,14 @@
       padding: 7px;
       width: 46px;
       height: 46px;
-      background-color: #136fea;
-      color: #ffffff;
-      box-shadow: 0px 0px 6px rgba(67, 123, 197, 0.8);
+      background-color:  rgb(243, 226, 6);
+      // color: #ffffff;
+      box-shadow: 0px 2px 6px rgba(0,0,0, 0.4);
       border-radius: 50%;
+      ion-icon {
+        width: 32px;
+        height: 32px;
+      }
     }
   }
 }
