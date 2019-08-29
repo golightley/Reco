@@ -1,26 +1,27 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="/signup"></ion-back-button>
-      </ion-buttons>
-  
-      <ion-title>Login</ion-title>
+    <ion-toolbar class="nolines">
+        <ion-buttons slot="start">
+          <ion-back-button class="back-button" text="" icon="/assets/images/left-arrow.svg" color="dark" defaultHref="/"></ion-back-button>
+        </ion-buttons>
+      <ion-title>Login with email</ion-title>
     </ion-toolbar>
-  </ion-header>
-
-<form [formGroup]="loginForm">
-    <ion-item>
-      <ion-label position="stacked">Email</ion-label>
+</ion-header>
+<ion-content class="login-content" padding>
+  <form [formGroup]="loginForm">
+    <ion-item lines="full" class="email"
+      [class.invalid]="!loginForm.controls['email'].valid &&
+        loginForm.controls['email'].touched"
+      >
+      <ion-label position="stacked">EMAIL</ion-label>
       <ion-input
         formControlName="email"
         type="email"
-        placeholder="Your email address"
-        [class.invalid]="!loginForm.controls['email'].valid &&
-        loginForm.controls['email'].touched"
+        placeholder="Your email address"        
       >
       </ion-input>
     </ion-item>
     <ion-item
+      lines="none"
       class="error-message"
       *ngIf="!loginForm.controls['email'].valid &&
          loginForm.controls['email'].touched"
@@ -28,25 +29,58 @@
       <ion-label>Please enter a valid email address.</ion-label>
     </ion-item>
   
-    <ion-item>
-      <ion-label position="stacked">Password</ion-label>
-      <ion-input
-        formControlName="password"
-        type="password"
-        placeholder="Your password"
-        [class.invalid]="!loginForm.controls['password'].valid&& loginForm.controls['password'].touched"
+    <ion-item lines="full" class="password"
+      [class.invalid]="!loginForm.controls['password'].valid &&
+        loginForm.controls['password'].touched"
       >
-      </ion-input>
+      <ion-label position="stacked">PASSWORD</ion-label>
+      <div>
+          <ion-input
+            formControlName="password"
+            type="{{ showPass ? 'text' : 'password' }}"
+            placeholder="Your password"      
+          >
+          </ion-input>
+          <ion-button
+            (click)="toggleShowPass()"
+            fill="clear"
+            color="{{ showPass ? 'danger' : 'medium' }}"
+            size="small"
+          >
+            <ion-icon
+              size="small"
+              class="input-inside-icon"
+              src="assets/images/reveal.svg"
+            ></ion-icon>
+          </ion-button>
+      </div>
+      
     </ion-item>
     <ion-item
+      lines="none"
       class="error-message"
       *ngIf="!loginForm.controls['password'].valid
         && loginForm.controls['password'].touched"
     >
       <ion-label>Your password needs more than 6 characters.</ion-label>
     </ion-item>
-  
-    <ion-button (click)="loginUser(loginForm)" expand="block" [disabled]="!loginForm.valid">
-      Log In
-    </ion-button>
-  </form>
+
+    <ion-item
+      lines="none"
+      class="signup-link-desc"
+    >
+        <span>Dont have an account? </span>
+        <span (click)="gotoSignUp()" class="signup-link">Sign up here</span>
+    </ion-item>
+  </form>  
+</ion-content>
+<ion-footer>
+  <ion-button 
+    (click)="emailLogin(loginForm)" 
+    expand="full" 
+    [disabled]="!loginForm.valid" 
+    class="footer-button" 
+    >
+      Login
+  </ion-button>    
+</ion-footer>

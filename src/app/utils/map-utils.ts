@@ -36,7 +36,9 @@
         placeLocation,
         'miles'
       ).toFixed(2);
-      if (rec.distance <= filterDistance) {
+      if (filterDistance === -1) { // if filterDistance is -1, push all data
+        filterList.push(rec);
+      } else if (rec.distance <= filterDistance) {
         filterList.push(rec);
       }
     });

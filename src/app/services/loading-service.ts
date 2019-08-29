@@ -19,13 +19,14 @@ export class LoadingService {
       message: message,
       mode: 'ios',
       // spinner: 'dots',
-      cssClass: 'offsite-loading'
+      // cssClass: 'reco-loading'
     });
     return await this.loading.present();
   }
 
   public async doFirebase(fn) {
-    await this.presentLoading('Please waiting...');
+    // await this.presentLoading('Please waiting...');
+    await this.presentLoading('');
     try {
       return await fn();
     } catch (error) {
@@ -56,8 +57,8 @@ export class LoadingService {
       }
     }
     return {
-      error: error,
-      errorMessage: errorMessage
+      error,
+      errorMessage
     };
   }
 }

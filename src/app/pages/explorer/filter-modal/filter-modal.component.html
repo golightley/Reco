@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar class="nolines">
+      <ion-buttons slot="start">
+        <ion-back-button class="back-button" text="" icon="/assets/images/left-arrow.svg" color="dark" (click)="dismiss()" defaultHref="/tabs/explorer"></ion-back-button>
+      </ion-buttons>
+    <ion-title>Select Category</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list class="category-list">
+    <ion-item (click)="clickCategory('everything')">
+      <ion-icon name="aperture"></ion-icon>
+      <ion-label>Everything</ion-label>
+      <ion-icon slot="end" name="checkmark" *ngIf="selCategory==='everything'"></ion-icon>
+    </ion-item>
+    <ion-item (click)="clickCategory('restaurant')">
+      <ion-icon name="restaurant"></ion-icon>
+      <ion-label>Restaurant</ion-label>
+      <ion-icon slot="end" name="checkmark" *ngIf="selCategory==='restaurant'"></ion-icon>
+    </ion-item>
+    <ion-item (click)="clickCategory('bar')">
+      <ion-icon name="beer"></ion-icon>
+      <ion-label>Bar</ion-label>
+      <ion-icon slot="end" name="checkmark" *ngIf="selCategory==='bar'"></ion-icon>
+    </ion-item>
+    <ion-item (click)="clickCategory('activity')">
+      <ion-icon name="walk"></ion-icon>
+      <ion-label>Activity</ion-label>
+      <ion-icon slot="end" name="checkmark" *ngIf="selCategory==='activity'"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,9 +1,12 @@
+import { MytripService } from './../../services/mytrip.service';
+import { Plugins } from '@capacitor/core';
 import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from 'src/app/services/explorer.service';
 
 // for the modal 
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.page';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-my-trips',
@@ -12,13 +15,16 @@ import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.pa
 })
 export class MyTripsPage implements OnInit {
 
-  dataReturned:any;
-  recArray: any = [];
-  results:any = [];
-
-
+  dataReturned: any;
+  recoArray: any = [];
+  _backdropOn: boolean;
+  smsContent = 'Hey! Checkout my Travel recommendation and sign in to the Reco app to see more ';
+  fdlUrl: any;  // firebase dynamic link url
+  
   constructor(
     private explorerService: ExplorerService,
+    public alertCtrl: AlertController,
+    private mytripService: MytripService,
     public modalController: ModalController) {
    }
 
@@ -29,40 +35,127 @@ export class MyTripsPage implements OnInit {
   ionViewWillEnter() {
     this.getRecommendations();
   }
+
+  getRecommendations() {
+    this.recoArray = [];
+    this.explorerService.getRecommendations('mine').then((recos) => {
+      recos.forEach(data => {
+        this.recoArray.push(data);
+      });
+    });
+    console.log('MyTripsPage.GetRecommendation: Results', this.recoArray);
+  }
   
-   // create the modal 
-   async openModal() {
+  // show the modal for create a recommendation
+  async addReco() {
+    this._backdropOn = false;
     const modal = await this.modalController.create({
       component: CreatePlaceModalPage,
       componentProps: {
-        'paramID': 123,
-        'paramTitle': 'Test Title'
+        // 'paramID': 123,
+        // 'paramTitle': 'Test Title'
       }
     });
- 
     // wait for the modal to be dismissed 
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned !== null) {
         this.dataReturned = dataReturned.data;
-        //alert('Modal Sent Data :'+ dataReturned);
+        // alert('Modal Sent Data :'+ dataReturned);
       }
     });
- 
     return await modal.present();
   }
 
-
-   getRecommendations() {
-    this.explorerService.getRecommendations('mine').then((recsArray) => {
-
-      recsArray.forEach(data => {
-        this.results.push(data);
-      });
-      console.log('MyTripsPage.GetReccomandations: Results');
-      console.log(this.results[0].data());
-    })
+  // Get selected rocos
+  getSelectedRecos() {
+    const selRecos: any[] = [];
+    this.recoArray.forEach( r => {
+      if (r.selected) {
+        selRecos.push(r.id);
+      }
+    });
+    return selRecos;
   }
 
+  // Release selected all recos
+  releaseSelectedRecos() {
+    this.recoArray.map( r => {
+      if (r.selected) {
+        r.selected = false;
+      }
+    });
+  }
 
+  async showErrorAlert(msg: string) {
+    const alert = await this.alertCtrl.create({
+      message: msg,
+      buttons: [{ text: 'Ok', role: 'cancel' }],
+    });
+    await alert.present();
+  }
+
+  // show modal for send SMS to friends
+  async sendReco() {
+    this._backdropOn = false;
+    const selRecos = this.getSelectedRecos();
+    if (!selRecos.length) {
+      const msg = 'Please select recommendations you want to send to friend.';
+      this.showErrorAlert(msg);
+      return;
+    }
+    const result = await this.mytripService.createShareReco(selRecos);
+    // if error occurred
+    if ( result.error) {
+      const msg = 'Unable to send selected recommendations via SMS. Please try again later.';
+      this.showErrorAlert(msg);
+      return;
+    }
+    const shareUrl = 'www.recoapp.com/reco_share?id=' + result;
+    const content = this.smsContent + shareUrl;
+    console.log(shareUrl);
+    console.log(content);
+    Plugins.SmsManager.send({
+      numbers: [''],
+      text: content,
+    }).then(async () => {
+      // call back after sent sms
+      this.releaseSelectedRecos();
+    }).catch(error => {
+        // see error codes below
+        if (error === 'ERR_NO_NUMBERS') {
+            // show toast with error message
+            console.log('SMS Error: No recipient numbers were retrieved from options.');
+        }
+        if (error === 'ERR_SERVICE_NOTFOUND') {
+            // show toast with error message
+            console.log('SMS Error: The used device can not send SMS.');
+        }
+        if (error === 'ERR_PLATFORM_NOT_SUPPORTED') {
+            // show toast with error message
+            console.log('SMS Error: Sending SMS on the web is not supported.');
+        }
+        if (error === 'SEND_CANCELLED') {
+            // show toast with error message
+            console.log('SMS Error: User cancelled or closed the SMS app.');
+        }
+    });
+
+  }
+
+  // select recommendation on list
+  selectReco(i) {
+    // console.log('Selected reco index : ' + i);
+    this.recoArray[i].selected = !this.recoArray[i].selected;
+  }
+
+  // show action buttons
+  showMoreActions() {
+    this._backdropOn = !this._backdropOn;
+  }
+
+  // dismiss action buttons
+  dismissMoreActions() {
+    this._backdropOn = false;
+  }
 
 }

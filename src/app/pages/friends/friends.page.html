@@ -1,22 +1,50 @@
 <ion-header>
-    <ion-toolbar color="primary">
-      <!-- <ion-title>
-        <img src="assets/images/logo.png" class="logo" />
-      </ion-title> -->
-      <!-- <ion-searchbar  [(ngModel)]="query" (ionInput)="searchPlace()"  type="text"></ion-searchbar> -->
-      <ion-searchbar   type="text"></ion-searchbar>
-      <ion-buttons slot="end">
-          <ion-button (click)="logout()"><ion-icon slot="icon-only" name="exit"></ion-icon></ion-button>    
-        </ion-buttons>
+    <ion-toolbar>
+      <div class="search-bar"> <!-- mode="md"  showCancelButton="focus"  -->
+        <ion-searchbar [(ngModel)]="query" mode="md" class="reco-searchbar" type="text" (ionInput)="searchFriend()"
+          (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a friend"></ion-searchbar>
+      </div>
     </ion-toolbar>
   </ion-header>
 
   <ion-content>
-      <ion-list>
-          <ion-item *ngFor="let user of users">
-            <ion-label>{{user.data().handle}}</ion-label>
-            <ion-checkbox slot="start" (click)="toggleUserFollow(user)"></ion-checkbox>
-          </ion-item>
-        </ion-list>
+      <ion-segment mode="md" color="primary" (ionChange)="segmentChanged($event)">
+          <ion-segment-button value="suggestions" mode="md" checked>
+              <ion-label>Suggestions</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="following" mode="md">
+            <ion-label>Friends following</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div *ngIf= "page==='suggestions'" class="sub-page">
+          <ion-list>
+              <ion-item *ngFor="let friend of suggestions; let i = index" class="user-item">
+                  <ion-avatar slot="start" class="user-avatar">
+                      <img src="{{ friend?.photoURL || '/assets/images/avatar.svg' }}" />
+                  </ion-avatar>
+                  <ion-label>
+                    <h2 class="user-name">{{friend.userName}}</h2>
+                    <p class="user-email">{{friend.email}}</p>
+                  </ion-label>
+                  <ion-button (click)="followUser(friend.userId, i)" class="follower-button" slot="end" color="medium">Follow</ion-button>
+                </ion-item>
+          </ion-list>
+      </div>
+      <div *ngIf= "page==='following'" class="sub-page">
+          <ion-list>
+              <ion-item *ngFor="let friend of followings; let i = index " class="user-item">
+                  <ion-avatar slot="start" class="user-avatar">
+                      <img src="{{ friend?.photoURL || '/assets/images/avatar.svg' }}" />
+                  </ion-avatar>
+                  <ion-label>
+                    <h2 class="user-name">{{friend.userName}}</h2>
+                    <p class="user-email">{{friend.email}}</p>
+                  </ion-label>
+                  <ion-button (click)="unFollowUser(friend.userId, i)" class="following-button" slot="end" color="warning">Following</ion-button>
+                </ion-item>
+          </ion-list>
+      </div>
+      
     
   </ion-content>

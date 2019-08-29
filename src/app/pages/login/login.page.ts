@@ -1,11 +1,10 @@
 
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { LoadingController, AlertController } from '@ionic/angular';
-// import { AuthService } from '../services/user/auth.service';
-import { AuthService } from '../../services/user/auth.service'
+import { AlertController } from '@ionic/angular';
+import { AuthService } from '../../services/user/auth.service';
 
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,58 +13,68 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
 
+  showPass: boolean;
   public loginForm: FormGroup;
   public loading: HTMLIonLoadingElement;
 
   constructor(
-    public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
     private authService: AuthService,
     private router: Router,
     private formBuilder: FormBuilder
-
   ) {
 
-    this.loginForm = this.formBuilder.group({
-      email: ['',
-        Validators.compose([Validators.required, Validators.email])],
-      password: [
-        '',
-        Validators.compose([Validators.required, Validators.minLength(6)]),
-      ],
-    });    
+      this.loginForm = this.formBuilder.group({
+        email: ['',
+          Validators.compose([Validators.required, Validators.email])],
+        password: [
+          '',
+          Validators.compose([Validators.required, Validators.minLength(6)]),
+        ],
+      });
+
    }
 
-  ngOnInit() {
+  async ngOnInit() {
   }
 
-  async loginUser(loginForm: FormGroup): Promise<void> {
+  async showErrorAlert(msg: string) {
+    const alert = await this.alertCtrl.create({
+      message: msg,
+      buttons: [{ text: 'Ok', role: 'cancel' }],
+    });
+    await alert.present();
+  }
+
+  async emailLogin(loginForm: FormGroup): Promise<void> {
     if (!loginForm.valid) {
       console.log('Form is not valid yet, current value:', loginForm.value);
     } else {
-      this.loading = await this.loadingCtrl.create({});
-      await this.loading.present();
-  
+
       const email = loginForm.value.email;
       const password = loginForm.value.password;
-  
-      this.authService.loginUser(email, password).then(
-        () => {
-          this.loading.dismiss().then(() => {
-            this.router.navigateByUrl('');
-          });
-        },
-        error => {
-          this.loading.dismiss().then(async () => {
-            const alert = await this.alertCtrl.create({
-              message: error.message,
-              buttons: [{ text: 'Ok', role: 'cancel' }],
-            });
-            await alert.present();
-          });
+      const result = await this.authService.loginWithEmail(email, password);
+      console.log('[Email login]: result=> ', result);
+      if ( !result.error ) {
+        // success
+        this.router.navigateByUrl('');
+      } else {
+        // failed
+        let errorMessage = 'Login failed. Try again later';
+        if ( result.error.message ) {
+          errorMessage = result.error.message;
         }
-      );
+        this.showErrorAlert(errorMessage);
+      }
     }
+  }
+
+  toggleShowPass() {
+    this.showPass = !this.showPass;
+  }
+
+  gotoSignUp() {
+    this.router.navigateByUrl('/signup');
   }
 
 }

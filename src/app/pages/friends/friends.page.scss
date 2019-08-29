@@ -1,0 +1,44 @@
+.search-bar{
+    margin:4px 4px;
+  }
+
+.user-item {
+    --min-height: 80px;
+    --border-color: rgb(221, 220, 220);
+    .user-avatar  {     
+        width:100% !important;  
+        height : 100% !important;  
+        max-width: 50px !important;  //any size
+        max-height: 50px !important; //any size 
+        }
+    .user-name {
+        font-size: 17px;
+        color: rgb(10,31,68);
+    }
+    .user-email {
+        font-size: 15px;
+        color: rgb(172,172,172);
+    }
+}
+
+// follow and un-follow button
+ion-button {    
+    --color: rgb(80,80,80) !important;
+    --ion-color-contrast: rgb(80,80,80) !important;    
+    width: 85px;
+    height: 26px;
+    
+}
+
+.following-button {
+    --ion-color-base: rgb(242, 226, 6) !important;    
+}
+
+.follower-button {
+    border: 1px solid rgb(180,180,180) !important;
+    border-radius: 6px;
+    --ion-color-base: rgb(255, 255, 255) !important;
+}
+.sub-page {
+    padding-top: 10px;
+}

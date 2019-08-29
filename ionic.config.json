@@ -1,7 +1,8 @@
 {
-  "name": "bop",
+  "name": "Reco",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

@@ -1,3 +1,4 @@
+import { FriendService } from 'src/app/services/friend.service';
 import { LoadingService } from './loading-service';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
@@ -7,6 +8,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 import { generateUUID } from 'src/app/utils/common';
+import { async } from '@angular/core/testing';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,8 @@ export class ExplorerService {
 
   constructor(
     private storage: Storage,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private friendService: FriendService
   ) {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -132,7 +135,7 @@ export class ExplorerService {
    * Get recommendation data
    * If getType is 'all' then get all recommendation data.
    * If getType is 'mine' then get my recommendation data.
-   * If getType is 'friends' then get recommendation data that registered by following users
+   * 
    */
   async getRecommendations(getType) {
     const recsArray: any[] = [];
@@ -143,45 +146,52 @@ export class ExplorerService {
     } else if (getType === 'mine') {
       query = firebase.firestore().collection('recommendations')
         .where('user', '==', firebase.auth().currentUser.uid);
-
-    } else if (getType === 'friends') {  // must change
-      query = firebase.firestore().collection('recommendations')
-        .where('user', '==', firebase.auth().currentUser.uid);
-
     }
-    await this.loadingService.doFirebase(async() => {
+    await this.loadingService.doFirebase(async () => {
       await query.get().then(async (queryData) => {
           await Promise.all(queryData.docs.map(async (rec) => {
-                  // get user name of recommendation
-                  const userName = await this.getUserByID(rec.data().user);
-                  rec.userName = userName;
-                  console.log('userName', userName);
-                  recsArray.push(rec);
-                  console.log('recs data add');
+              // get user name of recommendation
+              const user = await this.friendService.getUserByID(rec.data().user);
+              rec.userName = user.userName;
+              rec.selected = false;
+              recsArray.push(rec);
           }));
         }).catch (error => {
             return error;
         });
     });
-    console.log('finish all recs data add');
     return recsArray;
   }
 
-  async getUserByID(userId: string) {
-    return new Promise<any> ((resolve, reject) => {
-      firebase.firestore().collection('userProfile').doc(userId).get().then(docUser => {
-        // if handle is exists then return handle, else return email
-        let userName = docUser.data().email;
-        if ( docUser.data().handle ) {
-          userName = docUser.data().handle;
-        }
-        resolve(userName);
-      }).catch(error => {
-        console.log('[Get User Info] error = ' + error);
-        reject(error);
-      });
+  /**
+   * get recommendations and friends data of current user
+   */
+  async getFriendsAndRecos() {
+    const recsArray: any[] = [];
+    let query;
+    let friendsArray: any[] = [];
+    await this.loadingService.doFirebase( async () => {
+      // get following friends and me
+      friendsArray = await this.friendService.getFriends(true);
+      // console.log('** Get Friend Recos **');
+      await Promise.all(friendsArray.map(async (friend) => {
+          // console.log(' == friend loop == ');
+          query = firebase.firestore().collection('recommendations').where('user', '==', friend.userId);
+          await query.get().then(async (queryData) => {
+            // console.log('Got recos data');
+            await Promise.all(queryData.docs.map(async (rec) => {
+              rec.userName = friend.userName;
+              recsArray.push(rec);
+              // console.log('friend recos push');
+            }));
+          });
+      }));
     });
+    // console.log('Return recos and friends array!');
+    return {recos: recsArray, friends: friendsArray};
   }
+
+
 
   setMyDetails(data): void {
     this.storage.set('myDetails', data);

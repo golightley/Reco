@@ -10,76 +10,91 @@ import { AuthService } from '../../services/user/auth.service';
 })
 export class FriendsPage implements OnInit {
 
-  public FriendsForm: FormGroup;
-  public users:any = [];
+  public users: any = [];
+  page: string;
+  followings: any[] = [];
+  suggestions: any[] = [];
+  searchedUsers: any[] = [];
+  query: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private friendService: FriendService,
     private authService: AuthService,
     ) {
-
-    // initialize the form 
-    this.FriendsForm = formBuilder.group({
-      gateAccessCode:[''],
-      ammenetiesCode:[''],
-      wifiPassword:[''],
-      phoneNumber:[''],
-      depature:[''],
-      notes:['']
-    });
-
    }
 
   ngOnInit() {
+    this.page = 'suggestion';
+    this.query = '';
+  }
 
-    
-    // get users for the array
-    this.authService.getUsersWithName().then((recsArray)=>{
+  // get facebook friends
+  async getSuggestions() {
+    this.suggestions = await this.friendService.getSuggestion();
+    // console.log('Suggestion list', this.suggestions);
+  }
 
-      this.users = recsArray;
+  // get following user list
+  async getFollowings() {
+    this.followings = await this.friendService.getFollowings();
+    // console.log('Friend list', this.followings);
+  }
 
-      console.log("Friends.NgOnIt.AuthService.GetUsersWithName... function returned the following result")
-      console.log(this.users)
+  // click top bar
+  async segmentChanged($event) {
+    this.page = $event.detail.value;
+    if (this.page === 'following') {
+      await this.getFollowings();
+    } else {
+      await this.getSuggestions();
+    }
+  }
 
+  // follow user
+  async followUser(userId, index) {
+    const returnId = await this.friendService.followUser(userId);
+    if ( returnId ) {
+      this.suggestions.splice(index, 1);
+      console.log('Followed selected user');
+    } else {
+      console.log('Error occurred when follow user!');
+    }
+  }
 
-    });
+  // un-follow user
+  async unFollowUser(userId, index) {
+    const returnId = await this.friendService.unFollowUser(userId);
+    if ( returnId ) {
+      this.followings.splice(index, 1);
+      console.log('Un-followed selected user');
+    } else {
+      console.log('Error occurred when un-follow user!');
+    }
+  }
 
+  // search user
+  async searchFriend(keyword) {
+    // this.searchedUsers = await this.friendService.searchUsers(keyword);
+    console.log(this.query);
+    /* if (this.query.length > 0) {
+      console.log(this.query);
+    } */
+  }
 
-
-
-    this.friendService.getFriends().then((details)=>{
-      let formControls:any = this.FriendsForm.controls;
-      
-      if(details!=null){
-          formControls.gateAccessCode.setValue(details.gateAccessCode);
-          formControls.ammenetiesCode.setValue(details.ammenetiesCode);
-          formControls.wifiPassword.setValue(details.wifiPassword);
-          formControls.depature.setValue(details.depature);
-          formControls.notes.setValue(details.notes);
-
-
-         
-      }
-    })
+  focusSearchBar() {
 
   }
 
-  logout(){
-
-    this.authService.logoutUser();
+  cancelSearchBar() {
 
   }
 
-  toggleUserFollow(user){
+  /* toggleUserFollow(user){
     console.log("Friends.ToggleUserFollow has been clicked");
     console.log(user);
     this.authService.toggleUserFollow(user);
-  }
+  } */
 
-  saveForm():void {
-    //this.friendService.setCampDetails(this.FriendsForm.value)
-
-  }
 
 }

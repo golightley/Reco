@@ -23,8 +23,8 @@ export class AuthGuard implements CanActivate {
         if (user) {
           resolve(true);
         } else {
-          console.log('User is not logged in');
-          this.router.navigate(['/login']);
+          console.log('Auth Checked: User is not logged in');
+          this.router.navigate(['/main']);
           resolve(false);
         }
       });
@@ -32,7 +32,3 @@ export class AuthGuard implements CanActivate {
   }
 }
 
-
-
-  
-// }
