@@ -270,7 +270,7 @@ export class GoogleMapComponent implements OnInit {
     const that = this;
     const groupIcon = {
       url: 'assets/images/group_marker.png', // image url
-      scaledSize: new google.maps.Size(28, 42), // scaled size
+      scaledSize: new google.maps.Size(26, 45), // scaled size
     };
     /* const icon = {
       url: 'assets/images/group_marker', // image url
@@ -289,7 +289,7 @@ export class GoogleMapComponent implements OnInit {
         const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
         let markerLabel = 'Gr'; // group label
         if ( recosArray[i].userNames.length === 1 ) {
-          console.log(recosArray[i].userNames);
+          // console.log(recosArray[i].userNames);
           // create single marker with first character
           markerLabel = this.getLabelString(recosArray[i].userNames[0]);
           this.googleMapMarkers[i] = new google.maps.Marker({

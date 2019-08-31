@@ -143,6 +143,12 @@ export class ExplorerPage implements OnInit {
         rec.userNames.push(data.userName);
         rec.userIds.push(data.data().user);
         rec.notes.push(data.data().notes);
+        // remove empty picture
+        if ( rec.pictures[rec.pictures.length - 1] === '') {
+          console.log('&&&& slice empty picture &&&&');
+          rec.pictures.shift();
+          rec.pictureThumbs.shift();
+        }
         rec.pictures.push(data.data().picture); // can't know whose picture.
         rec.pictureThumbs.push(data.data().pictureThumb);
         this.recMapArray[index - 1] = rec;
@@ -197,7 +203,7 @@ export class ExplorerPage implements OnInit {
         if ( this.selectedAllFriend ) { // if selected 'All' friend
           rec.visible = true;
         } else { // if selected any friend
-          
+
           if ( await this.isSelectedByAnyFriend(rec.userIds) ) { // recommendation of friend
             rec.visible = true;
           } else {
@@ -209,7 +215,7 @@ export class ExplorerPage implements OnInit {
         if ( this.selectedAllFriend && catIndex !== -1) { // if selected 'All' friend
           rec.visible = true;
         } else { // if selected any friend
-          
+
           if ( await this.isSelectedByAnyFriend(rec.userIds)  && catIndex !== -1 ) { // recommendation of friend
             rec.visible = true;
           } else {
