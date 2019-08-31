@@ -283,7 +283,10 @@ export class GoogleMapComponent implements OnInit {
 
         // get lat / long for the reco
         const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
-        const label = this.getLabelString(recosArray[i].markerLabel);
+        let label = 'Gr'; // group label
+        if ( recosArray[i].userNames.length === 1 ) {
+          label = this.getLabelString(recosArray[i].userNames[0]);
+        }
 
         // create marker and add it to the array
         this.googleMapMarkers[i] = new google.maps.Marker({
@@ -349,14 +352,14 @@ export class GoogleMapComponent implements OnInit {
     this.infoWindows = [];
   }
 
-  formatContent(reco: RecommendationModel){
+  formatContent(reco: RecommendationModel) {
     const content =
       '<div id="siteNotice">' +
       '</div>' +
       '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
       '<div id="bodyContent">' +
-      '<p>recommended by <b>' + reco.markerLabel + '</b></p>' +
-      '<p>' + reco.notes + '</p>' + 
+      '<p>recommended by <b>' + reco.userNames.join() + '</b></p>' +
+      '<p>' + reco.notes[0] + '</p>' + 
       '</div>' +
       '</div>';
       // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+

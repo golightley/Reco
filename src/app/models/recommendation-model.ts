@@ -12,10 +12,9 @@ export class RecommendationModel {
   pictureThumbs: any[];
   visible: boolean;
   gtype: any[];
-  markerLabel: string;
-
-  constructor(id: string, name: string, city: string, notes: any[], lat: number, lng: number, gtype: any[],
-              distance: number, userNames: any[], userIds: any[], pictures: any[], pictureThumbs: any[], markerLabel: string, visible: boolean) {
+  
+  constructor(id: string, name: string, city: string, lat: number, lng: number, gtype: any[], distance: number,
+              userNames: any[], userIds: any[], notes: any[], pictures: any[], pictureThumbs: any[], visible: boolean) {
     this.id = id;
     this.name = name;
     this.city = city;
@@ -28,7 +27,6 @@ export class RecommendationModel {
     this.pictures = pictures;
     this.pictureThumbs = pictureThumbs;
     this.visible = visible;
-    this.markerLabel = markerLabel;
     this.gtype = gtype;
   }
 }
