@@ -121,16 +121,18 @@ export class ExplorerPage implements OnInit {
     this.friendList = result.friends;
     const recsArray = result.recos;
     // console.log('recsArray', recsArray);
-
+    console.log('Returned Recos array => count: ' + recsArray.length);
     
     recsArray.forEach(data => {
       if (!data.data().gType) {
         return;
       }
-      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng,
-        data.data().gType, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
+      // combine recommendations for the same place
+      if ( data.data().name)
+      //const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng,
+      //  data.data().gType, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
       // make array for markers of Map
-      this.recMapArray.push(newRec);
+      //this.recMapArray.push(newRec);
     });
     console.log('Returned Map Recos array => count: ' + this.recMapArray.length);
     console.log('Map array result=>', this.recMapArray);

@@ -237,7 +237,7 @@ export class GoogleMapComponent implements OnInit {
     const latLng = new google.maps.LatLng(lat, lng);
 
     const marker = new google.maps.Marker({
-      map: this.map, 
+      map: this.map,
       animation: google.maps.Animation.DROP,
       position: latLng
     });
@@ -248,7 +248,7 @@ export class GoogleMapComponent implements OnInit {
       this.marker.setMap(null);
     }
 
-    // add new marker 
+    // add new marker
     this.marker = marker;
 
   }
@@ -268,6 +268,10 @@ export class GoogleMapComponent implements OnInit {
     
     this.deleteMarkers();
     const that = this;
+    const icon = {
+      url: 'assets/icon/u.png', // image url
+      scaledSize: new google.maps.Size(50, 50), // scaled size
+    };
 
     // create a marker and info window for each one
     for (let i = 0; i < recosArray.length; ++i) {
@@ -279,7 +283,7 @@ export class GoogleMapComponent implements OnInit {
 
         // get lat / long for the reco
         const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
-        const label = this.getLabelString(recosArray[i].userName);
+        const label = this.getLabelString(recosArray[i].markerLabel);
 
         // create marker and add it to the array
         this.googleMapMarkers[i] = new google.maps.Marker({
@@ -288,6 +292,7 @@ export class GoogleMapComponent implements OnInit {
           animation: google.maps.Animation.DROP,
           recoId: recosArray[i].id,
           label: label,
+          // icon: icon //custom image
           // title: 'Hello World!'
           // icon: fonekingiconsrc
         });
@@ -350,7 +355,7 @@ export class GoogleMapComponent implements OnInit {
       '</div>' +
       '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
       '<div id="bodyContent">' +
-      '<p>recommended by <b>' + reco.userName + '</b></p>' +
+      '<p>recommended by <b>' + reco.markerLabel + '</b></p>' +
       '<p>' + reco.notes + '</p>' + 
       '</div>' +
       '</div>';
