@@ -268,10 +268,14 @@ export class GoogleMapComponent implements OnInit {
     
     this.deleteMarkers();
     const that = this;
-    const icon = {
-      url: 'assets/icon/u.png', // image url
-      scaledSize: new google.maps.Size(50, 50), // scaled size
+    const groupIcon = {
+      url: 'assets/images/group_marker.png', // image url
+      scaledSize: new google.maps.Size(28, 42), // scaled size
     };
+    /* const icon = {
+      url: 'assets/images/group_marker', // image url
+      scaledSize: new google.maps.Size(50, 50), // scaled size
+    }; */
 
     // create a marker and info window for each one
     for (let i = 0; i < recosArray.length; ++i) {
@@ -283,22 +287,28 @@ export class GoogleMapComponent implements OnInit {
 
         // get lat / long for the reco
         const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
-        let label = 'Gr'; // group label
+        let markerLabel = 'Gr'; // group label
         if ( recosArray[i].userNames.length === 1 ) {
-          label = this.getLabelString(recosArray[i].userNames[0]);
+          console.log(recosArray[i].userNames);
+          // create single marker with first character
+          markerLabel = this.getLabelString(recosArray[i].userNames[0]);
+          this.googleMapMarkers[i] = new google.maps.Marker({
+            position: latLng,
+            map: this.map,
+            animation: google.maps.Animation.DROP,
+            recoId: recosArray[i].id,
+            label: markerLabel
+          });
+        } else {
+          // create group marker
+          this.googleMapMarkers[i] = new google.maps.Marker({
+            position: latLng,
+            map: this.map,
+            animation: google.maps.Animation.DROP,
+            recoId: recosArray[i].id,
+            icon: groupIcon
+          });
         }
-
-        // create marker and add it to the array
-        this.googleMapMarkers[i] = new google.maps.Marker({
-          position: latLng,
-          map: this.map,
-          animation: google.maps.Animation.DROP,
-          recoId: recosArray[i].id,
-          label: label,
-          // icon: icon //custom image
-          // title: 'Hello World!'
-          // icon: fonekingiconsrc
-        });
 
         // add listener to the map
         google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( function (marker, i) {
@@ -359,7 +369,7 @@ export class GoogleMapComponent implements OnInit {
       '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
       '<div id="bodyContent">' +
       '<p>recommended by <b>' + reco.userNames.join() + '</b></p>' +
-      '<p>' + reco.notes[0] + '</p>' + 
+      '<p>' + reco.notes[0] + '</p>' +
       '</div>' +
       '</div>';
       // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
