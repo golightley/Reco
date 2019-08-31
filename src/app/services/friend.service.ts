@@ -65,7 +65,7 @@ export class FriendService {
                       photoURL: doc.data().photoURL
                     };
                     suggestionUsers.push(d);
-                    console.log('Add suggestion user');
+                    // console.log('Add suggestion user');
                   }
                 }
               });

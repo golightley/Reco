@@ -43,9 +43,30 @@
       }
     });
     return filterList;
-  }
+  };
+
+  const sortRecosByDistance = (recosList, userLocation) => {
+    const sortedList = [];
+    recosList.map((rec) => {
+      const placeLocation = {
+        lat: rec.data().location.lat,
+        lng: rec.data().location.lng
+      };
+      rec.distance = getDistanceBetweenPoints(
+        userLocation,
+        placeLocation,
+        'miles'
+      ).toFixed(2);
+      sortedList.push(rec);
+    });
+    sortedList.sort((locationA, locationB) => {
+      return locationA.distance - locationB.distance;
+    });
+    return sortedList;
+  };
 
   export {
-    filterByHaversine
+    filterByHaversine,
+    sortRecosByDistance
   }
 
