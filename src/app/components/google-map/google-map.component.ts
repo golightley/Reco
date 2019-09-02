@@ -25,8 +25,8 @@ export class GoogleMapComponent implements OnInit {
   public firstLoadFailed: boolean = false;
   public mapsLoaded: boolean = false;
   public connectionAvailable: boolean = true;
-  public curLocationLat: number;
-  public curLocationLng: number;
+  public curLocationLat: number = 0;
+  public curLocationLng: number = 0;
   private networkHandler = null;
   activeInfoWindow: any;
 
@@ -49,9 +49,9 @@ export class GoogleMapComponent implements OnInit {
       if (typeof (google) === 'undefined') {
         console.log('GoogleMapComponent.google =');
 
-        this.loadSDK().then((res) => {
+        this.loadSDK().then(async (res) => {
           console.log('GoogleMapComponent.SDKLoaded');
-          this.initMap().then((res) => {
+          await this.initMap().then((res) => {
             console.log('GoogleMapComponent.MapInitialized');
             this.enableMap();
             resolve(true);
@@ -76,34 +76,35 @@ export class GoogleMapComponent implements OnInit {
     console.log('Loading Google Maps SDK');
     // connectivity listner will automatically load the SDK when an internet connection is ready
     this.addConnectivityListeners();
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       if(!this.mapsLoaded){
         // first check on mobile using capacitor 
-        Network.getStatus().then((status)=>{
+        Network.getStatus().then((status) => {
           if(status.connected){
-            this.injectSDK().then((res)=>{
+            this.injectSDK().then((res) => {
               resolve(true);
+              console.log(' - End Map load SDK - ');
             },(err) => {
               reject('Not online')
             });
           }
-          else{
+          else {
             reject('Not online');
           }
         },
-          (err) =>{
-            if(navigator.onLine){
-              this.injectSDK().then((res)=>{
+          (err) => {
+            if (navigator.onLine){
+              this.injectSDK().then((res) => {
                 resolve(true);
-              },(err) => {
-                reject(err)
+              } ,( err ) => {
+                reject(err);
               });
             } else{
               reject('Not online');
             }
           }).catch((err) => {console.warn(err);});
         } else{
-          reject('sdk already loaded')
+          reject('sdk already loaded');
         }
     })
   }
@@ -137,13 +138,12 @@ export class GoogleMapComponent implements OnInit {
 
 // called once the sdk is loaded and responsible for setting up the current map
   private async initMap(): Promise <any> {
-    return new Promise ((resolve, reject) =>{
+    return new Promise ((resolve, reject) => {
       Geolocation.getCurrentPosition().then((position) => {
 
-        console.log(position);
         this.curLocationLat = position.coords.latitude;
         this.curLocationLng = position.coords.longitude;
-
+        console.log(this.curLocationLat);
         const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
         const mapOptions = {
@@ -162,8 +162,7 @@ export class GoogleMapComponent implements OnInit {
         };
 
         this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
-        console.log('GoogleMapComponent.InitiMap.infoWindow')
-        console.log(this.infoWindow);
+        console.log('GoogleMapComponent.InitiMap.infoWindow');
         resolve(true);
 
     }, (err) => {
@@ -221,7 +220,7 @@ export class GoogleMapComponent implements OnInit {
 
     console.warn('Capacitor API does not currently have a web implementation. This will only work when running as an ios / android app');
 
-    if (this.platform.is('cordova')){
+    if (this.platform.is('cordova')) {
       this.networkHandler = Network.addListener('networkStatusChange', (status) =>{
         if (status.connected){
           if (typeof google === 'undefined' && this.firstLoadFailed) {
