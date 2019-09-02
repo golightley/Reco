@@ -104,10 +104,9 @@ export class ExplorerPage implements OnInit {
   }
 
   async getFriendsAndRecos() {
-    const usersLocation = this.map.getCurrentLocation();
-
     // get recommendations of all friends
     const result = await this.explorerService.getFriendsAndRecos();
+    const usersLocation = await this.map.getCurrentLocation();
     this.friendList = result.friends;
     const sortedRecsArray = await sortRecosByDistance(result.recos, usersLocation) ;
     console.log('Returned Recos array => ', result.recos);
@@ -166,11 +165,11 @@ export class ExplorerPage implements OnInit {
   }
 
   // filter recommendation by distance for Card list
-  filterCardRecoByDistance() {
+  async filterCardRecoByDistance() {
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
     // filter recommendation within 100 miles of selected place's location
-    this.recCardArray = filterByHaversine(this.recMapArray, usersLocation, this.FILTER_DISTANCE);
+    this.recCardArray = await filterByHaversine(this.recMapArray, usersLocation, this.FILTER_DISTANCE);
     this.recCardArray.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
