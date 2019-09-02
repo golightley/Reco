@@ -1,9 +1,7 @@
-import { Component,Input, Renderer2, ElementRef, Inject, OnInit } from '@angular/core';
+import { Component, Input, Renderer2, ElementRef, Inject, OnInit } from '@angular/core';
 import { Platform, Events } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
-import { Plugins, Network }  from '@capacitor/core';
-import { inject } from '@angular/core/testing';
-import { reject } from 'q';
+import { Plugins, Network } from '@capacitor/core';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 
 const { Geolocation} = Plugins;
@@ -26,10 +24,11 @@ export class GoogleMapComponent implements OnInit {
   public marker: any;
   public firstLoadFailed: boolean = false;
   public mapsLoaded: boolean = false;
-  private newtworkHandler = null;
   public connectionAvailable: boolean = true;
   public curLocationLat: number;
   public curLocationLng: number;
+  private networkHandler = null;
+  activeInfoWindow: any;
 
   googleMapMarkers: any[] = [];
 
@@ -173,11 +172,10 @@ export class GoogleMapComponent implements OnInit {
     });
   }
 
-  public  moveCenter() {
+  public moveCenter() {
     // move map by current location
     const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
-    console.log('move map', latLng);
-    this.map.setCenter(latLng)
+    this.map.setCenter(latLng);
   }
 
   public getCurrentLocation() {
@@ -191,6 +189,20 @@ export class GoogleMapComponent implements OnInit {
   public setCurrentLocation(lat,lng) {
     this.curLocationLat = lat;
     this.curLocationLng = lng;
+  }
+
+  // show info window of activated marker when clicking a place card of list.
+  public showInfoWindow(markerIndex) {
+    this.closeActiveInfoWindow();
+    this.infoWindows[markerIndex].open(this.map, this.googleMapMarkers[markerIndex]);
+    this.activeInfoWindow = this.infoWindows[markerIndex];
+  }
+  
+  // close active info window
+  public closeActiveInfoWindow() {
+    if (this.activeInfoWindow) {
+      this.activeInfoWindow.close();
+    }
   }
 
   disableMap(): void {
@@ -210,7 +222,7 @@ export class GoogleMapComponent implements OnInit {
     console.warn('Capacitor API does not currently have a web implementation. This will only work when running as an ios / android app');
 
     if (this.platform.is('cordova')){
-      this.newtworkHandler = Network.addListener('networkStatusChange', (status) =>{
+      this.networkHandler = Network.addListener('networkStatusChange', (status) =>{
         if (status.connected){
           if (typeof google === 'undefined' && this.firstLoadFailed) {
             this.init().then((res) => {
@@ -311,13 +323,15 @@ export class GoogleMapComponent implements OnInit {
         }
 
         // add listener to the map
-        google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( function (marker, i) {
+        google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( (marker, i) => {
           return function() {
+            that.closeActiveInfoWindow();
             that.infoWindows[i].open(that.map, that.googleMapMarkers[i]);
             // publish event
             that.ev.publish('select-marker', {
               reco_id: recosArray[i].id
             });
+            that.activeInfoWindow = that.infoWindows[i];
           };
         })(that.googleMapMarkers[i], i));
     }
