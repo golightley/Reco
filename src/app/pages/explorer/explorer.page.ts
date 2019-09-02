@@ -44,7 +44,6 @@ export class ExplorerPage implements OnInit {
 
   constructor(
     private ev: Events,
-    private alertCtrl: AlertController,
     private modalController: ModalController,
     private loadingCtrl: LoadingController,
     private explorerService: ExplorerService,
@@ -73,7 +72,7 @@ export class ExplorerPage implements OnInit {
     // await this.getFriends();
     await this.getFriendsAndRecos();
     // make array for cards with recommendations list
-    await this.filterRecoByDistance();
+    await this.filterCardRecoByDistance();
   }
 
   async activateRecoCard() {
@@ -110,7 +109,7 @@ export class ExplorerPage implements OnInit {
     // get recommendations of all friends
     const result = await this.explorerService.getFriendsAndRecos();
     this.friendList = result.friends;
-    const sortedRecsArray = sortRecosByDistance(result.recos, usersLocation) ;
+    const sortedRecsArray = await sortRecosByDistance(result.recos, usersLocation) ;
     console.log('Returned Recos array => ', result.recos);
     console.log('Sorted Recos array => ', sortedRecsArray);
     console.log('Recos array => count: ' + sortedRecsArray.length);
@@ -167,7 +166,7 @@ export class ExplorerPage implements OnInit {
   }
 
   // filter recommendation by distance for Card list
-  filterRecoByDistance() {
+  filterCardRecoByDistance() {
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
     // filter recommendation within 100 miles of selected place's location
@@ -318,6 +317,8 @@ export class ExplorerPage implements OnInit {
       this.query = location.name;
       this.map.setCurrentLocation(location.lat, location.lng);
 
+      // close activated info window on Map
+      this.map.closeActiveInfoWindow();
       // reload reco data
       this.reloadRecsDataByPlace();
       this.filterRecoBySelected();
@@ -329,7 +330,7 @@ export class ExplorerPage implements OnInit {
     // move map by selected location
     this.map.moveCenter();
     // filter card data by selected location
-    this.filterRecoByDistance();
+    this.filterCardRecoByDistance();
   }
 
 
@@ -343,8 +344,6 @@ export class ExplorerPage implements OnInit {
     this.focusedSearchBar = false;
   }
 
-  
-
   // enable select all button and disable other friends buttons
   async enableSelectAllFriend() {
     this.selectedAllFriend = true;
@@ -354,6 +353,7 @@ export class ExplorerPage implements OnInit {
 
   }
 
+  // open modal for category filter
   async showFilterModal() {
     const modal = await this.modalController.create({
       component: FilterModalComponent,
@@ -368,6 +368,8 @@ export class ExplorerPage implements OnInit {
       console.log(this.selectedCategory);
       this.filterRecoBySelected();
     });
+    // close activated info window on map
+    await this.map.closeActiveInfoWindow();
     return await modal.present();
   }
 
@@ -388,8 +390,29 @@ export class ExplorerPage implements OnInit {
         this.selectedAllFriend = false;
       }
     }
+    // close opened info window on Map
+    await this.map.closeActiveInfoWindow();
     // filter reco data by selected friend list.
     await this.filterRecoBySelected();
+  }
+
+  // Emitted when clicking a card of place card list.
+  async selectPlaceCard(index, recoId) {
+    this.activatedRecoIndex = index;
+    this.activatedRecoId = recoId;
+    console.log('Changed activate reco on card list: reco id=>' + this.activatedRecoId);
+    console.log('reco index=>' + this.activatedRecoIndex);
+
+    // move map according to position of selected card place
+    const lat = this.recCardArray[index].lat;
+    const lng = this.recCardArray[index].lng;
+    await this.map.setCurrentLocation(lat, lng);
+    await this.map.moveCenter();
+    // get index of marker
+    const mapRecoIndex = this.recMapArray.findIndex ( reco => {
+      return reco.id === recoId;
+    });
+    await this.map.showInfoWindow(mapRecoIndex);
   }
 
 }

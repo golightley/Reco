@@ -48,7 +48,7 @@
   <!-- Place(Recommendation Group) Card List  -->
   <div class="horizontal-card-list" *ngIf="!focusedSearchBar" #recoCardList>
     <div class="list-content">
-      <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem>
+      <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem (click)="selectPlaceCard(inx, suggestion.id)">
         <ion-card class="suggestion-card"  *ngIf="suggestion.visible" [ngClass] ="{'activated-card': inx == activatedRecoIndex}">
           <ion-card-content >
             <div class="reco-picture">
