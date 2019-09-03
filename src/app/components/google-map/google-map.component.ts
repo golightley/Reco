@@ -1,9 +1,7 @@
-import { Component,Input, Renderer2, ElementRef, Inject, OnInit } from '@angular/core';
+import { Component, Input, Renderer2, ElementRef, Inject, OnInit } from '@angular/core';
 import { Platform, Events } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
-import { Plugins, Network }  from '@capacitor/core';
-import { inject } from '@angular/core/testing';
-import { reject } from 'q';
+import { Plugins, Network } from '@capacitor/core';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
 
 const { Geolocation} = Plugins;
@@ -26,10 +24,11 @@ export class GoogleMapComponent implements OnInit {
   public marker: any;
   public firstLoadFailed: boolean = false;
   public mapsLoaded: boolean = false;
-  private newtworkHandler = null;
   public connectionAvailable: boolean = true;
-  public curLocationLat: number;
-  public curLocationLng: number;
+  public curLocationLat: number = 0;
+  public curLocationLng: number = 0;
+  private networkHandler = null;
+  activeInfoWindow: any;
 
   googleMapMarkers: any[] = [];
 
@@ -50,9 +49,9 @@ export class GoogleMapComponent implements OnInit {
       if (typeof (google) === 'undefined') {
         console.log('GoogleMapComponent.google =');
 
-        this.loadSDK().then((res) => {
+        this.loadSDK().then(async (res) => {
           console.log('GoogleMapComponent.SDKLoaded');
-          this.initMap().then((res) => {
+          await this.initMap().then((res) => {
             console.log('GoogleMapComponent.MapInitialized');
             this.enableMap();
             resolve(true);
@@ -77,34 +76,35 @@ export class GoogleMapComponent implements OnInit {
     console.log('Loading Google Maps SDK');
     // connectivity listner will automatically load the SDK when an internet connection is ready
     this.addConnectivityListeners();
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       if(!this.mapsLoaded){
         // first check on mobile using capacitor 
-        Network.getStatus().then((status)=>{
+        Network.getStatus().then((status) => {
           if(status.connected){
-            this.injectSDK().then((res)=>{
+            this.injectSDK().then((res) => {
               resolve(true);
+              console.log(' - End Map load SDK - ');
             },(err) => {
               reject('Not online')
             });
           }
-          else{
+          else {
             reject('Not online');
           }
         },
-          (err) =>{
-            if(navigator.onLine){
-              this.injectSDK().then((res)=>{
+          (err) => {
+            if (navigator.onLine){
+              this.injectSDK().then((res) => {
                 resolve(true);
-              },(err) => {
-                reject(err)
+              } ,( err ) => {
+                reject(err);
               });
             } else{
               reject('Not online');
             }
           }).catch((err) => {console.warn(err);});
         } else{
-          reject('sdk already loaded')
+          reject('sdk already loaded');
         }
     })
   }
@@ -138,13 +138,12 @@ export class GoogleMapComponent implements OnInit {
 
 // called once the sdk is loaded and responsible for setting up the current map
   private async initMap(): Promise <any> {
-    return new Promise ((resolve, reject) =>{
+    return new Promise ((resolve, reject) => {
       Geolocation.getCurrentPosition().then((position) => {
 
-        console.log(position);
         this.curLocationLat = position.coords.latitude;
         this.curLocationLng = position.coords.longitude;
-
+        console.log(this.curLocationLat);
         const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
         const mapOptions = {
@@ -163,8 +162,7 @@ export class GoogleMapComponent implements OnInit {
         };
 
         this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
-        console.log('GoogleMapComponent.InitiMap.infoWindow')
-        console.log(this.infoWindow);
+        console.log('GoogleMapComponent.InitiMap.infoWindow');
         resolve(true);
 
     }, (err) => {
@@ -173,11 +171,10 @@ export class GoogleMapComponent implements OnInit {
     });
   }
 
-  public  moveCenter() {
+  public moveCenter() {
     // move map by current location
     const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
-    console.log('move map', latLng);
-    this.map.setCenter(latLng)
+    this.map.setCenter(latLng);
   }
 
   public getCurrentLocation() {
@@ -191,6 +188,20 @@ export class GoogleMapComponent implements OnInit {
   public setCurrentLocation(lat,lng) {
     this.curLocationLat = lat;
     this.curLocationLng = lng;
+  }
+
+  // show info window of activated marker when clicking a place card of list.
+  public showInfoWindow(markerIndex) {
+    this.closeActiveInfoWindow();
+    this.infoWindows[markerIndex].open(this.map, this.googleMapMarkers[markerIndex]);
+    this.activeInfoWindow = this.infoWindows[markerIndex];
+  }
+  
+  // close active info window
+  public closeActiveInfoWindow() {
+    if (this.activeInfoWindow) {
+      this.activeInfoWindow.close();
+    }
   }
 
   disableMap(): void {
@@ -209,8 +220,8 @@ export class GoogleMapComponent implements OnInit {
 
     console.warn('Capacitor API does not currently have a web implementation. This will only work when running as an ios / android app');
 
-    if (this.platform.is('cordova')){
-      this.newtworkHandler = Network.addListener('networkStatusChange', (status) =>{
+    if (this.platform.is('cordova')) {
+      this.networkHandler = Network.addListener('networkStatusChange', (status) =>{
         if (status.connected){
           if (typeof google === 'undefined' && this.firstLoadFailed) {
             this.init().then((res) => {
@@ -237,7 +248,7 @@ export class GoogleMapComponent implements OnInit {
     const latLng = new google.maps.LatLng(lat, lng);
 
     const marker = new google.maps.Marker({
-      map: this.map, 
+      map: this.map,
       animation: google.maps.Animation.DROP,
       position: latLng
     });
@@ -248,7 +259,7 @@ export class GoogleMapComponent implements OnInit {
       this.marker.setMap(null);
     }
 
-    // add new marker 
+    // add new marker
     this.marker = marker;
 
   }
@@ -268,6 +279,14 @@ export class GoogleMapComponent implements OnInit {
     
     this.deleteMarkers();
     const that = this;
+    const groupIcon = {
+      url: 'assets/images/group_marker.png', // image url
+      scaledSize: new google.maps.Size(26, 45), // scaled size
+    };
+    /* const icon = {
+      url: 'assets/images/group_marker', // image url
+      scaledSize: new google.maps.Size(50, 50), // scaled size
+    }; */
 
     // create a marker and info window for each one
     for (let i = 0; i < recosArray.length; ++i) {
@@ -279,27 +298,39 @@ export class GoogleMapComponent implements OnInit {
 
         // get lat / long for the reco
         const latLng = new google.maps.LatLng(recosArray[i].lat, recosArray[i].lng);
-        const label = this.getLabelString(recosArray[i].userName);
-
-        // create marker and add it to the array
-        this.googleMapMarkers[i] = new google.maps.Marker({
-          position: latLng,
-          map: this.map,
-          animation: google.maps.Animation.DROP,
-          recoId: recosArray[i].id,
-          label: label,
-          // title: 'Hello World!'
-          // icon: fonekingiconsrc
-        });
+        let markerLabel = 'Gr'; // group label
+        if ( recosArray[i].userNames.length === 1 ) {
+          // console.log(recosArray[i].userNames);
+          // create single marker with first character
+          markerLabel = this.getLabelString(recosArray[i].userNames[0]);
+          this.googleMapMarkers[i] = new google.maps.Marker({
+            position: latLng,
+            map: this.map,
+            animation: google.maps.Animation.DROP,
+            recoId: recosArray[i].id,
+            label: markerLabel
+          });
+        } else {
+          // create group marker
+          this.googleMapMarkers[i] = new google.maps.Marker({
+            position: latLng,
+            map: this.map,
+            animation: google.maps.Animation.DROP,
+            recoId: recosArray[i].id,
+            icon: groupIcon
+          });
+        }
 
         // add listener to the map
-        google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( function (marker, i) {
+        google.maps.event.addListener(that.googleMapMarkers[i], 'click', ( (marker, i) => {
           return function() {
+            that.closeActiveInfoWindow();
             that.infoWindows[i].open(that.map, that.googleMapMarkers[i]);
             // publish event
             that.ev.publish('select-marker', {
               reco_id: recosArray[i].id
             });
+            that.activeInfoWindow = that.infoWindows[i];
           };
         })(that.googleMapMarkers[i], i));
     }
@@ -344,14 +375,14 @@ export class GoogleMapComponent implements OnInit {
     this.infoWindows = [];
   }
 
-  formatContent(reco: RecommendationModel){
+  formatContent(reco: RecommendationModel) {
     const content =
       '<div id="siteNotice">' +
       '</div>' +
       '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
       '<div id="bodyContent">' +
-      '<p>recommended by <b>' + reco.userName + '</b></p>' +
-      '<p>' + reco.notes + '</p>' + 
+      '<p>recommended by <b>' + reco.userNames.join() + '</b></p>' +
+      '<p>' + reco.notes[0] + '</p>' +
       '</div>' +
       '</div>';
       // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+

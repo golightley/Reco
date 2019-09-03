@@ -53,8 +53,8 @@ export class FriendService {
           friends = user.data().following;
           // get all users
           await firebase.firestore().collection('userProfile').where('public', '==', true).get()
-            .then( async (docUser) => {
-              docUser.forEach((doc) => {
+            .then( async (docUsers) => {
+              docUsers.forEach((doc) => {
                 if (doc.data().handle) {
                   // if user isn't his friend or himself, add to suggestion
                   if ( (!friends || friends.indexOf(doc.id) === -1) && doc.id !== userId ) {
@@ -65,14 +65,13 @@ export class FriendService {
                       photoURL: doc.data().photoURL
                     };
                     suggestionUsers.push(d);
-                    console.log('Add suggestion user');
+                    // console.log('Add suggestion user');
                   }
                 }
               });
             }).catch (error => {
               console.log('[Get Suggestion] error => ' + error);
-            });
-        
+          });
       });
     });
     console.log('Finish get suggestion');
@@ -80,15 +79,44 @@ export class FriendService {
 
   }
 
-  // search user
+  // search un-followed users
   async searchUsers(keyword) {
-    let result: any[];
-    await this.loadingService.doFirebase ( async () => {
-      await firebase.firestore().collection('userProfile').where('handle', '==', keyword).get().then( async docUser => {
-
+    const users: any[] = [];
+    const userId = firebase.auth().currentUser.uid;
+    let friends: any[] = [];
+    await this.loadingService.doFirebaseWithoutLoading ( async () => {
+      await firebase.firestore().collection('userProfile').doc(userId).get().then( async user => {
+          // get friends
+          friends = user.data().following;
+          // console.log('my friends', friends);
+          // get all users
+          await firebase.firestore().collection('userProfile')
+            .where('handleToSearch', '>=', keyword.toLowerCase())
+            .where('handleToSearch', '<=', keyword.toLowerCase() + '\uf8ff')
+            .get()
+            .then( async (docUsers) => {
+              docUsers.forEach((doc) => {
+                if (doc.data().handle) {
+                  // if user isn't his friend or himself, add to users
+                  if ( (!friends || friends.indexOf(doc.id) === -1) && doc.id !== userId ) {
+                    const d = {
+                      userId: doc.id,
+                      userName: doc.data().handle,
+                      email: doc.data().email,
+                      photoURL: doc.data().photoURL
+                    };
+                    users.push(d);
+                    console.log('Add user');
+                  }
+                }
+              });
+            }).catch (error => {
+              console.log('[Search Users] error => ' + error);
+          });
       });
     });
-    return result;
+    console.log('Finish search users');
+    return users;
   }
 
   // get friends of user

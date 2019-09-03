@@ -15,18 +15,18 @@ export class FriendsPage implements OnInit {
   followings: any[] = [];
   suggestions: any[] = [];
   searchedUsers: any[] = [];
-  query: string;
+  keywordUserName: string;
+  focusedSearchBar: boolean;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private friendService: FriendService,
-    private authService: AuthService,
+    private friendService: FriendService
     ) {
    }
 
   ngOnInit() {
     this.page = 'suggestion';
-    this.query = '';
+    this.keywordUserName = '';
+    this.focusedSearchBar = false;
   }
 
   // get facebook friends
@@ -52,15 +52,20 @@ export class FriendsPage implements OnInit {
   }
 
   // follow user
-  async followUser(userId, index) {
+  async followUser(userId, index, isSuggestion?) {
     const returnId = await this.friendService.followUser(userId);
     if ( returnId ) {
-      this.suggestions.splice(index, 1);
+      if ( isSuggestion ) {
+        this.suggestions.splice(index, 1);
+      } else {
+        this.searchedUsers.splice(index, 1);
+      }
       console.log('Followed selected user');
     } else {
       console.log('Error occurred when follow user!');
     }
   }
+
 
   // un-follow user
   async unFollowUser(userId, index) {
@@ -74,27 +79,25 @@ export class FriendsPage implements OnInit {
   }
 
   // search user
-  async searchFriend(keyword) {
-    // this.searchedUsers = await this.friendService.searchUsers(keyword);
-    console.log(this.query);
-    /* if (this.query.length > 0) {
-      console.log(this.query);
-    } */
+  async searchFriend() {
+    console.log(this.keywordUserName);
+    if (this.keywordUserName.length > 1) {
+      this.searchedUsers = await this.friendService.searchUsers(this.keywordUserName);
+      console.log(this.searchedUsers);
+    } else {
+      this.searchedUsers = [];
+    }
   }
 
+  // Emitted when the search input has focus.
   focusSearchBar() {
-
+    console.log('focused search bar');
+    this.focusedSearchBar = true;
   }
-
+  // Emitted when the cancel button is clicked.
   cancelSearchBar() {
-
+    this.focusedSearchBar = false;
   }
-
-  /* toggleUserFollow(user){
-    console.log("Friends.ToggleUserFollow has been clicked");
-    console.log(user);
-    this.authService.toggleUserFollow(user);
-  } */
 
 
 }

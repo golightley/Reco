@@ -2,19 +2,19 @@ export class RecommendationModel {
   id: string;
   name: string;
   city: string;
-  notes: string;
+  notes: any[];
   lat: number;
   lng: number;
   distance: number;
-  userName: string;
-  userId: string;
-  picture: string;
-  pictureThumb: string;
+  userNames: any[];
+  userIds: any[];
+  pictures: any[];
+  pictureThumbs: any[];
   visible: boolean;
   gtype: any[];
-
-  constructor(id: string, name: string, city: string, notes: string, lat: number, lng: number, gtype: any[],
-              distance: number, userName: string, userId: string, picture: string, pictureThumb: string, visible: boolean) {
+  
+  constructor(id: string, name: string, city: string, lat: number, lng: number, gtype: any[], distance: number,
+              userNames: any[], userIds: any[], notes: any[], pictures: any[], pictureThumbs: any[], visible: boolean) {
     this.id = id;
     this.name = name;
     this.city = city;
@@ -22,10 +22,10 @@ export class RecommendationModel {
     this.lat = lat;
     this.lng = lng;
     this.distance = distance;
-    this.userName = userName;
-    this.userId = userId;
-    this.picture = picture;
-    this.pictureThumb = pictureThumb;
+    this.userNames = userNames;
+    this.userIds = userIds;
+    this.pictures = pictures;
+    this.pictureThumbs = pictureThumbs;
     this.visible = visible;
     this.gtype = gtype;
   }

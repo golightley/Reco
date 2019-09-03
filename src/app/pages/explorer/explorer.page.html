@@ -45,14 +45,14 @@
     <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
   </div>
   <!-- // Google Map -->
-  <!-- Recommendation Card List  : will be replace place card list -->
+  <!-- Place(Recommendation Group) Card List  -->
   <div class="horizontal-card-list" *ngIf="!focusedSearchBar" #recoCardList>
     <div class="list-content">
-      <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem>
+      <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem (click)="selectPlaceCard(inx, suggestion.id)">
         <ion-card class="suggestion-card"  *ngIf="suggestion.visible" [ngClass] ="{'activated-card': inx == activatedRecoIndex}">
           <ion-card-content >
             <div class="reco-picture">
-              <img *ngIf="suggestion.pictureThumb" src="{{suggestion.pictureThumb}}" />
+              <img *ngIf="suggestion.pictureThumbs[0]" src="{{suggestion.pictureThumbs[0]}}" />
             </div>
             <div class="reco-data">
               <h2 class="reco-name">
@@ -65,12 +65,12 @@
               </div>
               <div class="reco-note-div">
                 <p class="reco-note">
-                  {{suggestion.notes}}
+                  {{suggestion.notes[0]}}
                 </p>
               </div>
               <div class="friends-count">
                 <ion-icon name="people" size="small"></ion-icon>
-                &nbsp; 10 of your friends recommend it
+                &nbsp; {{suggestion.userIds.length}} of your friends recommend it
               </div>
             </div>
           </ion-card-content>

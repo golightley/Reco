@@ -7,11 +7,8 @@ import { Plugins } from '@capacitor/core';
 import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
-import { filterByHaversine } from 'src/app/utils/map-utils';
-import { IonContent } from '@ionic/angular';
+import { sortRecosByDistance, filterByHaversine } from 'src/app/utils/map-utils';
 
-import { async } from 'q';
-import { PARAMETERS } from '@angular/core/src/util/decorators';
 const { Geolocation } = Plugins;
 declare var google;
 
@@ -26,8 +23,6 @@ export class ExplorerPage implements OnInit {
   @ViewChild('recoCardList', { read: ElementRef }) private cardListElem: ElementRef;
   @ViewChild('recoCardItem', { read: ElementRef }) private cardItemElem: ElementRef;
 
-  private latitude: number;
-  private longitude: number;
   recMapArray: RecommendationModel[] = [];
   recCardArray: RecommendationModel[] = [];
   friendList: any[] = [];
@@ -49,7 +44,6 @@ export class ExplorerPage implements OnInit {
 
   constructor(
     private ev: Events,
-    private alertCtrl: AlertController,
     private modalController: ModalController,
     private loadingCtrl: LoadingController,
     private explorerService: ExplorerService,
@@ -78,14 +72,9 @@ export class ExplorerPage implements OnInit {
     // await this.getFriends();
     await this.getFriendsAndRecos();
     // make array for cards with recommendations list
-    await this.filterRecoByDistance();
+    await this.filterCardRecoByDistance();
   }
 
-  async ionViewDidEnter() {
-    // this.CardItemWidth = this.cardItemElem.nativeElement.offsetWidth;
-    // console.log('this.CardItemWidth');
-    // console.log(this.CardItemWidth);
-  }
   async activateRecoCard() {
     console.log('Activate reco on card list: reco id=>' + this.activatedRecoId);
     const showIndex = await this.getRecoIndexOnCardList(this.activatedRecoId);
@@ -115,25 +104,58 @@ export class ExplorerPage implements OnInit {
   }
 
   async getFriendsAndRecos() {
-
     // get recommendations of all friends
     const result = await this.explorerService.getFriendsAndRecos();
+    const usersLocation = await this.map.getCurrentLocation();
     this.friendList = result.friends;
-    const recsArray = result.recos;
-    // console.log('recsArray', recsArray);
-
-    
-    recsArray.forEach(data => {
+    const sortedRecsArray = await sortRecosByDistance(result.recos, usersLocation) ;
+    console.log('Returned Recos array => ', result.recos);
+    console.log('Sorted Recos array => ', sortedRecsArray);
+    console.log('Recos array => count: ' + sortedRecsArray.length);
+    let dist = 0;
+    let index = 0;
+    sortedRecsArray.forEach(data => {
       if (!data.data().gType) {
         return;
       }
-      const newRec = new RecommendationModel(data.id, data.data().name, data.data().city, data.data().notes, data.data().location.lat, data.data().location.lng,
-        data.data().gType, 0, data.userName, data.data().user, data.data().picture, data.data().pictureThumb, true);
-      // make array for markers of Map
-      this.recMapArray.push(newRec);
+      // grouping recommendations for the same place
+      if ( data.distance !== dist || dist === 0 ) {
+        const newRec = new RecommendationModel(data.id,
+                                              data.data().name,
+                                              data.data().city,
+                                              data.data().location.lat,
+                                              data.data().location.lng,
+                                              data.data().gType,
+                                              0,
+                                              [data.userName],
+                                              [data.data().user],
+                                              [data.data().notes],
+                                              [data.data().picture],
+                                              [data.data().pictureThumb],
+                                              true);
+        // make array for markers of Map
+        this.recMapArray.push(newRec);
+        index++;
+      } else {
+        const rec = this.recMapArray[index - 1];
+        rec.userNames.push(data.userName);
+        rec.userIds.push(data.data().user);
+        rec.notes.push(data.data().notes);
+        // remove empty picture
+        if ( rec.pictures[rec.pictures.length - 1] === '') {
+          console.log('&&&& slice empty picture &&&&');
+          rec.pictures.shift();
+          rec.pictureThumbs.shift();
+        }
+        rec.pictures.push(data.data().picture); // can't know whose picture.
+        rec.pictureThumbs.push(data.data().pictureThumb);
+        this.recMapArray[index - 1] = rec;
+      }
+      dist = data.distance;
+
     });
-    console.log('Returned Map Recos array => count: ' + this.recMapArray.length);
-    console.log('Map array result=>', this.recMapArray);
+    console.log('Group Map Recos array => count: ' + this.recMapArray.length);
+    console.log('Group Map array result=>', this.recMapArray);
     await this.map.addMarkers(this.recMapArray);
     this.moveScollCardList(0);
   }
@@ -141,17 +163,18 @@ export class ExplorerPage implements OnInit {
   async moveScollCardList(x) {
     this.cardListElem.nativeElement.scrollTo(x, 0, 5000);
   }
+
   // filter recommendation by distance for Card list
-  filterRecoByDistance() {
+  async filterCardRecoByDistance() {
     const usersLocation = this.map.getCurrentLocation();
     console.log('current usersLocation', usersLocation);
     // filter recommendation within 100 miles of selected place's location
-    this.recCardArray = filterByHaversine(this.recMapArray, usersLocation, this.FILTER_DISTANCE);
+    this.recCardArray = await filterByHaversine(this.recMapArray, usersLocation, this.FILTER_DISTANCE);
     this.recCardArray.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
-    console.log('Filtered Card result by distance => count: ' + this.recCardArray.length);
-    console.log('Card array result=>', this.recCardArray);
+    console.log('Sorted Card result by distance => count: ' + this.recCardArray.length);
+    console.log('Sorted Card result by distance =>', this.recCardArray);
   }
 
   // filter recommendation of Card list and Map markers by select friend and category
@@ -159,11 +182,11 @@ export class ExplorerPage implements OnInit {
     this.showDealyLoading(400);
     console.log('-- Filter reco data by category and friend --');
     // filter recommendation map array
-    this.changeVisibleBySelected(this.recMapArray);
+    await this.changeVisibleBySelected(this.recMapArray);
     // console.log('Changed map array:', this.recMapArray);
 
     // filter recommendation card array
-    this.changeVisibleBySelected(this.recCardArray);
+    await this.changeVisibleBySelected(this.recCardArray);
     // console.log('Changed card array:', this.recCardArray);
    
     // update Google Map Markers
@@ -173,35 +196,46 @@ export class ExplorerPage implements OnInit {
   // change visible value by selected friend and category
   async changeVisibleBySelected(recAry) {
     await recAry.map(async (rec) => {
-      const friend = this.friendList.find( (f) => {
-          return f.userId === rec.userId;
-      });
 
       if (this.selectedCategory === 'everything') { // if selected 'everything' category
         if ( this.selectedAllFriend ) { // if selected 'All' friend
           rec.visible = true;
         } else { // if selected any friend
-          if ( friend !== undefined) { // recommendation of friend
-            rec.visible = friend.selected;
+
+          if ( await this.isSelectedByAnyFriend(rec.userIds) ) { // recommendation of friend
+            rec.visible = true;
           } else {
-              rec.visible = false;
+            rec.visible = false;
           }
         }
       } else { // if selected any category
         const catIndex = rec.gtype.indexOf(this.selectedCategory);
         if ( this.selectedAllFriend && catIndex !== -1) { // if selected 'All' friend
           rec.visible = true;
-        } else {
-          if ( friend !== undefined && catIndex !== -1) {
-            rec.visible = friend.selected;
+        } else { // if selected any friend
+
+          if ( await this.isSelectedByAnyFriend(rec.userIds)  && catIndex !== -1 ) { // recommendation of friend
+            rec.visible = true;
           } else {
             rec.visible = false;
           }
         }
       }
+      // console.log(rec.visible);
     });
   }
 
+  async isSelectedByAnyFriend(userIds) {
+    for ( let i=0; i < userIds.length; i++ ) {
+      const friend = this.friendList.find( (f) => {
+        return f.userId === userIds[i];
+      });
+      if ( friend.selected ) {
+        return true;
+      }
+    }
+    return false;
+  }
   // search place in search box
   searchPlace() {
     try {
@@ -282,6 +316,8 @@ export class ExplorerPage implements OnInit {
       this.query = location.name;
       this.map.setCurrentLocation(location.lat, location.lng);
 
+      // close activated info window on Map
+      this.map.closeActiveInfoWindow();
       // reload reco data
       this.reloadRecsDataByPlace();
       this.filterRecoBySelected();
@@ -293,7 +329,7 @@ export class ExplorerPage implements OnInit {
     // move map by selected location
     this.map.moveCenter();
     // filter card data by selected location
-    this.filterRecoByDistance();
+    this.filterCardRecoByDistance();
   }
 
 
@@ -305,6 +341,35 @@ export class ExplorerPage implements OnInit {
   // Emitted when the cancel button is clicked.
   cancelSearchBar() {
     this.focusedSearchBar = false;
+  }
+
+  // enable select all button and disable other friends buttons
+  async enableSelectAllFriend() {
+    this.selectedAllFriend = true;
+    await this.friendList.map (async (friend) => {
+      friend.selected = false;
+    });
+
+  }
+
+  // open modal for category filter
+  async showFilterModal() {
+    const modal = await this.modalController.create({
+      component: FilterModalComponent,
+      componentProps: {
+        selCategory: this.selectedCategory
+      }
+    });
+    modal.onDidDismiss().then((param) => {
+      if (param !== null && param.data) {
+        this.selectedCategory = param.data.selCategory;
+      }
+      console.log(this.selectedCategory);
+      this.filterRecoBySelected();
+    });
+    // close activated info window on map
+    await this.map.closeActiveInfoWindow();
+    return await modal.present();
   }
 
   // Emitted when the friend item is clicked on friend list.
@@ -324,96 +389,29 @@ export class ExplorerPage implements OnInit {
         this.selectedAllFriend = false;
       }
     }
+    // close opened info window on Map
+    await this.map.closeActiveInfoWindow();
     // filter reco data by selected friend list.
     await this.filterRecoBySelected();
   }
 
-  // enable select all button and disable other friends buttons
-  async enableSelectAllFriend() {
-    this.selectedAllFriend = true;
-    await this.friendList.map (async (friend) => {
-      friend.selected = false;
-    });
+  // Emitted when clicking a card of place card list.
+  async selectPlaceCard(index, recoId) {
+    this.activatedRecoIndex = index;
+    this.activatedRecoId = recoId;
+    console.log('Changed activate reco on card list: reco id=>' + this.activatedRecoId);
+    console.log('reco index=>' + this.activatedRecoIndex);
 
+    // move map according to position of selected card place
+    const lat = this.recCardArray[index].lat;
+    const lng = this.recCardArray[index].lng;
+    await this.map.setCurrentLocation(lat, lng);
+    await this.map.moveCenter();
+    // get index of marker
+    const mapRecoIndex = this.recMapArray.findIndex ( reco => {
+      return reco.id === recoId;
+    });
+    await this.map.showInfoWindow(mapRecoIndex);
   }
-
-  async showFilterModal() {
-    const modal = await this.modalController.create({
-      component: FilterModalComponent,
-      componentProps: {
-        selCategory: this.selectedCategory
-      }
-    });
-    modal.onDidDismiss().then((param) => {
-      if (param !== null && param.data) {
-        this.selectedCategory = param.data.selCategory;
-      }
-      console.log(this.selectedCategory);
-      this.filterRecoBySelected();
-    });
-    return await modal.present();
-  }
-
-  /* setLocation(): void {
-    this.loadingCtrl.create({
-      message: 'Setting current location'
-
-    }).then((overlay) => {
-      overlay.present();
-      Geolocation.getCurrentPosition().then((postition) => {
-        overlay.dismiss();
-
-        this.latitude = postition.coords.latitude;
-        this.longitude = postition.coords.longitude;
-
-        this.map.changeMarker(this.latitude, this.longitude);
-
-        let data = {
-          latitude: this.latitude,
-          longitude: this.longitude
-        };
-
-        this.alertCtrl.create({
-          header: 'location set',
-          message: 'You are good!',
-          buttons: [
-            {
-              text: 'ok'
-            }
-          ]
-        }).then((alert) => {
-          alert.present();
-        });
-
-      }, (err) => {
-        console.log(err);
-        overlay.dismiss();
-      });
-    });
-  } */
-
-  /* takeMeHome(): void {
-    if (!this.latitude || !this.longitude) {
-      this.alertCtrl.create({
-        header: 'No where to go',
-        message: 'No location set!',
-        buttons: [
-          {
-            text: 'ok'
-          }
-        ]
-      }).then((alert) => {
-        alert.present();
-      });
-    } else {
-      const destination = this.latitude + ',' + this.longitude;
-      if (this.platform.is('ios')) {
-        window.open('maps://?q=' + destination + '_system')
-      } else {
-        const label = encodeURI('My location')
-        window.open('geo:0,0?q=' + destination + '(' + label + ')', '_system')
-      }
-    }
-  } */
 
 }

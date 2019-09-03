@@ -87,21 +87,22 @@ export class AuthService {
     // register username
     async registerUsername(userId: string, handle: string): Promise<any> {
       const handleName = handle.replace(' ', '_');
-      const result = await this.loadingService.doFirebase(async() => {
+      const result = await this.loadingService.doFirebase( async() => {
         return new Promise<any> ((resolve, reject) => {
           firebase
             .firestore()
             .collection('userProfile')
             .where('handle', '==', handleName)
-            .get().then(async function (res) {
+            .get().then(async(res) => {
               if (res.size === 0) {
                 // update user profile
                 firebase
                   .firestore()
                   .collection('userProfile')
                   .doc(userId).update({
-                    handle: handleName
-                }).then(res => {
+                    handle: handleName,
+                    handleToSearch: handleName.toLowerCase()
+                }).then(() => {
                   resolve('success');
                 }).catch(error => {
                     console.log('[Register Username]: error=> ', error);
@@ -110,7 +111,7 @@ export class AuthService {
               } else {
                 resolve('duplicate');
               }
-            }).catch(error => {
+            }, reject).catch(error => {
               console.log('[Register Username]: error=> ', error);
               reject(error);
             });
