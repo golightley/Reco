@@ -69,7 +69,7 @@ export class CreatePlaceModalPage implements OnInit {
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
       this.service = new google.maps.places.PlacesService(div);
-    } catch{
+    } catch {
 
     }
   }
@@ -80,7 +80,7 @@ export class CreatePlaceModalPage implements OnInit {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
     this.autocompleteService = new google.maps.places.AutocompleteService()
-    this.autocompleteService = new google.maps.places.PlacesService(div)
+    this.autocompleteService = new google.maps.places.PlacesService(div);
     // this.searchDisabled = false;
   }
 
@@ -147,10 +147,10 @@ export class CreatePlaceModalPage implements OnInit {
 
       this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
         console.log('CreateModalPage.SearchPlace.Autocomplete');
-        console.log(predictions)
-        console.log(status)
+        console.log(predictions);
+        console.log(status);
 
-        if (status == google.maps.places.PlacesServiceStatus.OK && predictions) {
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
 
           this.places = [];
 
@@ -180,8 +180,8 @@ export class CreatePlaceModalPage implements OnInit {
 
     this.service.getDetails({ placeId: place.place_id }, (details) => {
       console.log('CreatePlaceModal.SelectPlace');
-      console.log(details)
-      console.log(details.address_components[3].short_name)
+      console.log(details);
+      console.log(details.address_components[3].short_name);
       location.name = details.name;
       location.lat = details.geometry.location.lat();
       location.lng = details.geometry.location.lng();

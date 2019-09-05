@@ -181,6 +181,7 @@ export class ExplorerService {
             // console.log('Got recos data');
             await Promise.all(queryData.docs.map(async (rec) => {
               rec.userName = friend.userName;
+              rec.photoURL = friend.photoURL;
               recsArray.push(rec);
               // console.log('friend recos push');
             }));
