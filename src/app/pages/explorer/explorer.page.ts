@@ -1,13 +1,15 @@
+import { RecoPlaceModalComponent } from './reco-place-modal/reco-place-modal.component';
 import { FilterModalComponent } from './filter-modal/filter-modal.component';
 import { FriendService } from 'src/app/services/friend.service';
 
 import { Component, ViewChild, OnInit, Renderer2, ElementRef } from '@angular/core';
-import { AlertController, LoadingController, Platform, ModalController, Events } from '@ionic/angular';
+import { LoadingController, ModalController, Events } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
-import { sortRecosByDistance, filterByHaversine } from 'src/app/utils/map-utils';
+import * as moment from 'moment';
+import { filterByHaversine, getDistanceByLocation } from 'src/app/utils/map-utils';
 
 const { Geolocation } = Plugins;
 declare var google;
@@ -108,15 +110,28 @@ export class ExplorerPage implements OnInit {
     const result = await this.explorerService.getFriendsAndRecos();
     const usersLocation = await this.map.getCurrentLocation();
     this.friendList = result.friends;
-    const sortedRecsArray = await sortRecosByDistance(result.recos, usersLocation) ;
     console.log('Returned Recos array => ', result.recos);
-    console.log('Sorted Recos array => ', sortedRecsArray);
-    console.log('Recos array => count: ' + sortedRecsArray.length);
+
+    // Get distance and sort by distance
+    const sortedRecsArray = await getDistanceByLocation(result.recos, usersLocation) ;
+    sortedRecsArray.sort((locationA, locationB) => {
+      return locationA.distance - locationB.distance;
+    });
+    // console.log('Returned sorted array=> ', sortedRecsArray);
+    // console.log('Recos array => count: ' + sortedRecsArray.length);
+
+    // Generate recMapArray
+
     let dist = 0;
     let index = 0;
     sortedRecsArray.forEach(data => {
       if (!data.data().gType) {
         return;
+      }
+      const createdAt = moment.unix(data.data().timestamp.seconds).format('MMM YYYY');
+      let userPhoto = '';
+      if (data.data().photoURL) {
+        userPhoto = data.data().photoURL;
       }
       // grouping recommendations for the same place
       if ( data.distance !== dist || dist === 0 ) {
@@ -129,9 +144,13 @@ export class ExplorerPage implements OnInit {
                                               0,
                                               [data.userName],
                                               [data.data().user],
+                                              [userPhoto],
                                               [data.data().notes],
                                               [data.data().picture],
                                               [data.data().pictureThumb],
+                                              [createdAt],
+                                              data.data().phone,
+                                              data.data().website,
                                               true);
         // make array for markers of Map
         this.recMapArray.push(newRec);
@@ -140,15 +159,19 @@ export class ExplorerPage implements OnInit {
         const rec = this.recMapArray[index - 1];
         rec.userNames.push(data.userName);
         rec.userIds.push(data.data().user);
+        rec.userPhotoURLs.push(userPhoto);
         rec.notes.push(data.data().notes);
+        rec.createdAts.push(createdAt);
         // remove empty picture
         if ( rec.pictures[rec.pictures.length - 1] === '') {
           console.log('&&&& slice empty picture &&&&');
           rec.pictures.shift();
           rec.pictureThumbs.shift();
         }
-        rec.pictures.push(data.data().picture); // can't know whose picture.
-        rec.pictureThumbs.push(data.data().pictureThumb);
+        if (data.data().picture) {
+          rec.pictures.push(data.data().picture); // can't know whose picture.
+          rec.pictureThumbs.push(data.data().pictureThumb);
+        }
         this.recMapArray[index - 1] = rec;
       }
       dist = data.distance;
@@ -397,10 +420,13 @@ export class ExplorerPage implements OnInit {
 
   // Emitted when clicking a card of place card list.
   async selectPlaceCard(index, recoId) {
+
+    // select marker
     this.activatedRecoIndex = index;
     this.activatedRecoId = recoId;
     console.log('Changed activate reco on card list: reco id=>' + this.activatedRecoId);
     console.log('reco index=>' + this.activatedRecoIndex);
+    console.log(this.recCardArray[index]);
 
     // move map according to position of selected card place
     const lat = this.recCardArray[index].lat;
@@ -412,6 +438,21 @@ export class ExplorerPage implements OnInit {
       return reco.id === recoId;
     });
     await this.map.showInfoWindow(mapRecoIndex);
+
+    // open detail modal
+    const modal = await this.modalController.create({
+      component: RecoPlaceModalComponent,
+      componentProps: {
+        placeData: this.recCardArray[index]
+      }
+    });
+    modal.onDidDismiss().then((param) => {
+      if (param !== null && param.data) {
+        // this.selectedCategory = param.data.selCategory;
+      }
+      console.log('closed modal');
+    });
+    return await modal.present();
   }
 
 }
