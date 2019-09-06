@@ -175,7 +175,6 @@ export class ExplorerPage implements OnInit {
         this.recMapArray[index - 1] = rec;
       }
       dist = data.distance;
-
     });
     console.log('Group Map Recos array => count: ' + this.recMapArray.length);
     console.log('Group Map array result=>', this.recMapArray);

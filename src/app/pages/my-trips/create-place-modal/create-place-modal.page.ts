@@ -7,7 +7,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { generateThumbImage } from 'src/app/utils/image-utils';
+import { generateThumbImage, getImageSize } from 'src/app/utils/image-utils';
 
 declare var google;
 
@@ -41,10 +41,12 @@ export class CreatePlaceModalPage implements OnInit {
 
   picture: SafeResourceUrl;
   toast: any;
+  originalPicture: string;
   pictureDataUrl; string;
   pictureDataThumbUrl: string;
-  ThumbnailSize = 300;
-
+  ThumbnailSize = 500;
+  PictureSize = 1500;
+  limitFileSize = 1024; // KB
 
   constructor(
     private modalController: ModalController,
@@ -99,10 +101,22 @@ export class CreatePlaceModalPage implements OnInit {
       });
 
       this.picture = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl));
-      this.pictureDataUrl = image.dataUrl;
+      this.originalPicture = image.dataUrl;
       // console.log('****image data*****');
       // console.log(this.pictureDataUrl);
-
+      console.log('****image size*****');
+      console.log(getImageSize(this.originalPicture));
+      // check image file size
+      if (getImageSize(this.originalPicture) > this.limitFileSize) {
+        // compress image
+        generateThumbImage(this.originalPicture, this.PictureSize, this.PictureSize, 1, data => {
+          this.pictureDataUrl = data;
+          console.log('****compressed image data*****');
+          // console.log(this.pictureDataUrl);
+        });
+      } else {
+        this.pictureDataUrl = this.originalPicture;
+      }
       // create a thumbnail
       generateThumbImage(this.pictureDataUrl, this.ThumbnailSize, this.ThumbnailSize, 1, data => {
         this.pictureDataThumbUrl = data;

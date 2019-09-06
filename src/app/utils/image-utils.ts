@@ -30,7 +30,7 @@
 
   const getImageSize = (dataUrl) => {
     const head = 'data:image/jpeg;base64,';
-    return ((dataUrl.length - head.length) * 3 / 4 / (1024 * 1024)).toFixed(4);
+    return parseFloat(((dataUrl.length - head.length) * 3 / 4 / (1024)).toFixed(4));
   };
 
   export {
