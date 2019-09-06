@@ -1,0 +1,66 @@
+.modal-content {
+    ion-back-button {
+        padding-left: 0px;
+        --icon-font-size: 24px !important;
+    }
+    
+    ion-buttons {
+        .back-button-icon {
+            font-size: 24px !important;
+        }
+    }
+    .photo-header {
+        position: absolute;
+        left: 5px;
+        top: 10px;
+        z-index: 10;
+    }
+    .no-photo-header{        
+        margin: 10px 5px;        
+        height: 30px;
+    }
+    .photo-slider {
+        width: 100%;
+        height: 200px;
+        --bullet-background: white;
+        --bullet-background-active: white;
+        box-shadow: 0 3px 3px rgba(100, 100, 100, 0.5) !important;
+        img {
+            width: 100%;
+            object-fit: cover;
+        }        
+    }
+    .place-data {
+        padding: 0 20px 10px 20px;        
+        border-bottom: 1px solid rgba(180, 180, 180, 0.5);
+        box-shadow: 0 2px 2px rgba(180, 180, 180, 0.4) !important;
+        .place-detail-item {
+            --min-height: 14px;
+            font-size: 14px;
+            ion-icon {                
+                font-size: 18px;
+                margin-right: 15px;
+            }
+            ion-label {
+                margin-top: 4px;
+                margin-bottom: 4px;
+                color: rgb(100,100,100);
+            }
+        }
+    }    
+
+    .reco-data {
+        padding-top:4px;
+        .reco-card {
+            margin: 12px;
+            .createdAt {
+                font-size: 14px;
+            }
+            .notes {
+                margin-top: 0px;
+                padding: 0px 20px;
+            }
+        }
+    }
+
+}

@@ -68,10 +68,10 @@ export class MytripService {
             'domainUriPrefix': 'https://link.reco.com',
             'link': 'https://reco.com/recos',
             'androidInfo': {
-              'androidPackageName': 'com.bowieventures.recoapp'
+              'androidPackageName': 'com.bowieventures.recotravelapp'
             },
             'iosInfo': {
-              'iosBundleId': 'com.bowieventures.recoapp'
+              'iosBundleId': 'com.bowieventures.recotravelapp'
             }
           }
         },

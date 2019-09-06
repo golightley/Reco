@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { ExplorerPage } from './explorer.page';
 import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 import {FilterModalComponent} from './filter-modal/filter-modal.component';
+import { RecoPlaceModalComponent } from './reco-place-modal/reco-place-modal.component';
 const routes: Routes = [
   {
     path: '',
@@ -23,10 +24,11 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
-    ExplorerPage, 
+    ExplorerPage,
     GoogleMapComponent,
-    FilterModalComponent
+    FilterModalComponent,
+    RecoPlaceModalComponent
   ],
-  entryComponents: [FilterModalComponent]
+  entryComponents: [FilterModalComponent, RecoPlaceModalComponent]
 })
 export class ExplorerPageModule {}
