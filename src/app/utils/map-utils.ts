@@ -21,7 +21,7 @@
       Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const d = R * c;
-    return d.toFixed(2);
+    return parseFloat(d.toFixed(2));
   }
 
   const filterByHaversine = async (recList, userLocation, filterDistance) => {
@@ -45,7 +45,7 @@
     return filterList;
   };
 
-  const sortRecosByDistance = async (recosList, userLocation) => {
+  const getDistanceByLocation = async (recosList, userLocation) => {
     const sortedList = [];
     recosList.map(async (rec) => {
       const placeLocation = {
@@ -61,15 +61,11 @@
       );
       sortedList.push(rec);
     });
-    sortedList.sort((locationA, locationB) => {
-      return locationA.distance - locationB.distance;
-    });
-    console.log('return sorted list', sortedList);
     return sortedList;
   };
 
   export {
     filterByHaversine,
-    sortRecosByDistance
+    getDistanceByLocation
   }
 

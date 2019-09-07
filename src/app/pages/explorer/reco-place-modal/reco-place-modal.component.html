@@ -1,0 +1,55 @@
+<ion-content *ngIf="placeData" class="modal-content">
+  <div class="photo-header" *ngIf="placeData.pictures.length>0 && placeData.pictures[0] !==''">
+    <ion-buttons slot="start">
+        <ion-back-button class="back-button" text="" icon="/assets/images/back-white.svg" (click)="dismiss()" defaultHref="/tabs/explorer"></ion-back-button>
+    </ion-buttons>
+  </div>
+  <div class="no-photo-header" *ngIf="placeData.pictures.length===0 || placeData.pictures[0] ==''">
+      <ion-buttons slot="start">
+          <ion-back-button class="back-button" text="" icon="/assets/images/back-black.svg" (click)="dismiss()" defaultHref="/tabs/explorer"></ion-back-button>
+      </ion-buttons>
+  </div>
+  <ion-slides *ngIf="placeData.pictures.length>0 && placeData.pictures[0] !==''" class="photo-slider" #mySlider (ionSlidesDidLoad)="slidesDidLoad(mySlider)" pager="true" loop="true" [options] ="sliderOpts" >
+    <ion-slide *ngFor="let picture of placeData.pictures">
+      <div class="swiper-zoom-container"><img [src]="picture" /></div> 
+    </ion-slide>
+  </ion-slides>
+  
+  <div class="place-data">
+    <h2>{{placeData.name}}</h2>
+    <ion-item class="place-detail-item" lines="none">
+        <ion-label>
+            <ion-icon name="pin"></ion-icon>
+            {{placeData.city}}
+        </ion-label>        
+    </ion-item>
+    <ion-item class="place-detail-item" lines="none">
+        <ion-label>
+            <ion-icon name="call"></ion-icon>
+            {{placeData.phone}}
+        </ion-label>        
+    </ion-item>
+    <ion-item class="place-detail-item" lines="none">
+        <ion-label>
+            <ion-icon name="home"></ion-icon>
+            {{placeData.website}}
+        </ion-label>        
+    </ion-item>
+  </div>
+  <div class="reco-data">
+      <ion-list>
+      <ion-card class="reco-card" *ngFor="let userName of placeData.userNames; let i = index">
+          <ion-item  class="user-item" lines="none">
+              <ion-avatar slot="start" class="user-avatar">
+                  <img src="{{ placeData.userPhotoURLs[i] || '/assets/images/avatar.svg' }}" />
+              </ion-avatar>
+              <ion-label>
+                <h2 class="user-name">{{userName}}</h2>
+                <p class="createdAt">{{placeData.createdAts[i]}}</p>
+              </ion-label>              
+          </ion-item>
+          <p class="notes">{{placeData.notes[i]}}</p>
+      </ion-card>
+      </ion-list>
+  </div>
+</ion-content>

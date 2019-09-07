@@ -56,7 +56,7 @@
   <ion-button 
     (click)="createNewRec()" 
     expand="full" 
-    [disabled]="!queryPlace || !city" 
+    [disabled]="!queryPlace || !city || !notes" 
     class="footer-button" 
     >
       Done

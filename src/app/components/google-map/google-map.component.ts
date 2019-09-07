@@ -276,18 +276,13 @@ export class GoogleMapComponent implements OnInit {
   // function used by location page to add reco markers and info window 
   addMarkers(recosArray: RecommendationModel[]) {
 
-    
     this.deleteMarkers();
     const that = this;
     const groupIcon = {
       url: 'assets/images/group_marker.png', // image url
       scaledSize: new google.maps.Size(26, 45), // scaled size
     };
-    /* const icon = {
-      url: 'assets/images/group_marker', // image url
-      scaledSize: new google.maps.Size(50, 50), // scaled size
-    }; */
-
+    
     // create a marker and info window for each one
     for (let i = 0; i < recosArray.length; ++i) {
         // create the info window for each

@@ -2,10 +2,10 @@
 <resources>
     <string name="app_name">Reco</string>
     <string name="title_activity_main">Reco</string>
-    <string name="package_name">com.bowieventures.recoapp</string>
-    <string name="fileprovider_authority">com.bowieventures.recoapp.fileprovider</string>
-    <string name="custom_url_scheme">com.bowieventures.recoapp</string>
-    <string name="facebook_app_id">418067495458213</string>
+    <string name="package_name">com.bowieventures.recotravelapp</string>
+    <string name="fileprovider_authority">com.bowieventures.recotravelapp.fileprovider</string>
+    <string name="custom_url_scheme">com.bowieventures.recotravelapp</string>
+    <string name="facebook_app_id">1349052888575230</string>
     <string name="fb_app_name">Reco</string>
-    <string name="fb_login_protocol_scheme">fb418067495458213</string>
+    <string name="fb_login_protocol_scheme">fb1349052888575230</string>
 </resources>
