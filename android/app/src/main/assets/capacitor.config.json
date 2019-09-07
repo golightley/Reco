@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "appId": "com.bowieventures.recoapp1",
-=======
   "appId": "com.bowieventures.recotravelapp",
->>>>>>> db1f026958dc0ce64abbeccb280769cf722cd80c
   "appName": "Reco",
   "bundledWebRuntime": false,
   "npmClient": "npm",
