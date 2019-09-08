@@ -120,11 +120,11 @@
     white-space: nowrap;
     .friend-item{        
       display: inline-flex;
-      // border: 1px solid #ddd;
-      border-radius: 5px;
+       border: 1px solid #ddd;
+      border-radius: 25px;
       padding: 3px 10px; 
       background: #ffffff;
-      box-shadow: 0 0 4px rgba(100, 100, 100, 0.5) !important;
+      // box-shadow: 0 0 4px rgba(100, 100, 100, 0.5) !important;
       margin: 8px 5px;  
       height: 34px;              
       .avatar {
@@ -154,7 +154,7 @@
     // selected friend
     .selected {
       background: rgb(255, 235, 59);
-      box-shadow: 0 0 8px rgba(100, 100, 100, 0.6) !important;
+      // box-shadow: 0 0 8px rgba(100, 100, 100, 0.6) !important;
     }
   }
 }

@@ -6,6 +6,26 @@
         <img class="filter-icon" src="assets/images/filter.png" (click)="showFilterModal()"/>  
     </div>
   </ion-toolbar>
+  <div class="horizontal-friend-list" *ngIf="!focusedSearchBar">
+    <div class="list-item">
+      <div class="friend-item" (click)="selectFriend(-1)" [ngClass] ="{selected: selectedAllFriend}">
+          <div class="username">All</div>
+      </div>
+      <div class="friend-item"       
+          [ngClass] ="{selected: friend.selected}"  
+          (click)="selectFriend(i)"
+          *ngFor="let friend of friendList; let i = index" 
+           >
+        <!-- <div class="avatar">
+            <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.svg' }}" />
+        </div> -->
+        <div class="username">
+            {{friend.userName}}
+        </div>
+      </div>
+      
+    </div>
+  </div>
 </ion-header>
 <ion-content class="explorer-content">
 
@@ -18,26 +38,7 @@
     </ion-item>
   </ion-list>
   <!-- Friend List -->
-  <div class="horizontal-friend-list" *ngIf="!focusedSearchBar">
-    <div class="list-item">
-      <div class="friend-item" (click)="selectFriend(-1)" [ngClass] ="{selected: selectedAllFriend}">
-          <div class="username">All</div>
-      </div>
-      <div class="friend-item"       
-          [ngClass] ="{selected: friend.selected}"  
-          (click)="selectFriend(i)"
-          *ngFor="let friend of friendList; let i = index" 
-           >
-        <div class="avatar">
-            <img class="user-avatar-photo" src="{{ friend?.photoURL || '/assets/images/avatar.svg' }}" />
-        </div>
-        <div class="username">
-            {{friend.userName}}
-        </div>
-      </div>
-      
-    </div>
-  </div>
+
   <!-- // Friend List -->
   <!-- Google Map -->
   <div class="map" [ngClass]=" {map_show: !focusedSearchBar, map_hidden: focusedSearchBar} ">
