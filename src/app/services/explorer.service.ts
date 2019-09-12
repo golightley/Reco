@@ -49,6 +49,9 @@ export class ExplorerService {
         }
         if ( pictureDataThumbUrl ) {
           pictureThumbUrl = await this.uploadPicture(pictureDataThumbUrl, true);
+          if(pictureThumbUrl==''){
+            pictureUrl = await this.uploadPicture(pictureDataUrl, false);
+          }
           console.log('pictureThumbUrl:' + pictureThumbUrl);
         }
 

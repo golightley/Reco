@@ -19,7 +19,7 @@
   <div class="footer" slot="fixed">
     <div class="operations">
       <button type="button" class="op-button" *ngIf="_backdropOn" (click)="addReco()">Add Reco</button>
-      <button type="button" class="op-button send-button" *ngIf="_backdropOn" (click)="sendReco()">Send to friend</button>
+      <!-- <button type="button" class="op-button send-button" *ngIf="_backdropOn" (click)="sendReco()">Send to friend</button> -->
       <div class="more-button" (click)="showMoreActions()">
         <ion-icon name="add" mode="md" *ngIf="!_backdropOn"></ion-icon>
         <ion-icon name="close" mode="md" *ngIf="_backdropOn"></ion-icon>

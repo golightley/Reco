@@ -107,16 +107,16 @@ export class CreatePlaceModalPage implements OnInit {
       console.log('****image size*****');
       console.log(getImageSize(this.originalPicture));
       // check image file size
-      if (getImageSize(this.originalPicture) > this.limitFileSize) {
+      // if (getImageSize(this.originalPicture) > this.limitFileSize) {
         // compress image
         generateThumbImage(this.originalPicture, this.PictureSize, this.PictureSize, 1, data => {
           this.pictureDataUrl = data;
           console.log('****compressed image data*****');
           // console.log(this.pictureDataUrl);
         });
-      } else {
-        this.pictureDataUrl = this.originalPicture;
-      }
+      // } else {
+      //   this.pictureDataUrl = this.originalPicture;
+      // }
       // create a thumbnail
       generateThumbImage(this.pictureDataUrl, this.ThumbnailSize, this.ThumbnailSize, 1, data => {
         this.pictureDataThumbUrl = data;
@@ -225,7 +225,9 @@ export class CreatePlaceModalPage implements OnInit {
     } */
     const result = await this.explorerService.createNewRecommendation(
       this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
-      this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
+      // this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
+      this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataUrl);
+
     console.log(result);
     if (result) {
       await this.presentToast('Successfully saved!');

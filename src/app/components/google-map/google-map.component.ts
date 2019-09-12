@@ -377,8 +377,8 @@ export class GoogleMapComponent implements OnInit {
       '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
       '<div id="bodyContent">' +
       '<p>recommended by <b>' + reco.userNames.join() + '</b></p>' +
-      '<p>' + reco.notes[0] + '</p>' +
-      '</div>' +
+      // '<p>' + reco.notes[0] + '</p>' +
+      // '</div>' +
       '</div>';
       // '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
       // 'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
