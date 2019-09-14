@@ -5,7 +5,15 @@
 </ion-header>
 
 <ion-content>
-<ion-item >        
-    <ion-button (click)="logout()"><ion-icon slot="icon-only" name="exit"></ion-icon>Log out</ion-button>      
-</ion-item>
+    <ion-card class="card-background-page">
+        <img src="/assets/images/avatar.svg"/>
+        <div class="card-title">{{email}}</div>
+        <!-- <div class="card-subtitle">41 Listings</div> -->
+      </ion-card>
+   
 </ion-content>
+
+<ion-button 
+expand="full"     
+class="footer-button"     
+(click)="logout()">Log out</ion-button>   

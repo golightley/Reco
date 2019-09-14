@@ -128,6 +128,10 @@ export class AuthService {
       return firebase.auth().signOut();
     }
 
+    getMyUserName(){
+      return firebase.auth().currentUser;
+    }
+
     getUsersWithName() {
       const users: any[] = [];
       // pull each question from firebase

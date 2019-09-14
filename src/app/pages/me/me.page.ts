@@ -7,10 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./me.page.scss'],
 })
 export class MePage implements OnInit {
+  email: string;
+
 
   constructor(
     private authService: AuthService
-  ) { }
+  ) { 
+   var currentUser:any  = this.authService.getMyUserName();
+   console.log(currentUser)
+    this.email = currentUser.email;
+
+
+  }
 
   ngOnInit() {
   }
@@ -21,3 +29,5 @@ export class MePage implements OnInit {
 
   }
 }
+
+
