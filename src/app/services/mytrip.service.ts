@@ -52,6 +52,28 @@ export class MytripService {
     return result;
   }
 
+
+    // delerte reco 
+    async deleteReco(recoId) {
+      const result = await this.loadingService.doFirebase(async () => {
+        return new Promise<any>(async (resolve, reject) => {
+            firebase.firestore().collection("recommendations").doc(recoId).delete().then(function() {
+              console.log("Document successfully deleted!");
+              resolve();
+
+          }).catch(function(error) {
+            console.error("Error removing document: ", error);
+            reject(error);
+          });
+
+        });
+      });
+      return result;
+    }
+  
+
+
+
   async getFdlURL(selRecos) {
     const apiKey = environment.firebase.apiKey;
     const headers = new HttpHeaders({

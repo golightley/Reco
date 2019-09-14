@@ -2,6 +2,7 @@ import { MytripService } from './../../services/mytrip.service';
 import { Plugins } from '@capacitor/core';
 import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from 'src/app/services/explorer.service';
+import { ActionSheetController } from '@ionic/angular';
 
 // for the modal 
 import { ModalController, AlertController } from '@ionic/angular';
@@ -25,7 +26,8 @@ export class MyTripsPage implements OnInit {
     private explorerService: ExplorerService,
     public alertCtrl: AlertController,
     private mytripService: MytripService,
-    public modalController: ModalController) {
+    public modalController: ModalController,
+    public actionSheetController: ActionSheetController) {
    }
 
   ngOnInit() {
@@ -64,6 +66,8 @@ export class MyTripsPage implements OnInit {
       }
     });
     return await modal.present();
+    this.getRecommendations();
+
   }
 
   // Get selected rocos
@@ -146,6 +150,63 @@ export class MyTripsPage implements OnInit {
   selectReco(i) {
     // console.log('Selected reco index : ' + i);
     this.recoArray[i].selected = !this.recoArray[i].selected;
+  }
+
+  async deleteTrip(id){
+    console.log("Delete trip with id = "+id)
+    const result = await this.mytripService.deleteReco(id);
+    this.getRecommendations();
+
+    
+  }
+
+  async dropDopwnClicked(event: any){
+    console.log(event);
+    const that = this;
+
+      const actionSheet = await this.actionSheetController.create({
+        header: 'My Trips',
+        buttons: [{
+          text: 'Delete',
+          role: 'destructive',
+          icon: 'trash',
+          handler: () => {
+            console.log('Delete clicked');
+            that.deleteTrip(event.id);
+          }
+        }, 
+        // {
+        //   text: 'Share',
+        //   icon: 'share',
+        //   handler: () => {
+        //     console.log('Share clicked');
+        //   }
+        // }, {
+        //   text: 'Play (open modal)',
+        //   icon: 'arrow-dropright-circle',
+        //   handler: () => {
+        //     console.log('Play clicked');
+        //   }
+        // }, {
+        //   text: 'Favorite',
+        //   icon: 'heart',
+        //   handler: () => {
+        //     console.log('Favorite clicked');
+        //   }
+        // }, 
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }]
+      });
+      await actionSheet.present();
+    
+  
+
   }
 
   // show action buttons

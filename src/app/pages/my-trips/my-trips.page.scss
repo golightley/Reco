@@ -60,6 +60,17 @@
         // color: white;
     }
 
+    ion-icon {
+      width: 48px;
+      height: 48px;
+    }
+    .send-icon{
+      ion-icon {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
     .more-button {
       padding: 7px;
       width: 46px;
