@@ -44,6 +44,7 @@ export class AuthService {
               .set({
                 handle: handleName,
                 email: user.email,
+                handleToSearch: handleName.toLowerCase(),
                 photoURL: user.photoURL,
                 loginType: 'facebook',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()

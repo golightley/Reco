@@ -69,6 +69,35 @@ export class GoogleMapComponent implements OnInit {
     });
   }
 
+  // public init(recosArray): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     // make sure we don't load / inject the SDK twice
+  //     if (typeof (google) === 'undefined') {
+  //       console.log('GoogleMapComponent.google =');
+
+  //       this.loadSDK().then(async (res) => {
+  //         console.log('GoogleMapComponent.SDKLoaded');
+  //         await this.initMap().then((res) => {
+  //           console.log('GoogleMapComponent.MapInitialized');
+
+  //           this.addMarkers(recosArray);
+
+  //           this.enableMap();
+  //           resolve(true);
+  //         }, (err) => {
+  //           this.disableMap();
+  //           reject(err);
+  //         });
+  //       }, (err) => {
+  //         this.firstLoadFailed = true;
+  //         reject(err);
+  //       });
+  //     } else {
+  //       reject('Google Maps Already running');
+  //     }
+  //   });
+  // }
+
   
 
   // start loading the SDK, but only if there is an internet connection 
@@ -389,6 +418,7 @@ export class GoogleMapComponent implements OnInit {
   }
 
   ngOnInit() {
+    // var test = [];
     this.init().then((res) => {
       console.log('Google Maps ready.');
     }, (err) => {
