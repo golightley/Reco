@@ -3,6 +3,8 @@ import { Platform, Events } from '@ionic/angular';
 import { DOCUMENT } from '@angular/common';
 import { Plugins, Network } from '@capacitor/core';
 import { RecommendationModel } from 'src/app/models/recommendation-model';
+import { BehaviorSubject } from 'rxjs';
+import { Storage } from '@ionic/storage';
 
 const { Geolocation} = Plugins;
 
@@ -30,6 +32,9 @@ export class GoogleMapComponent implements OnInit {
   private networkHandler = null;
   activeInfoWindow: any;
 
+  public readyTointeract: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+
   googleMapMarkers: any[] = [];
 
   constructor(
@@ -37,6 +42,7 @@ export class GoogleMapComponent implements OnInit {
     private renderer: Renderer2,
     private element: ElementRef,
     private platform: Platform,
+    private storage: Storage,
     @Inject(DOCUMENT) private _document
   ) {}
 
@@ -44,6 +50,8 @@ export class GoogleMapComponent implements OnInit {
   // public function intended to be called from location page 
   // promise returns to let location page the map has fully loaded 
   public init(): Promise<any> {
+    // load the behavoir subject 
+    this.load();
     return new Promise((resolve, reject) => {
       // make sure we don't load / inject the SDK twice 
       if (typeof (google) === 'undefined') {
@@ -54,6 +62,7 @@ export class GoogleMapComponent implements OnInit {
           await this.initMap().then((res) => {
             console.log('GoogleMapComponent.MapInitialized');
             this.enableMap();
+            this.updateBoolToTrue();
             resolve(true);
           }, (err) => {
             this.disableMap();
@@ -68,6 +77,19 @@ export class GoogleMapComponent implements OnInit {
       }
     });
   }
+
+  load(): void {
+    this.storage.get('readyTointeract').then((data) => {
+        this.readyTointeract.next(data);
+    });
+}
+
+
+updateBoolToTrue(): void {
+  this.storage.set('readyTointeract', true);
+  this.readyTointeract.next(true);
+  console.log("Set value to "+ this.readyTointeract)
+}
 
   // public init(recosArray): Promise<any> {
   //   return new Promise((resolve, reject) => {

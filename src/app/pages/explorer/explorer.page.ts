@@ -180,7 +180,15 @@ export class ExplorerPage implements OnInit {
     });
     console.log('Group Map Recos array => count: ' + this.recMapArray.length);
     console.log('Group Map array result=>', this.recMapArray);
-    await this.map.addMarkers(this.recMapArray);
+
+    this.map.readyTointeract.subscribe((data) => {
+      if(data){
+        this.map.addMarkers(this.recMapArray);
+      } 
+
+      console.log(data);
+    });
+    // await this.map.addMarkers(this.recMapArray);
     this.moveScollCardList(0);
   }
 
