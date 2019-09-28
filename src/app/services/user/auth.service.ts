@@ -49,7 +49,11 @@ export class AuthService {
                 loginType: 'facebook',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
               });
-            resolve(user);
+            const newUser = {
+              ...user,
+              handle: handleName
+            };
+            resolve(newUser);
           }).catch(error => {
             console.error('[Facebook sign failed]: error=> ', error);
             reject(error);
@@ -129,8 +133,20 @@ export class AuthService {
       return firebase.auth().signOut();
     }
 
-    getMyUserName(){
-      return firebase.auth().currentUser;
+    async getCurrentUser() {
+      let user;
+      await this.loadingService.doFirebaseWithoutLoading ( async () => {
+        const current = firebase.auth().currentUser;
+        // get full information
+        const userProfileRef = firebase.firestore().collection('userProfile').doc(current.uid);
+        await userProfileRef.get().then( res => {
+          console.log('[Current User] =>', res.data());
+          user =  res.data();
+        }).catch (error => {
+          console.log('[Get current user] error => ' + error);
+        });
+      });
+      return user;
     }
 
     getUsersWithName() {
