@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { MyTripsPage } from './my-trips.page';
 import { CreatePlaceModalPage} from './create-place-modal/create-place-modal.page';
+import { AskRecoModalPage} from './ask-reco-modal/ask-reco-modal.page';
 
 const routes: Routes = [
   {
@@ -23,8 +24,15 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MyTripsPage,CreatePlaceModalPage],
-  entryComponents: [CreatePlaceModalPage],
+  declarations: [
+    MyTripsPage,
+    CreatePlaceModalPage,
+    AskRecoModalPage
+  ],
+  entryComponents: [
+    CreatePlaceModalPage,
+    AskRecoModalPage
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MyTripsPageModule {}

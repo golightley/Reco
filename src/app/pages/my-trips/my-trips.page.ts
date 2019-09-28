@@ -1,3 +1,4 @@
+import { AskRecoModalPage } from './ask-reco-modal/ask-reco-modal.page';
 import { MytripService } from './../../services/mytrip.service';
 import { Plugins } from '@capacitor/core';
 import { Component, OnInit } from '@angular/core';
@@ -7,7 +8,6 @@ import { ActionSheetController } from '@ionic/angular';
 // for the modal 
 import { ModalController, AlertController } from '@ionic/angular';
 import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.page';
-import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-my-trips',
@@ -62,12 +62,29 @@ export class MyTripsPage implements OnInit {
     modal.onDidDismiss().then((dataReturned) => {
       if (dataReturned !== null) {
         this.dataReturned = dataReturned.data;
+        this.getRecommendations();
         // alert('Modal Sent Data :'+ dataReturned);
       }
     });
     return await modal.present();
-    this.getRecommendations();
+  }
 
+  // show the modal for ask reco to friends
+  async askReco() {
+    this._backdropOn = false;
+    const modal = await this.modalController.create({
+      component: AskRecoModalPage,
+      componentProps: {
+        // 'param': 123
+      }
+    });
+    // wait for the modal to be dismissed
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned !== null) {
+        this.dataReturned = dataReturned.data;
+      }
+    });
+    return await modal.present();
   }
 
   // Get selected rocos
@@ -163,49 +180,47 @@ export class MyTripsPage implements OnInit {
   async dropDopwnClicked(event: any){
     console.log(event);
     const that = this;
+    const actionSheet = await this.actionSheetController.create({
+      header: 'My Trips',
+      buttons: [{
+        text: 'Delete',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          console.log('Delete clicked');
+          that.deleteTrip(event.id);
+        }
+      },
+      // {
+      //   text: 'Share',
+      //   icon: 'share',
+      //   handler: () => {
+      //     console.log('Share clicked');
+      //   }
+      // }, {
+      //   text: 'Play (open modal)',
+      //   icon: 'arrow-dropright-circle',
+      //   handler: () => {
+      //     console.log('Play clicked');
+      //   }
+      // }, {
+      //   text: 'Favorite',
+      //   icon: 'heart',
+      //   handler: () => {
+      //     console.log('Favorite clicked');
+      //   }
+      // }, 
+      {
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
 
-      const actionSheet = await this.actionSheetController.create({
-        header: 'My Trips',
-        buttons: [{
-          text: 'Delete',
-          role: 'destructive',
-          icon: 'trash',
-          handler: () => {
-            console.log('Delete clicked');
-            that.deleteTrip(event.id);
-          }
-        }, 
-        // {
-        //   text: 'Share',
-        //   icon: 'share',
-        //   handler: () => {
-        //     console.log('Share clicked');
-        //   }
-        // }, {
-        //   text: 'Play (open modal)',
-        //   icon: 'arrow-dropright-circle',
-        //   handler: () => {
-        //     console.log('Play clicked');
-        //   }
-        // }, {
-        //   text: 'Favorite',
-        //   icon: 'heart',
-        //   handler: () => {
-        //     console.log('Favorite clicked');
-        //   }
-        // }, 
-        {
-          text: 'Cancel',
-          icon: 'close',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }]
-      });
-      await actionSheet.present();
-    
-  
 
   }
 

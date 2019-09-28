@@ -53,63 +53,44 @@ export class MytripService {
   }
 
 
-    // delerte reco 
-    async deleteReco(recoId) {
-      const result = await this.loadingService.doFirebase(async () => {
-        return new Promise<any>(async (resolve, reject) => {
-            firebase.firestore().collection("recommendations").doc(recoId).delete().then(function() {
-              console.log("Document successfully deleted!");
-              resolve();
+  // delete reco 
+  async deleteReco(recoId) {
+    const result = await this.loadingService.doFirebase(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+          firebase.firestore().collection("recommendations").doc(recoId).delete().then(function() {
+            console.log("Document successfully deleted!");
+            resolve();
 
-          }).catch(function(error) {
-            console.error("Error removing document: ", error);
-            reject(error);
-          });
-
+        }).catch(function(error) {
+          console.error("Error removing document: ", error);
+          reject(error);
         });
+
       });
-      return result;
-    }
-  
-
-
-
-  async getFdlURL(selRecos) {
-    const apiKey = environment.firebase.apiKey;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
     });
-    console.log('call api to create dynamic link of firebase');
-    await this.loadingService.doFirebase( async () => {
-      const url = `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${apiKey}`;
-      const resp = await this.http
-      .post(
-        url,
-        {
-          'dynamicLinkInfo': {
-            'domainUriPrefix': 'https://link.reco.com',
-            'link': 'https://reco.com/recos',
-            'androidInfo': {
-              'androidPackageName': 'com.bowieventures.recotravelapp'
-            },
-            'iosInfo': {
-              'iosBundleId': 'com.bowieventures.recotravelapp'
-            }
-          }
-        },
-        {
-          headers
-        }
-      )
-      .toPromise();
-      console.log(resp);
-      return resp;
-    });
-    // console.log('finish get firends');
-    // return friendsArray;
-
+    return result;
   }
 
+  // create ask for a recommendation
+  async createAskForReco(location) {
+    const uid = firebase.auth().currentUser.uid;
+    const result = await this.loadingService.doFirebase(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+          firebase.firestore().collection('askForRecommendations').add({
+            user: uid,
+            location: location,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(docRef => {
+            console.log('SERVICE.createAskForReco:', docRef.id);
+            resolve(docRef.id);
+          }).catch(error => {
+            console.error('SERVICE.createAskForReco.Error adding document: ', error);
+            reject(error);
+          });
+      });
+    });
+    return result;
+  }
 }
 
 
