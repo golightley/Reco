@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
-
 import java.util.ArrayList;
+import com.meetmaestro.hive.capacitor.email.EmailPlugin;
 
 public class MainActivity extends BridgeActivity {
     @Override
@@ -19,6 +19,8 @@ public class MainActivity extends BridgeActivity {
             add(jp.rdlabo.capacitor.plugin.facebook.FacebookLogin.class);
             // for sms
             add(com.byteowls.capacitor.sms.SmsManagerPlugin.class);
+            // for email
+            add(EmailPlugin.class);
         }
         });
     }
