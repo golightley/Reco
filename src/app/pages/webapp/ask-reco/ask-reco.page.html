@@ -11,10 +11,10 @@
       </div>
       <ion-slides pager="false"  #recoSlider [options]="slideOpts" class="card-slides" (ionSlideNextEnd)="setCurIndex()" (ionSlidePrevEnd)="setCurIndex()">
           <ion-slide>
-            <app-reco-card class="reco-card" [cardIndex]="0" [askUserName]="askUserName"></app-reco-card>
+            <app-reco-card class="reco-card" [cardIndex]="0" [askUserName]="askUserName" [autocompleteService]="autocompleteService" [placeService]="placeService"></app-reco-card>
           </ion-slide>
           <ion-slide>
-            <app-reco-card class="reco-card" [cardIndex]="1" [askUserName]="askUserName"></app-reco-card>
+            <app-reco-card class="reco-card" [cardIndex]="1" [askUserName]="askUserName" [autocompleteService]="autocompleteService" [placeService]="placeService"></app-reco-card>
           </ion-slide>
           <ion-slide>
             <app-reco-card class="reco-card" [cardIndex]="2" [askUserName]="askUserName"></app-reco-card>

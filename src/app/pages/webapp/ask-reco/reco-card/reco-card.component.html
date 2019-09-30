@@ -3,13 +3,13 @@
     {{cardTitle[_cardIndex]}}
   </h3>
   <div class="reco-card-content" *ngIf="_cardIndex<2">
-    
       <ion-item lines="none" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
+        <ion-label position="stacked"></ion-label>
         <ion-input [(ngModel)]="queryPlace" (ionInput)="searchPlace()" type="text"
           placeholder="Type your recommendation"></ion-input>
-        <!-- <ion-list [ngClass]="{'place-list': places.length>0, 'empty-place-list': places.length==0}">
-            <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
-        </ion-list> -->
+        <ion-list [ngClass]="{'place-list': places.length>0, 'empty-place-list': places.length==0}">
+            <ion-item lines="none" *ngFor="let place of places" (touchstart)="selectPlace(place)" class="place-item">{{place.description}}</ion-item>
+        </ion-list>
       </ion-item>
       <div class="tooltip" *ngIf="!queryPlace">
         <span>Business name and city</span>
@@ -38,8 +38,12 @@
         <ion-icon name="add" color="light" size="small"></ion-icon>
       </div>
 
-      <ion-button (click)="inviteViaSMS()" class="op-button">
+      <ion-button (click)="createAskRec()" class="op-button" [disabled]="!queryPlace || !notes" *ngIf="!isCreatedReco">
         {{addButtonLabel}}
+      </ion-button>   
+      <ion-button class="op-button" *ngIf="isCreatedReco">
+        <ion-icon name="checkmark" size="large"></ion-icon>
+        Sent
       </ion-button>   
     
   </div>
@@ -48,7 +52,7 @@
     <div class="create-profile-desc">
       Create your profile to save your Recos and see your friends' recommendations
     </div>
-    <ion-button (click)="inviteViaSMS()" class="op-button">
+    <ion-button (click)="createProfile()" class="op-button">
       Create your profile
     </ion-button>   
   </div>

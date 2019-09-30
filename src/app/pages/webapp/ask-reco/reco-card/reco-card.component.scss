@@ -23,11 +23,13 @@ $third-card-color: #943333;
     height: 65vh;    
     border-radius: 20px;
     margin: 40px 10px 0px 0px !important;
-    
+    overflow: hidden;
+
     box-shadow: 0 3px 8px rgba(100, 100, 100, 1) !important;
 
     .reco-card-title {
         color: white;
+        margin-bottom: 0px;
     }
 
     .reco-card-content {
@@ -36,6 +38,7 @@ $third-card-color: #943333;
             color: white;
             ion-label {
               color: white;
+              height: 5px;
             }
         }
         ion-input, ion-textarea{          
@@ -44,25 +47,20 @@ $third-card-color: #943333;
         margin: 0 auto;
         height: 55vh;
         .place-list {
-            margin: 5px !important;
+            margin: 5px 0 !important;
             border: 1px solid rgba(150,150,150, 0.5) !important;
             box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
             border-radius: 5px;
             ion-item {
               border-bottom: 1px solid rgb(205,205,205);
-              padding: 5px 0px;
+              padding: 3px 0;
+              color: rgb(50,50,50);
+              font-size: 14px;
             }
           }
           .empty-place-list {
             margin: 0px !important;
             border: none;
-          }
-          
-          .title {
-            color: rgb(55,48,67);  
-          }
-          .notes{
-            margin-top:15px;
           }
           
           .tooltip {
@@ -78,7 +76,7 @@ $third-card-color: #943333;
           .notes-textarea {
             height: 50px;
             padding: 0px;
-            margin-top: 10px;
+            // margin-top: 10px;
           }
         
           .photo-item {
@@ -122,6 +120,7 @@ $third-card-color: #943333;
             --border-style: solid;
             --border-radius: 17px;
             --background: linear-gradient(320deg,  #eee95c, #ffffff);
+            --background-activated: linear-gradient(320deg,  #c0ba06, #e4e4bc);
             --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);        
             --color: #000;
             --color-activated:#000;
