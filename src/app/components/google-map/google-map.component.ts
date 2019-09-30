@@ -164,7 +164,7 @@ updateBoolToTrue(): void {
   // create a script element and manually inject with the google SRC
   private injectSDK():Promise <any> {
     return new Promise((resolve, reject)=>{
-
+      console.log('map inject sdk');
       // gets triggered by the map's call back function
       // so we attach this function to the window 
       window['mapInit'] = () => {

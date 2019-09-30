@@ -33,7 +33,7 @@ export class ExplorerService {
   }
 
   async createNewRecommendation(
-      name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
+      isAskReco: boolean, name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
       placeWebsite: any, placePhone: any, pictureDataUrl: any, pictureDataThumbUrl: any) {
     // print the form results
     console.log('SERVICE.CreateNewRcommendations.FormGroup:');
@@ -49,7 +49,7 @@ export class ExplorerService {
         }
         if ( pictureDataThumbUrl ) {
           pictureThumbUrl = await this.uploadPicture(pictureDataThumbUrl, true);
-          if(pictureThumbUrl==''){
+          if (pictureThumbUrl === ''){
             pictureUrl = await this.uploadPicture(pictureDataUrl, false);
           }
           console.log('pictureThumbUrl:' + pictureThumbUrl);
@@ -62,11 +62,11 @@ export class ExplorerService {
           location: location,
           gplaceId: googlePlaceId,
           gType: googleTypes,
-          website: placeWebsite,
-          phone: placePhone,
+          website: placeWebsite || '',
+          phone: placePhone || '',
           picture: pictureUrl,
           pictureThumb: pictureThumbUrl,
-          user: firebase.auth().currentUser.uid,
+          user: isAskReco ? '' : firebase.auth().currentUser.uid,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(docRef => {
           console.log('SERVICE.createNewRecommendation:', docRef.id);

@@ -23,8 +23,7 @@ export class ExplorerPage implements OnInit {
 
   @ViewChild(GoogleMapComponent) map: GoogleMapComponent;
   @ViewChild('recoCardList', { read: ElementRef }) private cardListElem: ElementRef;
-  @ViewChild('recoCardItem', { read: ElementRef }) private cardItemElem: ElementRef;
-
+  
   recMapArray: RecommendationModel[] = [];
   recCardArray: RecommendationModel[] = [];
   friendList: any[] = [];
