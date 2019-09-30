@@ -1,0 +1,33 @@
+<ion-header>
+  <!-- <ion-toolbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar> -->
+</ion-header>
+
+<ion-content scroll-y="false">
+  <div class="content" *ngIf="askUserName">
+      <div class="title">
+          {{title}}
+      </div>
+      <ion-slides pager="false"  #recoSlider [options]="slideOpts" class="card-slides" (ionSlideNextEnd)="setCurIndex()" (ionSlidePrevEnd)="setCurIndex()">
+          <ion-slide>
+            <app-reco-card class="reco-card" [cardIndex]="0" [askUserName]="askUserName"></app-reco-card>
+          </ion-slide>
+          <ion-slide>
+            <app-reco-card class="reco-card" [cardIndex]="1" [askUserName]="askUserName"></app-reco-card>
+          </ion-slide>
+          <ion-slide>
+            <app-reco-card class="reco-card" [cardIndex]="2" [askUserName]="askUserName"></app-reco-card>
+          </ion-slide>
+      </ion-slides>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <div class="footer-desc" *ngIf="slideIndex===0 && askUserName">
+    Reco add your trips to a map and lets you save recommendations for others
+  </div>
+  <div class="footer-desc" *ngIf="slideIndex!==0 && askUserName">
+    <a href="#">Create your profile</a> to share with others and see your friends Recos
+  </div>
+</ion-footer>

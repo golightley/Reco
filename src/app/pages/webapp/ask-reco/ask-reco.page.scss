@@ -1,0 +1,27 @@
+.content{
+    padding: 30px 30px 0px 30px;
+    .title {
+        font-size: 24px;
+    }
+    .card-slides {
+        height: calc(68vh + 40px);
+        .reco-card {
+            width: 100%;
+            height: calc(68vh + 40px);
+        }
+        ion-slide {
+            // width: 75vw !important;
+            padding-right: 20px;
+            padding-left: 3px;
+        }
+    }
+}
+
+ion-footer {
+    font-size: 16px;
+    text-align: center;
+    padding: 10px 40px 30px 40px;
+}
+.footer-md:before {
+    height: 0px;
+}

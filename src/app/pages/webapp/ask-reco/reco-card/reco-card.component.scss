@@ -1,0 +1,140 @@
+$first-card-color: #2e6f28;
+$second-card-color: #2a6688;
+$third-card-color: #943333;
+
+.first {
+    background-color: $first-card-color !important;    
+    --background: $first-card-color !important;    
+    border: 1px solid $first-card-color !important;
+}
+.second {
+    background-color: $second-card-color !important;    
+    --background: $second-card-color !important;
+    border: 1px solid $second-card-color !important;
+}
+.third {
+    background-color: $third-card-color !important;    
+    --background: $third-card-color !important;
+    border: 1px solid $third-card-color !important;
+}
+
+.reco-card-component {
+    width: 100%;
+    height: 65vh;    
+    border-radius: 20px;
+    margin: 40px 10px 0px 0px !important;
+    
+    box-shadow: 0 3px 8px rgba(100, 100, 100, 1) !important;
+
+    .reco-card-title {
+        color: white;
+    }
+
+    .reco-card-content {
+        ion-item {
+            padding-right: 7px;
+            color: white;
+            ion-label {
+              color: white;
+            }
+        }
+        ion-input, ion-textarea{          
+          --placeholder-opacity: 1;
+        }
+        margin: 0 auto;
+        height: 55vh;
+        .place-list {
+            margin: 5px !important;
+            border: 1px solid rgba(150,150,150, 0.5) !important;
+            box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
+            border-radius: 5px;
+            ion-item {
+              border-bottom: 1px solid rgb(205,205,205);
+              padding: 5px 0px;
+            }
+          }
+          .empty-place-list {
+            margin: 0px !important;
+            border: none;
+          }
+          
+          .title {
+            color: rgb(55,48,67);  
+          }
+          .notes{
+            margin-top:15px;
+          }
+          
+          .tooltip {
+            text-align: left;
+            height: 20px;
+            margin: 3px 15px;
+            span {
+              font-size: 12px;
+              color: rgba(255,255,255,0.6);
+            }
+          }
+        
+          .notes-textarea {
+            height: 50px;
+            padding: 0px;
+            margin-top: 10px;
+          }
+        
+          .photo-item {
+            height: 35px;
+            margin-top: 10px;
+            ion-label {
+              max-height: 30px;
+            }
+          }
+        
+          .photo-content {
+            margin: 5px 20px;
+          }
+        
+          .add-photo-placeholder {    
+            width: 100px;
+            height: 70px;
+            border: 1px dotted rgb(200,200,200);
+            box-shadow: 0 0 6px rgba(200, 200, 200, 0.8) !important;  
+            border-radius: 6px;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            justify-content: center;    
+            display: flex;
+            ion-icon {
+              margin: auto;
+              width: 30px;
+              height: 30px;
+            }
+          }
+
+          .op-button {
+            width: 75%;
+            height: 40px;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            --border-color: #d6d695;            
+            --border-width: 1px;
+            --border-style: solid;
+            --border-radius: 17px;
+            --background: linear-gradient(320deg,  #eee95c, #ffffff);
+            --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);        
+            --color: #000;
+            --color-activated:#000;
+          }
+          
+          .create-profile-desc {            
+            margin-top: 30px;
+            font-size: 16px;
+            padding: 20px;
+            color: white;
+
+          }
+    }
+
+  
+}
