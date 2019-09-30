@@ -75,7 +75,7 @@ export class MytripService {
       return new Promise<any>(async (resolve, reject) => {
           firebase.firestore().collection('askForRecommendations').add({
             user: user.uid,
-            userName: user.userName,
+            userName: user.handle,
             location: location,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           }).then(docRef => {

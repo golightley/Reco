@@ -1,9 +1,6 @@
-import { Component, OnInit, ɵConsole, Renderer2, Inject } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ModalController, NavParams, Platform, ToastController } from '@ionic/angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { formControlBinding } from '@angular/forms/src/directives/ng_model';
 import { ExplorerService } from 'src/app/services/explorer.service';
-import { DOCUMENT } from '@angular/common';
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -19,11 +16,9 @@ declare var google;
 
 export class CreatePlaceModalPage implements OnInit {
 
-  public myDetailsForm: FormGroup;
   modalTitle: string;
   modelId: number;
   autocompleteService: any;
-  service: any;
   placesService: any;
   queryPlace: string = '';
   places: any = [];
@@ -50,12 +45,9 @@ export class CreatePlaceModalPage implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private navParams: NavParams,
-    private formBuilder: FormBuilder,
     private explorerService: ExplorerService,
     private renderer: Renderer2,
     private sanitizer: DomSanitizer,
-    @Inject(DOCUMENT) private _document,
     private platform: Platform,
     private tc: ToastController
   ) { }
@@ -63,14 +55,11 @@ export class CreatePlaceModalPage implements OnInit {
   ngOnInit() {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
-
-    console.log('CreatePlaceMOdal.NgOnInit: Google Variable status');
-    console.log(google);
     console.log('CreatePlaceMOdal.NgOnInit: Google AutoComplete status');
-    console.log(this.autocompleteService)
+    console.log(this.autocompleteService);
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
-      this.service = new google.maps.places.PlacesService(div);
+      this.placesService = new google.maps.places.PlacesService(div);
     } catch {
 
     }
@@ -81,7 +70,7 @@ export class CreatePlaceModalPage implements OnInit {
   ionViewDidLoad(): void {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
-    this.autocompleteService = new google.maps.places.AutocompleteService()
+    this.autocompleteService = new google.maps.places.AutocompleteService();
     this.autocompleteService = new google.maps.places.PlacesService(div);
     // this.searchDisabled = false;
   }
@@ -108,12 +97,12 @@ export class CreatePlaceModalPage implements OnInit {
       console.log(getImageSize(this.originalPicture));
       // check image file size
       // if (getImageSize(this.originalPicture) > this.limitFileSize) {
-        // compress image
-        generateThumbImage(this.originalPicture, this.PictureSize, this.PictureSize, 1, data => {
-          this.pictureDataUrl = data;
-          console.log('****compressed image data*****');
-          // console.log(this.pictureDataUrl);
-        });
+      // compress image
+      generateThumbImage(this.originalPicture, this.PictureSize, this.PictureSize, 1, data => {
+        this.pictureDataUrl = data;
+        console.log('****compressed image data*****');
+        // console.log(this.pictureDataUrl);
+      });
       // } else {
       //   this.pictureDataUrl = this.originalPicture;
       // }
@@ -153,7 +142,7 @@ export class CreatePlaceModalPage implements OnInit {
 
     if (this.queryPlace.length > 0 && !this.searchDisabled) {
 
-      let config = {
+      const config = {
         types: ['establishment'],
         // types: ['geocode'],
         input: this.queryPlace
@@ -192,7 +181,7 @@ export class CreatePlaceModalPage implements OnInit {
       city: null
     };
 
-    this.service.getDetails({ placeId: place.place_id }, (details) => {
+    this.placesService.getDetails({ placeId: place.place_id }, (details) => {
       console.log('CreatePlaceModal.SelectPlace');
       console.log(details);
       console.log(details.address_components[3].short_name);
@@ -223,7 +212,8 @@ export class CreatePlaceModalPage implements OnInit {
       // console.log(uploadPicture);
       await this.presentToast(uploadState.state);
     } */
-    const result = await this.explorerService.createNewRecommendation(
+    const isAskReco = false;
+    const result = await this.explorerService.createNewRecommendation(isAskReco,
       this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
       // this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
       this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataUrl);
@@ -234,12 +224,6 @@ export class CreatePlaceModalPage implements OnInit {
     }
 
     this.dismiss();
-
-  }
-
-  saveForm(): void {
-    this.explorerService.setMyDetails(this.myDetailsForm);
-    console.log(this.myDetailsForm)
 
   }
 

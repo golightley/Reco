@@ -1,5 +1,6 @@
 import { LoadingService } from './loading-service';
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
@@ -15,7 +16,8 @@ export class AskrecoService {
 
   constructor(    
     // private headers: HttpHeaders,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private storage: Storage
   ) {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -43,6 +45,26 @@ export class AskrecoService {
       });
     });
     return result;
+  }
+
+  async setAskedRecoId(data): Promise<void> {
+    if (data === '') {
+      this.storage.set('askRecoIds', '');
+    } else {
+      const ids = await this.getAskedRecoId();
+      let addedIds;
+      if (ids) {
+        addedIds = `${ids},${data}`;
+      } else {
+        addedIds = `${data}`;
+      }
+      this.storage.set('askRecoIds', addedIds);
+      console.log('Set reco ids: ' + addedIds);
+    }
+  }
+  async getAskedRecoId(): Promise<any> {
+    const ids = await this.storage.get('askRecoIds');
+    return ids;
   }
 }
 

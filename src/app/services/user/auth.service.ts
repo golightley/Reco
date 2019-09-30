@@ -140,8 +140,12 @@ export class AuthService {
         // get full information
         const userProfileRef = firebase.firestore().collection('userProfile').doc(current.uid);
         await userProfileRef.get().then( res => {
-          console.log('[Current User] =>', res.data());
-          user =  res.data();
+          console.log('[User] =>', res.data());
+          user =  {
+            ...res.data(),
+            uid: current.uid
+          };
+          console.log('[Current User] =>', user);
         }).catch (error => {
           console.log('[Get current user] error => ' + error);
         });
