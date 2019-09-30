@@ -1,13 +1,10 @@
 import { LoadingService } from './loading-service';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +14,6 @@ export class MytripService {
   public eventListRef: firebase.firestore.CollectionReference;
 
   constructor(
-    private storage: Storage,
-    private http: HttpClient,
     // private headers: HttpHeaders,
     private loadingService: LoadingService
   ) {
@@ -72,12 +67,15 @@ export class MytripService {
   }
 
   // create ask for a recommendation
-  async createAskForReco(location) {
-    const uid = firebase.auth().currentUser.uid;
+  async createAskForReco(location, user) {
+    if (!user) {
+      return;
+    }
     const result = await this.loadingService.doFirebase(async () => {
       return new Promise<any>(async (resolve, reject) => {
           firebase.firestore().collection('askForRecommendations').add({
-            user: uid,
+            user: user.uid,
+            userName: user.userName,
             location: location,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           }).then(docRef => {

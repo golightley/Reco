@@ -123,7 +123,7 @@ updateBoolToTrue(): void {
   
 
   // start loading the SDK, but only if there is an internet connection 
-  private loadSDK(): Promise <any> {
+  private  loadSDK(): Promise <any> {
     console.log('Loading Google Maps SDK');
     // connectivity listner will automatically load the SDK when an internet connection is ready
     this.addConnectivityListeners();

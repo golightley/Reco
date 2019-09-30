@@ -14,6 +14,7 @@ export class AskRecoModalPage implements OnInit {
   location: string;
   userName: string;
   smsContent: string;
+  currentUser: any;
 
   constructor(
     private modalController: ModalController,
@@ -23,11 +24,11 @@ export class AskRecoModalPage implements OnInit {
   ) { }
 
   async ngOnInit() {
-    const currentUser = await this.authService.getCurrentUser();
+    this.currentUser = await this.authService.getCurrentUser();
     this.location = '';
     this.userName = '';
-    if (currentUser) {
-      this.userName = currentUser.handle;
+    if (this.currentUser) {
+      this.userName = this.currentUser.handle;
     }
     this.smsContent = this.userName + ' would like your recommendations for ';
   }
@@ -37,14 +38,14 @@ export class AskRecoModalPage implements OnInit {
     if (this.location.length === 0 ) {
       return;
     }
-    const askId = await this.mytripService.createAskForReco(this.location);
+    const askId = await this.mytripService.createAskForReco(this.location, this.currentUser);
     // if error occurred
     if ( askId.error) {
       const msg = 'Unable to ask a recommendation. Please try again later.';
       this.showErrorAlert(msg);
       return;
     }
-    const shareUrl = ' https://reco-6c892.web.app/reco_ask?id=' + askId;
+    const shareUrl = ' https://reco-6c892.web.app/ask_reco/' + askId;
     const content = this.smsContent + this.location + shareUrl;
     return content;
   }
