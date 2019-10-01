@@ -1,0 +1,63 @@
+.main-content {
+    --background: #c9ca70;
+    justify-content: center;
+    /* .overlay {
+        position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+
+        background: -moz-linear-gradient(top,  rgba(30,87,153,0) 0%, rgba(31,78,133,0) 20%, rgba(34,55,83,1) 71%, rgba(36,42,55,1) 100%);
+        background: -webkit-linear-gradient(top,  rgba(30,87,153,0) 0%,rgba(31,78,133,0) 20%,rgba(34,55,83,1) 71%,rgba(36,42,55,1) 100%);
+        background: linear-gradient(to bottom,  rgba(30,87,153,0) 0%,rgba(31,78,133,0) 20%,rgba(34,55,83,1) 71%,rgba(36,42,55,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001e5799', endColorstr='#242a37',GradientType=0 );
+
+    } */
+    .logo-container {
+        margin: auto;
+        margin-top: 24vh;
+        width: 80vw;
+        position: relative;            
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2a2b2c;
+        }
+    }
+    .facebook-login {
+        margin-top: 20vh;
+        ion-button {
+            ion-icon {
+                padding-right: 4vw;
+            }
+            border-radius: 5px;
+
+            font-size: 18px;
+            text-transform: initial;
+            --color: #fff;            
+            --background: rgb(12,102,255);
+            width: 80vw;
+            height: 55px;
+            margin: auto;   
+        }
+    }
+    .email-login-link {        
+        margin-top:20px;
+        text-align: center;        
+        font-size: 17px;
+        position: relative;    
+        color: #2a2b2c;
+        .link {     
+            margin-left: 10px;       
+            color: #1d58c5;
+        }
+    }
+    .desc {
+        text-align: center;
+        padding:30px;
+        margin-top: 8vh;
+        color: #2a2b2c;
+    }
+}
