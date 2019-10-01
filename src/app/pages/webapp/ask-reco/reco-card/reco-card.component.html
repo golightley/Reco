@@ -27,7 +27,7 @@
         <span>Any trip for your friend</span>
       </div>
 
-      <ion-item class="photo-item" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
+      <ion-item class="photo-item" *ngIf="!picture" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
         <ion-label position="stacked" class="title">Add an image</ion-label>
       </ion-item>
       <div class="photo-content">

@@ -24,10 +24,10 @@
 </ion-content>
 
 <ion-footer>
-  <div class="footer-desc" *ngIf="slideIndex===0 && askUserName">
+  <div class="footer-desc" *ngIf="askUserName && !isCreatedReco">
     Reco add your trips to a map and lets you save recommendations for others
   </div>
-  <div class="footer-desc" *ngIf="slideIndex!==0 && askUserName">
-    <a href="#">Create your profile</a> to share with others and see your friends Recos
+  <div class="footer-desc" *ngIf="askUserName && isCreatedReco">
+    <span class="create-profile-link" (click)="createProfile()">Create your profile</span> to share with others and see your friends Recos
   </div>
 </ion-footer>

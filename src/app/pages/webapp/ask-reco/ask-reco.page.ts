@@ -1,7 +1,7 @@
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, Events } from '@ionic/angular';
 import { AskrecoService } from 'src/app/services/ask-reco.service';
 import { Component, OnInit, ViewChild, Renderer2 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 declare var google;
 
@@ -26,11 +26,19 @@ export class AskRecoPage implements OnInit {
   autocompleteService: any;
   placeService: any;
 
+  isCreatedReco: boolean;
+
   constructor(
     private route: ActivatedRoute,
     private askRecoService: AskrecoService,
-    private renderer: Renderer2
-  ) { }
+    private renderer: Renderer2,
+    private router: Router,
+    private ev: Events
+  ) {
+    this.ev.subscribe('createdReco', async param => {
+      this.isCreatedReco = param;
+    });
+   }
 
   ngOnInit() {
     this.initialize();
@@ -38,6 +46,7 @@ export class AskRecoPage implements OnInit {
   }
 
   async initialize() {
+    this.isCreatedReco = false;
     // init asked reco ids
     this.askRecoService.setAskedRecoId('');
 
@@ -80,4 +89,7 @@ export class AskRecoPage implements OnInit {
     });
   }
 
+  createProfile() {
+    this.router.navigate(['/webapp-user']);
+  }
 }

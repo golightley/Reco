@@ -1,10 +1,11 @@
-import { AskrecoService } from './../../../../services/ask-reco.service';
-import { Platform, ToastController } from '@ionic/angular';
+import { AskrecoService } from 'src/app/services/ask-reco.service';
+import { Platform, ToastController, Events } from '@ionic/angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { generateThumbImage, getImageSize } from 'src/app/utils/image-utils';
 import { ExplorerService } from 'src/app/services/explorer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reco-card',
@@ -73,7 +74,9 @@ export class RecoCardComponent implements OnInit {
     private tc: ToastController,
     private sanitizer: DomSanitizer,
     private explorerService: ExplorerService,
-    private askRecoService: AskrecoService
+    private askRecoService: AskrecoService,
+    private router: Router,
+    private ev: Events
   ) { }
 
   ngOnInit() {
@@ -203,7 +206,9 @@ export class RecoCardComponent implements OnInit {
       this.isCreatedReco = true;
       // const recoIds = await this.askRecoService.getAskedRecoId();
       // console.log(recoIds);
-
+      this.ev.publish('createdReco', {
+        param: true,
+      });
     }
 
   }
@@ -225,4 +230,7 @@ export class RecoCardComponent implements OnInit {
     this.toast.present();
   }
   
+  createProfile() {
+    this.router.navigate(['/webapp-user']);
+  }
 }
