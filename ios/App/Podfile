@@ -10,9 +10,9 @@ def capacitor_pods
   # Automatic Capacitor Pod dependencies, do not delete
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
-  pod 'ByteowlsCapacitorSms', :path => '..\..\node_modules\@byteowls\capacitor-sms'
-  pod 'RdlaboCapacitorFacebookLogin', :path => '..\..\node_modules\@rdlabo\capacitor-facebook-login'
-  pod 'TeamhiveCapacitorEmail', :path => '..\..\node_modules\@teamhive\capacitor-email'
+  pod 'ByteowlsCapacitorSms', :path => '../../node_modules/@byteowls/capacitor-sms'
+  pod 'RdlaboCapacitorFacebookLogin', :path => '../../node_modules/@rdlabo/capacitor-facebook-login'
+  pod 'TeamhiveCapacitorEmail', :path => '../../node_modules/@teamhive/capacitor-email'
   pod 'CordovaPlugins', :path => '../capacitor-cordova-ios-plugins'
   # Do not delete
 end
