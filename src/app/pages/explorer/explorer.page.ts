@@ -181,7 +181,7 @@ export class ExplorerPage implements OnInit {
     console.log('Group Map array result=>', this.recMapArray);
 
     this.map.readyTointeract.subscribe((data) => {
-      if(data){
+      if (data) {
         this.map.addMarkers(this.recMapArray);
       } 
 

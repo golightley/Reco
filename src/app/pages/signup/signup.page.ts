@@ -1,8 +1,10 @@
+import { AskrecoService } from 'src/app/services/ask-reco.service';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/user/auth.service';
+import { AuthService } from 'src/app/services/user/auth.service';
 import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ExplorerService } from 'src/app/services/explorer.service';
 
 @Component({
   selector: 'app-signup',
@@ -17,6 +19,7 @@ export class SignupPage implements OnInit {
   userId: string;
   step: string;
   appType: string;
+  recoIds: any[];
   backUrl: string;
 
   constructor(
@@ -24,7 +27,9 @@ export class SignupPage implements OnInit {
     private alertCtrl: AlertController,
     private formBuilder: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private askRecoService: AskrecoService,
+    private explorerService: ExplorerService
   ) {
     this.emailForm = this.formBuilder.group({
       email: [
@@ -44,7 +49,7 @@ export class SignupPage implements OnInit {
     });
   }
 
-  ngOnInit( ) {
+  async ngOnInit( ) {
     this.step = 'email-register';
     this.userId = '';
     this.appType = this.route.snapshot.paramMap.get('type');
@@ -97,9 +102,17 @@ export class SignupPage implements OnInit {
           // navigate to explorer page
           this.router.navigateByUrl('');
         } else {
+          // register with user id created recos
+          // get created reco ids
+          const recoIds = await this.askRecoService.getAskedRecoId();
+          console.log('Created reco ids => ', recoIds);
+          await this.explorerService.updateRecommendations(recoIds);
+          // init askedRecoId
+          await this.askRecoService.setAskedRecoId('');
+          // navigate to download page
           this.router.navigateByUrl('/app-download');
         }
-      } else if ( result ==='duplicate' ){
+      } else if ( result === 'duplicate' ){
         const errorMessage = 'Username already exists. please input another username.'
         this.showErrorAlert(errorMessage);
       } else {

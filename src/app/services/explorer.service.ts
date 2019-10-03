@@ -32,6 +32,28 @@ export class ExplorerService {
 
   }
 
+  // update recommendation with current user
+  async updateRecommendations(recoIds) {
+    const recoIdArray = recoIds.split(',');
+    await this.loadingService.doFirebaseWithoutLoading(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+        const promissArr = recoIdArray.map( async recoId => {
+            const recoRef = firebase.firestore().collection('recommendations').doc(recoId);
+            await recoRef.update({
+                user: firebase.auth().currentUser.uid
+            });
+            console.log('updated recommendation, id => ' + recoId);
+          });
+        Promise.all(promissArr)
+        .then(result => {
+            console.log('*********** End update all recommendation *************');
+            resolve();
+        }, reject);
+      });
+    });
+  }
+
+  // if isAskReco is true, it will be created without user
   async createNewRecommendation(
       isAskReco: boolean, name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
       placeWebsite: any, placePhone: any, pictureDataUrl: any, pictureDataThumbUrl: any) {
