@@ -1,5 +1,5 @@
 <ion-header>
-  <div class="desc-down">
+  <div class="desc-down" *ngIf="userName">
     <h2>Previewing {{userName}}'s recommendations</h2>
     <ion-button (click)="downloadApp()" class="op-button" color="primary">
       Download app to see more
