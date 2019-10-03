@@ -45,7 +45,7 @@ export class AskRecoModalPage implements OnInit {
       this.showErrorAlert(msg);
       return;
     }
-    const shareUrl = ' https://reco-6c892.web.app/ask-reco/' + askId;
+    const shareUrl = ' https://reco-6c892.firebaseapp.com/ask-reco/' + askId;
     const content = this.smsContent + this.location + shareUrl;
     return content;
   }

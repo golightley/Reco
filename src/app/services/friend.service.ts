@@ -123,7 +123,9 @@ export class FriendService {
   async getFriends(withMe) {
     const friendsArray: any[] = [];
     // no loading bar
+    console.log(firebase.auth().currentUser);
     const userId = firebase.auth().currentUser.uid;
+    console.log('current user => ' + userId);
     await this.loadingService.doFirebaseWithoutLoading( async () => {
         await firebase.firestore().collection('userProfile').doc(userId).get().then( async docUser => {
             if (withMe) {

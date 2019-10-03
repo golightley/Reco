@@ -10,10 +10,9 @@ const routes: Routes = [
   { path: 'reset-password', loadChildren: './pages/reset-password/reset-password.module#ResetPasswordPageModule' },
   { path: 'signup', loadChildren: './pages/signup/signup.module#SignupPageModule' },
   { path: 'ask-reco', loadChildren: './pages/webapp/ask-reco/ask-reco.module#AskRecoPageModule' },
-  { path: 'webapp-user', loadChildren: './pages/webapp/webapp-user/webapp-user.module#WebappUserPageModule' },  { path: 'app-download', loadChildren: './pages/webapp/app-download/app-download.module#AppDownloadPageModule' },
-
-
-  
+  { path: 'webapp-user', loadChildren: './pages/webapp/webapp-user/webapp-user.module#WebappUserPageModule' },
+  { path: 'app-download', loadChildren: './pages/webapp/app-download/app-download.module#AppDownloadPageModule' },
+  { path: 'shared-reco', loadChildren: './pages/webapp/shared-reco/shared-reco.module#SharedRecoPageModule' },
 
 ];
 

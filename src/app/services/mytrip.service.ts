@@ -27,12 +27,14 @@ export class MytripService {
   }
 
   // create shared recommendation for share via sms.
-  async createShareReco(selRecos) {
+  async createShareReco(selRecos, user) {
     const uid = firebase.auth().currentUser.uid;
     const result = await this.loadingService.doFirebase(async () => {
       return new Promise<any>(async (resolve, reject) => {
           firebase.firestore().collection('sharedRecommendations').add({
             user: uid,
+            userName: user.handle,
+            photoURL: user.photoURL || '',
             sharedRecos: selRecos,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           }).then(docRef => {

@@ -197,8 +197,10 @@ export class ExplorerService {
     let friendsArray: any[] = [];
     await this.loadingService.doFirebase( async () => {
       // get following friends and me
+      console.log('-------get friend---------');
       friendsArray = await this.friendService.getFriends(true);
-      // console.log('** Get Friend Recos **');
+      console.log('** Get Friend Recos **');
+      console.log(friendsArray);
       await Promise.all(friendsArray.map(async (friend) => {
           // console.log(' == friend loop == ');
           query = firebase.firestore().collection('recommendations').where('user', '==', friend.userId);
@@ -215,6 +217,38 @@ export class ExplorerService {
     });
     // console.log('Return recos and friends array!');
     return {recos: recsArray, friends: friendsArray};
+  }
+
+  /**
+   * get asked recos for webapp
+   */
+  async getSharedRecos(sharedRecoId) {
+    const recsArray: any[] = [];
+    let query;
+    await this.loadingService.doFirebase(async () => {
+      await firebase.firestore().collection('sharedRecommendations').doc(sharedRecoId).get()
+        .then(async shared => {
+          const recoIds = shared.data().sharedRecos;
+          const photoURL = shared.data().photoURL;
+          const userName = shared.data().userName;
+          await Promise.all(recoIds.map(async (recoId) => {
+            query = firebase.firestore().collection('recommendations').doc(recoId);
+            await query.get().then(async (rec) => {
+              const data = {
+                ...rec.data(),
+                userName: userName,
+                photoURL: photoURL
+              }
+              console.log(data);
+              recsArray.push(data);
+              console.log('shared recos push');
+            })
+          }));
+        });
+
+    });
+    console.log('Return shared reco!');
+    return { recos: recsArray };
   }
 
 
