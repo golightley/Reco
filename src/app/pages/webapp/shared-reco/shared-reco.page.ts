@@ -34,6 +34,8 @@ export class SharedRecoPage implements OnInit {
   FILTER_DISTANCE = -1; // all data load
   CardItemWidth = 330;
   sharedRecoId: any;
+  userName: any;
+
   constructor(
     private ev: Events,
     private loadingCtrl: LoadingController,
@@ -103,6 +105,7 @@ export class SharedRecoPage implements OnInit {
     let dist = 0;
     let index = 0;
     result.recos.forEach(data => {
+      this.userName = data.userName;
       if (!data.gType) {
         return;
       }
