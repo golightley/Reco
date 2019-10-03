@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/services/user/auth.service';
 import { AskRecoModalPage } from './ask-reco-modal/ask-reco-modal.page';
 import { MytripService } from './../../services/mytrip.service';
 import { Plugins } from '@capacitor/core';
@@ -20,13 +21,15 @@ export class MyTripsPage implements OnInit {
   recoArray: any = [];
   _backdropOn: boolean;
   smsContent = 'Hey! Checkout my Travel recommendation and sign in to the Reco app to see more ';
-  fdlUrl: any;  // firebase dynamic link url
-  
+  fdlUrl: any;  // firebase dynamic link url  
+  currentUser: any;
+
   constructor(
     private explorerService: ExplorerService,
     public alertCtrl: AlertController,
     private mytripService: MytripService,
     public modalController: ModalController,
+    private authService: AuthService,
     public actionSheetController: ActionSheetController) {
    }
 
@@ -118,20 +121,21 @@ export class MyTripsPage implements OnInit {
   // show modal for send SMS to friends
   async sendReco() {
     this._backdropOn = false;
+    this.currentUser = await this.authService.getCurrentUser();
     const selRecos = this.getSelectedRecos();
     if (!selRecos.length) {
       const msg = 'Please select recommendations you want to send to friend.';
       this.showErrorAlert(msg);
       return;
     }
-    const result = await this.mytripService.createShareReco(selRecos);
+    const sharedId = await this.mytripService.createShareReco(selRecos, this.currentUser);
     // if error occurred
-    if ( result.error) {
+    if ( sharedId.error) {
       const msg = 'Unable to send selected recommendations via SMS. Please try again later.';
       this.showErrorAlert(msg);
       return;
     }
-    const shareUrl = 'www.recoapp.com/reco_share?id=' + result;
+    const shareUrl = 'https://reco-6c892.firebaseapp.com/shared-reco/' + sharedId;
     const content = this.smsContent + shareUrl;
     console.log(shareUrl);
     console.log(content);
