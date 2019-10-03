@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { AskRecoPage } from './ask-reco.page';
 import { RecoCardComponent } from './reco-card/reco-card.component';
+import { GoogleMapComponent } from 'src/app/components/google-map/google-map.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,8 @@ const routes: Routes = [
   ],
   declarations: [
     AskRecoPage,
-    RecoCardComponent
+    RecoCardComponent,
+    GoogleMapComponent
   ],
   entryComponents: [
     RecoCardComponent

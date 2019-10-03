@@ -22,7 +22,11 @@
       </ion-slides>
   </div>
 </ion-content>
-
+  <!-- Google Map -->
+  <div class="map">
+    <!-- *ngIf="!focusedSearchBar" -->
+    <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
+  </div>
 <!-- <ion-footer>
   <div class="footer-desc" *ngIf="askUserName && !isCreatedReco">
     Reco add your trips to a map and lets you save recommendations for others
