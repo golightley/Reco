@@ -95,16 +95,17 @@ export class SharedRecoPage implements OnInit {
     console.log('Returned Recos array => ', result.recos);
     console.log(usersLocation);
     // Get distance and sort by distance
-    /* const sortedRecsArray = await getDistanceByLocation(result.recos, usersLocation) ;
-    sortedRecsArray.sort((locationA, locationB) => {
+    const sortedRecsArray = await getDistanceByLocation(result.recos, usersLocation) ;
+    /*sortedRecsArray.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
-    }); */
+    });*/
     
     // Generate recMapArray
 
     let dist = 0;
     let index = 0;
-    result.recos.forEach(data => {
+    sortedRecsArray.forEach(data => {
+      console.log('data=>', data);
       this.userName = data.userName;
       if (!data.gType) {
         return;
@@ -114,50 +115,25 @@ export class SharedRecoPage implements OnInit {
       if (data.photoURL) {
         userPhoto = data.photoURL;
       }
-      // grouping recommendations for the same place
-      if ( data.distance !== dist || dist === 0 ) {
-        const newRec = new RecommendationModel(data.id,
-                                              data.name,
-                                              data.city,
-                                              data.location.lat,
-                                              data.location.lng,
-                                              data.gType,
-                                              0,
-                                              [data.userName],
-                                              [data.user],
-                                              [userPhoto],
-                                              [data.notes],
-                                              [data.picture],
-                                              [data.pictureThumb],
-                                              [createdAt],
-                                              data.phone,
-                                              data.website,
-                                              true);
-        // make array for markers of Map
-        this.recMapArray.push(newRec);
-        index++;
-      } else {
-        const rec = this.recMapArray[index - 1];
-        rec.userNames.push(data.userName);
-        rec.userIds.push(data.user);
-        rec.userPhotoURLs.push(userPhoto);
-        rec.notes.push(data.notes);
-        rec.createdAts.push(createdAt);
-        // remove empty picture
-        if ( rec.pictures[rec.pictures.length - 1] === '') {
-          console.log('&&&& slice empty picture &&&&');
-          rec.pictures.shift();
-          rec.pictureThumbs.shift();
-        }
-        if (data.picture) {
-          rec.pictures.push(data.picture); // can't know whose picture.
-          rec.pictureThumbs.push(data.pictureThumb);
-        }
-        this.recMapArray[index - 1] = rec;
-      }
-      dist = data.distance;
-
-
+      const newRec = new RecommendationModel(data.id,
+                                            data.name,
+                                            data.city,
+                                            data.location.lat,
+                                            data.location.lng,
+                                            data.gType,
+                                            0,
+                                            [data.userName],
+                                            [data.user],
+                                            [userPhoto],
+                                            [data.notes],
+                                            [data.picture],
+                                            [data.pictureThumb],
+                                            [createdAt],
+                                            data.phone,
+                                            data.website,
+                                            true);
+      // make array for markers of Map
+      this.recMapArray.push(newRec);
     });
     console.log('Group Map Recos array => count: ' + this.recMapArray.length);
     console.log('Group Map array result=>', this.recMapArray);

@@ -235,6 +235,7 @@ export class ExplorerService {
             query = firebase.firestore().collection('recommendations').doc(recoId);
             await query.get().then(async (rec) => {
               const data = {
+                id: rec.id,
                 ...rec.data(),
                 userName: userName,
                 photoURL: photoURL
