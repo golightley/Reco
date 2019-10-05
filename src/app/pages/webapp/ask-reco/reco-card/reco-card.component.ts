@@ -201,7 +201,7 @@ export class RecoCardComponent implements OnInit {
     console.log('Reco ID => ' + recoID);
     if (recoID) {
       // if success to create reco
-      await this.presentToast('Successfully saved!');
+      // await this.presentToast('Successfully saved!');
       await this.askRecoService.setAskedRecoId(recoID);
       this.isCreatedReco = true;
       // const recoIds = await this.askRecoService.getAskedRecoId();
