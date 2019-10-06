@@ -65,7 +65,7 @@ export class GoogleMapComponent implements OnInit {
             this.updateBoolToTrue();
             resolve(true);
           }, (err) => {
-            this.disableMap();
+            // this.disableMap();
             reject(err);
           });
         }, (err) => {
@@ -284,7 +284,7 @@ updateBoolToTrue(): void {
             this.enableMap();
           }
         } else {
-          this.disableMap();
+          // this.disableMap();
         }
       });
 
