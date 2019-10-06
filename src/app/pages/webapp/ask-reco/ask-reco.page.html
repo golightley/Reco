@@ -23,15 +23,15 @@
   </div>
 </ion-content>
   <!-- Google Map -->
-  <div class="map">
+  <div class="map" style="display: none">
     <!-- *ngIf="!focusedSearchBar" -->
     <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
   </div>
-<!-- <ion-footer>
+<ion-footer *ngIf="askUserName">
   <div class="footer-desc" *ngIf="askUserName && !isCreatedReco">
     Reco add your trips to a map and lets you save recommendations for others
   </div>
   <div class="footer-desc" *ngIf="askUserName && isCreatedReco">
     <span class="create-profile-link" (click)="createProfile()">Create your profile</span> to share with others and see your friends Recos
   </div>
-</ion-footer> -->
+</ion-footer>

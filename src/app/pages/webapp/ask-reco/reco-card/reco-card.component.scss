@@ -1,49 +1,60 @@
-$first-card-color: #FFBE03;
-$second-card-color: #FF6A16;
-$third-card-color: #3D61FF;
+$first-card-color: #373944; // must remove
+$second-card-color: #373944; // must remove
+$third-card-color: #373944; // must remove
+
+$card-background-color: #373944;
+$font-color: #fffefe;
+$card-border-color: #f5f3d6;
 
 .first {
     background-color: $first-card-color !important;    
     --background: $first-card-color !important;    
-    border: 1px solid $first-card-color !important;
+    border: 2px solid $card-border-color !important;
 }
 .second {
     background-color: $second-card-color !important;    
     --background: $second-card-color !important;
-    border: 1px solid $second-card-color !important;
+    border: 2px solid $card-border-color !important;
 }
 .third {
     background-color: $third-card-color !important;    
     --background: $third-card-color !important;
-    border: 1px solid $third-card-color !important;
+    border: 2px solid $card-border-color !important;
+}
+
+.input-item {
+  background-color: $card-background-color !important;    
+    --background: $card-background-color !important;
+    border: 1px solid $card-background-color !important;
 }
 
 .reco-card-component {
     width: 100%;
-    height: 65vh;    
+    height: 78%;    
     border-radius: 25px;
     margin: 40px 10px 0px 0px !important;
     overflow: hidden;
 
-    // box-shadow: 0 3px 8px rgba(100, 100, 100, 1) !important;
+    box-shadow: 0 3px 8px rgba(100, 100, 100, 1) !important;
 
     .reco-card-title {
-      color: #592A03;
-      margin-bottom: 50px;
+      color: $font-color;
       margin-top:45px;
-      font-size: 33px;
+      margin-left: 20px;
+      font-size: 24px;
       font-weight:bold;
+      text-align: left;
     }
 
     .reco-card-content {
         ion-item {
             padding-right: 7px;
-            padding-left: 7px;
+            padding-left: 0px;
             // font-weight:bold;
             font-size: 20px;
-            color: #592A03;
+            color: $font-color;
             ion-label {
-              color: #592A03;
+              color: $font-color;
               height: 5px;
             }
         }
@@ -51,11 +62,11 @@ $third-card-color: #3D61FF;
           --placeholder-opacity: 1;
         }
         margin: 0 auto;
-        height: 55vh;
+        // height: 55vh;
         .place-list {
             margin: 5px 0 !important;
-            border: 1px solid rgba(150,150,150, 0.5) !important;
-            box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
+            border: 1px solid $card-border-color !important;
+            box-shadow: 0 3px 6px $card-border-color !important;  
             border-radius: 5px;
             ion-item {
               border-bottom: 1px solid rgb(205,205,205);
@@ -75,14 +86,14 @@ $third-card-color: #3D61FF;
             margin: 3px 15px;
             span {
               font-size: 12px;
-              color: #E48633;
+              color: $font-color;
             }
           }
         
           .notes-textarea {
             height: 50px;
             padding: 0px;
-            // margin-top: 10px;
+            margin-top: 10px;
           }
         
           .photo-item {
@@ -118,17 +129,17 @@ $third-card-color: #3D61FF;
           .op-button {
             width: 75%;
             height: 40px;
-            margin-top: 130px;
-            font-size: 22px;
+            margin-top: calc(4vh * 4);
+            font-size: 18px;
             font-weight: bold;
             // --border-color: #d3d31f;            
             // --border-width: 1px;
             // --border-style: solid;
             --border-radius: 10px;
-            --background: #F8F7FB;
+            --background: #f5f5a5;
             --background-activated: linear-gradient(320deg,  #c0ba06, #e4e4bc);
             // --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);        
-            --color: #592A03;
+            --color: black;
             // --color-activated:#000;
           }
           
@@ -136,7 +147,7 @@ $third-card-color: #3D61FF;
             margin-top: 30px;
             font-size: 16px;
             padding: 20px;
-            color: #592A03;
+            color: $font-color;
           }
     }
 

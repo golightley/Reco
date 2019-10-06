@@ -3,7 +3,7 @@
     {{cardTitle[_cardIndex]}}
   </h3>
   <div class="reco-card-content" *ngIf="_cardIndex<2">
-    <ion-item lines="none" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
+    <ion-item lines="none" class="input-item">
       <ion-label position="stacked"></ion-label>
       <ion-input [(ngModel)]="queryPlace" (ionInput)="searchPlace()" type="text" placeholder="Type your recommendation">
       </ion-input>
@@ -21,7 +21,7 @@
         <ion-input  [(ngModel)]="city" type="text"></ion-input>
       </ion-item> -->
 
-      <ion-item lines="none" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
+      <ion-item lines="none" class="input-item">
         <ion-textarea [(ngModel)]="notes" type="text" class="notes-textarea" placeholder="Notes to your friend">
         </ion-textarea>
       </ion-item>
@@ -39,13 +39,13 @@
 
       <ion-button (click)="createAskRec()" class="op-button" [disabled]="!queryPlace || !notes" *ngIf="!isCreatedReco">
         <!-- {{addButtonLabel}} -->
-        Send Reco
+        Submit
       </ion-button>
       <ion-button class="op-button" *ngIf="isCreatedReco">
         <ion-icon name="checkmark" size="large"></ion-icon>
         Sent
       </ion-button>
-
+      
       
   </div>
 

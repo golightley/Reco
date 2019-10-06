@@ -1,14 +1,20 @@
+$font-color: #fffefe;
+$card-background-color: #373944;
 .content{
     padding: 50px 20px 0px 15px;
+    height: 100%;
+    background-color: $card-background-color;
     .title {
+        margin-left: 10px;
         font-size: 30px;
         font-weight:bold;
+        color: $font-color;
     }
     .card-slides {
-        height: calc(68vh + 40px);
+        height: 100%;
         .reco-card {
             width: 100%;
-            height: calc(68vh + 40px);
+            height: 100%;
         }
         ion-slide {
             // width: 75vw !important;
@@ -19,9 +25,12 @@
 }
 
 ion-footer {
-    font-size: 16px;
+    font-size: 18px;
     text-align: center;
-    padding: 5px 75px 60px 40px;
+    padding: 15px 30px 0px 30px;
+    padding-bottom: 5vh;
+    color: $font-color;
+    background-color: $card-background-color;
 }
 .footer-md:before {
     height: 0px;
