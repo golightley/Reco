@@ -1,8 +1,10 @@
+import { AskrecoService } from 'src/app/services/ask-reco.service';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/user/auth.service';
+import { AuthService } from 'src/app/services/user/auth.service';
 import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ExplorerService } from 'src/app/services/explorer.service';
 
 @Component({
   selector: 'app-signup',
@@ -16,12 +18,18 @@ export class SignupPage implements OnInit {
   private showPass: boolean;
   userId: string;
   step: string;
+  appType: string;
+  recoIds: any[];
+  backUrl: string;
 
   constructor(
     private authService: AuthService,
     private alertCtrl: AlertController,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private askRecoService: AskrecoService,
+    private explorerService: ExplorerService
   ) {
     this.emailForm = this.formBuilder.group({
       email: [
@@ -41,9 +49,16 @@ export class SignupPage implements OnInit {
     });
   }
 
-  ngOnInit( ) {
+  async ngOnInit( ) {
     this.step = 'email-register';
     this.userId = '';
+    this.appType = this.route.snapshot.paramMap.get('type');
+    console.log('App Type parameter => ' + this.appType);
+    if (this.appType === 'app') {
+      this.backUrl = '/login';
+    } else {
+      this.backUrl = '/webapp-user';
+    }
   }
 
   async registerEmail(emailForm: FormGroup): Promise<void> {
@@ -82,9 +97,22 @@ export class SignupPage implements OnInit {
       const result = await this.authService.registerUsername(this.userId, handle);
       console.log('result=> ', result);
       if ( result === 'success' ) {
-        // if success, navigate to explorer page
-        this.router.navigateByUrl('');
-      } else if ( result ==='duplicate' ){
+        // if success
+        if (this.appType === 'app') {
+          // navigate to explorer page
+          this.router.navigateByUrl('');
+        } else {
+          // register with user id created recos
+          // get created reco ids
+          const recoIds = await this.askRecoService.getAskedRecoId();
+          console.log('Created reco ids => ', recoIds);
+          await this.explorerService.updateRecommendations(recoIds);
+          // init askedRecoId
+          await this.askRecoService.setAskedRecoId('');
+          // navigate to download page
+          this.router.navigateByUrl('/app-download');
+        }
+      } else if ( result === 'duplicate' ){
         const errorMessage = 'Username already exists. please input another username.'
         this.showErrorAlert(errorMessage);
       } else {

@@ -1,0 +1,37 @@
+<ion-header>
+  <!-- <ion-toolbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar> -->
+</ion-header>
+
+<ion-content scroll-y="false">
+  <div class="content" *ngIf="askUserName">
+      <div class="title">
+          {{title}}
+      </div>
+      <ion-slides pager="false"  #recoSlider [options]="slideOpts" class="card-slides" (ionSlideNextEnd)="setCurIndex()" (ionSlidePrevEnd)="setCurIndex()">
+          <ion-slide>
+            <app-reco-card class="reco-card" [cardIndex]="0" [askUserName]="askUserName" [autocompleteService]="autocompleteService" [placeService]="placeService"></app-reco-card>
+          </ion-slide>
+          <ion-slide>
+            <app-reco-card class="reco-card" [cardIndex]="1" [askUserName]="askUserName" [autocompleteService]="autocompleteService" [placeService]="placeService"></app-reco-card>
+          </ion-slide>
+          <ion-slide>
+            <app-reco-card class="reco-card" [cardIndex]="2" [askUserName]="askUserName"></app-reco-card>
+          </ion-slide>
+      </ion-slides>
+  </div>
+</ion-content>
+  <!-- Google Map -->
+  <div class="map">
+    <!-- *ngIf="!focusedSearchBar" -->
+    <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
+  </div>
+<!-- <ion-footer>
+  <div class="footer-desc" *ngIf="askUserName && !isCreatedReco">
+    Reco add your trips to a map and lets you save recommendations for others
+  </div>
+  <div class="footer-desc" *ngIf="askUserName && isCreatedReco">
+    <span class="create-profile-link" (click)="createProfile()">Create your profile</span> to share with others and see your friends Recos
+  </div>
+</ion-footer> -->

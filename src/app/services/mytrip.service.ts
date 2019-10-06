@@ -1,13 +1,10 @@
 import { LoadingService } from './loading-service';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +14,6 @@ export class MytripService {
   public eventListRef: firebase.firestore.CollectionReference;
 
   constructor(
-    private storage: Storage,
-    private http: HttpClient,
     // private headers: HttpHeaders,
     private loadingService: LoadingService
   ) {
@@ -32,12 +27,14 @@ export class MytripService {
   }
 
   // create shared recommendation for share via sms.
-  async createShareReco(selRecos) {
+  async createShareReco(selRecos, user) {
     const uid = firebase.auth().currentUser.uid;
     const result = await this.loadingService.doFirebase(async () => {
       return new Promise<any>(async (resolve, reject) => {
           firebase.firestore().collection('sharedRecommendations').add({
             user: uid,
+            userName: user.handle,
+            photoURL: user.photoURL || '',
             sharedRecos: selRecos,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           }).then(docRef => {
@@ -53,63 +50,47 @@ export class MytripService {
   }
 
 
-    // delerte reco 
-    async deleteReco(recoId) {
-      const result = await this.loadingService.doFirebase(async () => {
-        return new Promise<any>(async (resolve, reject) => {
-            firebase.firestore().collection("recommendations").doc(recoId).delete().then(function() {
-              console.log("Document successfully deleted!");
-              resolve();
+  // delete reco 
+  async deleteReco(recoId) {
+    const result = await this.loadingService.doFirebase(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+          firebase.firestore().collection("recommendations").doc(recoId).delete().then(function() {
+            console.log("Document successfully deleted!");
+            resolve();
 
-          }).catch(function(error) {
-            console.error("Error removing document: ", error);
-            reject(error);
-          });
-
+        }).catch(function(error) {
+          console.error("Error removing document: ", error);
+          reject(error);
         });
+
       });
-      return result;
-    }
-  
-
-
-
-  async getFdlURL(selRecos) {
-    const apiKey = environment.firebase.apiKey;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
     });
-    console.log('call api to create dynamic link of firebase');
-    await this.loadingService.doFirebase( async () => {
-      const url = `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${apiKey}`;
-      const resp = await this.http
-      .post(
-        url,
-        {
-          'dynamicLinkInfo': {
-            'domainUriPrefix': 'https://link.reco.com',
-            'link': 'https://reco.com/recos',
-            'androidInfo': {
-              'androidPackageName': 'com.bowieventures.recotravelapp'
-            },
-            'iosInfo': {
-              'iosBundleId': 'com.bowieventures.recotravelapp'
-            }
-          }
-        },
-        {
-          headers
-        }
-      )
-      .toPromise();
-      console.log(resp);
-      return resp;
-    });
-    // console.log('finish get firends');
-    // return friendsArray;
-
+    return result;
   }
 
+  // create ask for a recommendation
+  async createAskForReco(location, user) {
+    if (!user) {
+      return;
+    }
+    const result = await this.loadingService.doFirebase(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+          firebase.firestore().collection('askForRecommendations').add({
+            user: user.uid,
+            userName: user.handle,
+            location: location,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(docRef => {
+            console.log('SERVICE.createAskForReco:', docRef.id);
+            resolve(docRef.id);
+          }).catch(error => {
+            console.error('SERVICE.createAskForReco.Error adding document: ', error);
+            reject(error);
+          });
+      });
+    });
+    return result;
+  }
 }
 
 

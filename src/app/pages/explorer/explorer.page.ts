@@ -23,8 +23,7 @@ export class ExplorerPage implements OnInit {
 
   @ViewChild(GoogleMapComponent) map: GoogleMapComponent;
   @ViewChild('recoCardList', { read: ElementRef }) private cardListElem: ElementRef;
-  @ViewChild('recoCardItem', { read: ElementRef }) private cardItemElem: ElementRef;
-
+  
   recMapArray: RecommendationModel[] = [];
   recCardArray: RecommendationModel[] = [];
   friendList: any[] = [];
@@ -182,7 +181,7 @@ export class ExplorerPage implements OnInit {
     console.log('Group Map array result=>', this.recMapArray);
 
     this.map.readyTointeract.subscribe((data) => {
-      if(data){
+      if (data) {
         this.map.addMarkers(this.recMapArray);
       } 
 

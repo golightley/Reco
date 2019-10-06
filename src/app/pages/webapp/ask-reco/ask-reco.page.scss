@@ -1,0 +1,32 @@
+.content{
+    padding: 50px 20px 0px 15px;
+    .title {
+        font-size: 30px;
+        font-weight:bold;
+    }
+    .card-slides {
+        height: calc(68vh + 40px);
+        .reco-card {
+            width: 100%;
+            height: calc(68vh + 40px);
+        }
+        ion-slide {
+            // width: 75vw !important;
+            padding-right: 20px;
+            padding-left: 3px;
+        }
+    }
+}
+
+ion-footer {
+    font-size: 16px;
+    text-align: center;
+    padding: 5px 75px 60px 40px;
+}
+.footer-md:before {
+    height: 0px;
+}
+.create-profile-link {
+    color: #0000ff;
+    cursor: pointer;
+}

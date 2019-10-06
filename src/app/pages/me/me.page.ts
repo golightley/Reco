@@ -13,7 +13,7 @@ export class MePage implements OnInit {
   constructor(
     private authService: AuthService
   ) { 
-   var currentUser:any  = this.authService.getMyUserName();
+   var currentUser:any  = this.authService.getCurrentUser();
    console.log(currentUser)
     this.email = currentUser.email;
 

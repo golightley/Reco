@@ -1,0 +1,19 @@
+<ion-content class="main-content">
+  <div class="logo-container">    
+    <h1 class="title">Sign up to save your recommendations to your own map</h1>
+  </div>
+  <div class="facebook-login">
+    <ion-button (click)="capacitorFbLogin()" expand="block">
+        <ion-icon slot="start" name="logo-facebook"></ion-icon>        
+        Connect with Facebook
+    </ion-button>
+  </div>
+  
+  <div class="email-login-link">
+    <span>Or use your email</span>
+    <span class="link" (click)="gotoSignup()">here</span>
+  </div>
+  <div class="desc">
+    Recos's mission is to help structure and share your friends recommendations
+  </div>
+</ion-content>

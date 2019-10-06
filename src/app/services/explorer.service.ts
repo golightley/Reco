@@ -32,8 +32,30 @@ export class ExplorerService {
 
   }
 
+  // update recommendation with current user
+  async updateRecommendations(recoIds) {
+    const recoIdArray = recoIds.split(',');
+    await this.loadingService.doFirebaseWithoutLoading(async () => {
+      return new Promise<any>(async (resolve, reject) => {
+        const promissArr = recoIdArray.map( async recoId => {
+            const recoRef = firebase.firestore().collection('recommendations').doc(recoId);
+            await recoRef.update({
+                user: firebase.auth().currentUser.uid
+            });
+            console.log('updated recommendation, id => ' + recoId);
+          });
+        Promise.all(promissArr)
+        .then(result => {
+            console.log('*********** End update all recommendation *************');
+            resolve();
+        }, reject);
+      });
+    });
+  }
+
+  // if isAskReco is true, it will be created without user
   async createNewRecommendation(
-      name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
+      isAskReco: boolean, name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
       placeWebsite: any, placePhone: any, pictureDataUrl: any, pictureDataThumbUrl: any) {
     // print the form results
     console.log('SERVICE.CreateNewRcommendations.FormGroup:');
@@ -49,7 +71,7 @@ export class ExplorerService {
         }
         if ( pictureDataThumbUrl ) {
           pictureThumbUrl = await this.uploadPicture(pictureDataThumbUrl, true);
-          if(pictureThumbUrl==''){
+          if (pictureThumbUrl === ''){
             pictureUrl = await this.uploadPicture(pictureDataUrl, false);
           }
           console.log('pictureThumbUrl:' + pictureThumbUrl);
@@ -62,11 +84,11 @@ export class ExplorerService {
           location: location,
           gplaceId: googlePlaceId,
           gType: googleTypes,
-          website: placeWebsite,
-          phone: placePhone,
+          website: placeWebsite || '',
+          phone: placePhone || '',
           picture: pictureUrl,
           pictureThumb: pictureThumbUrl,
-          user: firebase.auth().currentUser.uid,
+          user: isAskReco ? '' : firebase.auth().currentUser.uid,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(docRef => {
           console.log('SERVICE.createNewRecommendation:', docRef.id);
@@ -175,8 +197,10 @@ export class ExplorerService {
     let friendsArray: any[] = [];
     await this.loadingService.doFirebase( async () => {
       // get following friends and me
+      console.log('-------get friend---------');
       friendsArray = await this.friendService.getFriends(true);
-      // console.log('** Get Friend Recos **');
+      console.log('** Get Friend Recos **');
+      console.log(friendsArray);
       await Promise.all(friendsArray.map(async (friend) => {
           // console.log(' == friend loop == ');
           query = firebase.firestore().collection('recommendations').where('user', '==', friend.userId);
@@ -193,6 +217,39 @@ export class ExplorerService {
     });
     // console.log('Return recos and friends array!');
     return {recos: recsArray, friends: friendsArray};
+  }
+
+  /**
+   * get asked recos for webapp
+   */
+  async getSharedRecos(sharedRecoId) {
+    const recsArray: any[] = [];
+    let query;
+    await this.loadingService.doFirebase(async () => {
+      await firebase.firestore().collection('sharedRecommendations').doc(sharedRecoId).get()
+        .then(async shared => {
+          const recoIds = shared.data().sharedRecos;
+          const photoURL = shared.data().photoURL;
+          const userName = shared.data().userName;
+          await Promise.all(recoIds.map(async (recoId) => {
+            query = firebase.firestore().collection('recommendations').doc(recoId);
+            await query.get().then(async (rec) => {
+              const data = {
+                id: rec.id,
+                ...rec.data(),
+                userName: userName,
+                photoURL: photoURL
+              }
+              console.log(data);
+              recsArray.push(data);
+              console.log('shared recos push');
+            })
+          }));
+        });
+
+    });
+    console.log('Return shared reco!');
+    return { recos: recsArray };
   }
 
 

@@ -1,3 +1,4 @@
+
   const toRad = (x) => {
     return x * Math.PI / 180;
   }
@@ -48,12 +49,20 @@
   const getDistanceByLocation = async (recosList, userLocation) => {
     const sortedList = [];
     recosList.map(async (rec) => {
+      let lat, lng;
+      if (typeof rec.location !== 'undefined') {
+        lat = rec.location.lat;
+        lng = rec.location.lng;
+      } else {
+        lat = rec.data().location.lat;
+        lng = rec.data().location.lng;
+      }
       const placeLocation = {
-        lat: rec.data().location.lat,
-        lng: rec.data().location.lng
+        lat: lat,
+        lng: lng
       };
-      console.log('user location', userLocation);
-      console.log('place location', placeLocation);
+      // console.log('user location', userLocation);
+      // console.log('place location', placeLocation);
       rec.distance = await getDistanceBetweenPoints(
         userLocation,
         placeLocation,
