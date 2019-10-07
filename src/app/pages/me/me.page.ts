@@ -13,14 +13,12 @@ export class MePage implements OnInit {
   constructor(
     private authService: AuthService
   ) { 
-   var currentUser:any  = this.authService.getCurrentUser();
-   console.log(currentUser)
-    this.email = currentUser.email;
-
-
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    var currentUser:any  = await this.authService.getCurrentUser();
+    console.log(currentUser)
+    this.email = currentUser.email;
   }
 
   logout(){

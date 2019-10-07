@@ -197,8 +197,7 @@ export class SharedRecoPage implements OnInit {
     // move map according to position of selected card place
     const lat = this.recCardArray[index].lat;
     const lng = this.recCardArray[index].lng;
-    await this.map.setCurrentLocation(lat, lng);
-    await this.map.moveCenter();
+    await this.map.moveCenter(lat, lng);
     // get index of marker
     const mapRecoIndex = this.recMapArray.findIndex ( reco => {
       return reco.id === recoId;
