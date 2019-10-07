@@ -55,6 +55,13 @@ textarea{
     height: 180px;
 }
 
+.searchbar-cancel-button.sc-ion-searchbar-md {
+    left: 5px !important;
+}
+
+.searchbar-cancel-button.sc-ion-searchbar-ios {
+    left: 5px !important;
+}
 .nolines {
     --border-width: 0 !important;
     border-bottom: none;

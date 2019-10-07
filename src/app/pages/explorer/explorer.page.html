@@ -2,7 +2,7 @@
   <ion-toolbar>
     <div class="search-bar">
       <ion-searchbar [(ngModel)]="query" class="reco-searchbar" mode="md" type="text" showCancelButton="focus" (ionInput)="searchPlace()"
-        (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a location" style="margin:4px 4px!important;display: flex!important;"></ion-searchbar>
+        (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a location"></ion-searchbar>
         <img class="filter-icon" src="assets/images/filter.png" (click)="showFilterModal()"/>  
     </div>
   </ion-toolbar>
