@@ -3,19 +3,23 @@ $second-card-color: #FF6A16;
 $third-card-color: #3D61FF;
 
 .first {
-    background-color: $first-card-color !important;    
-    --background: $first-card-color !important;    
-    border: 1px solid $first-card-color !important;
+    // background-color: $first-card-color !important;    
+    // --background: $first-card-color !important;    
+    border: 4px solid #FBFFC4;
 }
 .second {
-    background-color: $second-card-color !important;    
-    --background: $second-card-color !important;
-    border: 1px solid $second-card-color !important;
+    // background-color: $second-card-color !important;    
+    // --background: $second-card-color !important;
+    // border: 1px solid $second-card-color !important;
+    border: 3px solid #FBFFC4;
+
 }
 .third {
-    background-color: $third-card-color !important;    
-    --background: $third-card-color !important;
-    border: 1px solid $third-card-color !important;
+    // background-color: $third-card-color !important;    
+    // --background: $third-card-color !important;
+    // border: 1px solid $third-card-color !important;
+    border: 4px solid #FBFFC4;
+
 }
 
 .reco-card-component {
@@ -24,11 +28,12 @@ $third-card-color: #3D61FF;
     border-radius: 25px;
     margin: 40px 10px 0px 0px !important;
     overflow: hidden;
+    background-color: #2F3746;
 
     // box-shadow: 0 3px 8px rgba(100, 100, 100, 1) !important;
 
     .reco-card-title {
-      color: #592A03;
+      color: #FEFEFE;
       margin-bottom: 50px;
       margin-top:45px;
       font-size: 33px;
@@ -36,32 +41,42 @@ $third-card-color: #3D61FF;
     }
 
     .reco-card-content {
+      // background-color: #2F3746 !important;;
+      
+
         ion-item {
-            padding-right: 7px;
+          background-color: #2F3746 !important;
+          border: 0px solid #2F3746;
+
+          padding-right: 7px;
             padding-left: 7px;
             // font-weight:bold;
-            font-size: 20px;
-            color: #592A03;
-            ion-label {
-              color: #592A03;
-              height: 5px;
-            }
+            font-size: 22px;
+            color: rgb(212, 218, 230);
+            // ion-label {
+            //   color: #2F3746;
+            //   height: 5px;
+            // }
         }
         ion-input, ion-textarea{          
           --placeholder-opacity: 1;
+          background-color: #2F3746 !important;;
+
         }
         margin: 0 auto;
         height: 55vh;
         .place-list {
             margin: 5px 0 !important;
-            border: 1px solid rgba(150,150,150, 0.5) !important;
-            box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
+            // border: 1px solid rgba(150,150,150, 0.5) !important;
+            // box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
             border-radius: 5px;
             ion-item {
-              border-bottom: 1px solid rgb(205,205,205);
+              // border-bottom: 1px solid rgb(205,205,205);
               padding: 3px 0;
               color: rgb(50,50,50);
               font-size: 14px;
+              
+
             }
           }
           .empty-place-list {
@@ -82,6 +97,8 @@ $third-card-color: #3D61FF;
           .notes-textarea {
             height: 50px;
             padding: 0px;
+            background-color: #2F3746 !important;;
+
             // margin-top: 10px;
           }
         
@@ -125,10 +142,10 @@ $third-card-color: #3D61FF;
             // --border-width: 1px;
             // --border-style: solid;
             --border-radius: 10px;
-            --background: #F8F7FB;
+            // --background: #F8F7FB;
             --background-activated: linear-gradient(320deg,  #c0ba06, #e4e4bc);
             // --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);        
-            --color: #592A03;
+            --color: rgb(255, 255, 255);
             // --color-activated:#000;
           }
           
@@ -136,7 +153,7 @@ $third-card-color: #3D61FF;
             margin-top: 30px;
             font-size: 16px;
             padding: 20px;
-            color: #592A03;
+            color: #FEFEFE;
           }
     }
 

@@ -36,23 +36,32 @@ ion-buttons {
 }
 
 ion-item{
-    --background-active:#fff;
+    // --background-active:#fff;
+              background-color: #2F3746 !important;;
+
 }
 
 ion-input, ion-textarea{
 
-    background-color: #f3f3f3;
+    // background-color: #f3f3f3;
     border-bottom: 1px solid #cecece;
     padding-left:10px;
+    // background-color: #2F3746 !important;;
+    background-color: #2F3746 !important;;
+
 
 }
 
 ion-textarea{
     height: 200px;
+    background-color: #2F3746 !important;;
+
 }
 
 textarea{
     height: 180px;
+    background-color: #2F3746 !important;;
+
 }
 
 .nolines {

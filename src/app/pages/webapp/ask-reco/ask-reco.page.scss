@@ -1,8 +1,10 @@
 .content{
-    padding: 50px 20px 0px 15px;
+    padding: 50px 20px 0px 18px;
+    background-color: #2F3746;
     .title {
-        font-size: 30px;
+        font-size: 26px;
         font-weight:bold;
+        color:#FEFEFE;
     }
     .card-slides {
         height: calc(68vh + 40px);
@@ -22,10 +24,12 @@ ion-footer {
     font-size: 16px;
     text-align: center;
     padding: 5px 75px 60px 40px;
+    background-color: #2F3746;
+
 }
-.footer-md:before {
-    height: 0px;
-}
+// .footer-md:before {
+//     height: 0px;
+// }
 .create-profile-link {
     color: #0000ff;
     cursor: pointer;

@@ -1,0 +1,79 @@
+PODS:
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - ByteowlsCapacitorSms (1.0.0):
+    - Capacitor
+  - Capacitor (1.1.0):
+    - CapacitorCordova (= 1.1.0)
+  - CapacitorCordova (1.1.0)
+  - CordovaPlugins (1.1.0):
+    - CapacitorCordova
+  - FacebookCore (0.5.0):
+    - Bolts (~> 1.9)
+    - FBSDKCoreKit (~> 4.37)
+  - FacebookLogin (0.5.0):
+    - Bolts (~> 1.9)
+    - FacebookCore (~> 0.5)
+    - FBSDKCoreKit (~> 4.37)
+    - FBSDKLoginKit (~> 4.37)
+  - FBSDKCoreKit (4.44.1):
+    - Bolts (~> 1.9)
+  - FBSDKLoginKit (4.44.1):
+    - FBSDKCoreKit
+  - RdlaboCapacitorFacebookLogin (1.0.6):
+    - Capacitor
+    - FacebookCore (= 0.5.0)
+    - FacebookLogin (= 0.5.0)
+  - TeamhiveCapacitorEmail (1.0.0):
+    - Capacitor
+
+DEPENDENCIES:
+  - "ByteowlsCapacitorSms (from `../../node_modules/@byteowls/capacitor-sms`)"
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
+  - "RdlaboCapacitorFacebookLogin (from `../../node_modules/@rdlabo/capacitor-facebook-login`)"
+  - "TeamhiveCapacitorEmail (from `../../node_modules/@teamhive/capacitor-email`)"
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Bolts
+    - FacebookCore
+    - FacebookLogin
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+
+EXTERNAL SOURCES:
+  ByteowlsCapacitorSms:
+    :path: "../../node_modules/@byteowls/capacitor-sms"
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+  CordovaPlugins:
+    :path: "../capacitor-cordova-ios-plugins"
+  RdlaboCapacitorFacebookLogin:
+    :path: "../../node_modules/@rdlabo/capacitor-facebook-login"
+  TeamhiveCapacitorEmail:
+    :path: "../../node_modules/@teamhive/capacitor-email"
+
+SPEC CHECKSUMS:
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  ByteowlsCapacitorSms: 7b80c85e60a7ae3d157442e998fb93ad19717cac
+  Capacitor: 1e4b4f057fe6c727575a90cc640fbf6aa019a017
+  CapacitorCordova: 49e84a6ab0ff82f00667bd27bb3c0e98bafea445
+  CordovaPlugins: d5a9c16ca3ac10227aede67d66363c10fcf970c3
+  FacebookCore: 74288d0add931d361b1596beae787ab72c438249
+  FacebookLogin: ebcf34714a1cb9f0759d9f071cfb01ed500996cf
+  FBSDKCoreKit: a823ae35bdb60ebb8d7a7e51abe7c5d87d2bfced
+  FBSDKLoginKit: 54ae59987f2a8703021557c90a9aebb9e5c2bef6
+  RdlaboCapacitorFacebookLogin: 1f4e9a565b4f192e020a2480ba76fb522f483413
+  TeamhiveCapacitorEmail: 6f53398bf71d56a7a33ecc061baefbc09a06ad8d
+
+PODFILE CHECKSUM: 8fec5b57cd8fa560fb7368a8faa3193e5f6e30f8
+
+COCOAPODS: 1.7.5
