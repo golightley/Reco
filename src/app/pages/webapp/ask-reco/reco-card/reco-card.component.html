@@ -3,7 +3,7 @@
     {{cardTitle[_cardIndex]}}
   </h3>
   <div class="reco-card-content" *ngIf="_cardIndex<2">
-    <ion-item lines="none" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
+    <ion-item lines="none" class="input-item">
       <ion-label position="stacked"></ion-label>
       <ion-input [(ngModel)]="queryPlace" (ionInput)="searchPlace()" type="text" placeholder="Type your recommendation">
       </ion-input>
@@ -21,10 +21,17 @@
         <ion-input  [(ngModel)]="city" type="text"></ion-input>
       </ion-item> -->
 
+<<<<<<< HEAD
     <ion-item lines="none" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
       <ion-textarea [(ngModel)]="notes" type="text" class="notes-textarea" placeholder="Notes to your friend">
       </ion-textarea>
     </ion-item>
+=======
+      <ion-item lines="none" class="input-item">
+        <ion-textarea [(ngModel)]="notes" type="text" class="notes-textarea" placeholder="Notes to your friend">
+        </ion-textarea>
+      </ion-item>
+>>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
 
     <!-- <ion-item class="photo-item" *ngIf="!picture" [ngClass]="{'first': _cardIndex===0,'second': _cardIndex===1,'third': _cardIndex===2}">
         <ion-label position="stacked" class="title">Add an image</ion-label>
@@ -37,6 +44,7 @@
         <ion-icon name="add" color="light" size="small"></ion-icon>
       </div> -->
 
+<<<<<<< HEAD
     <ion-button (click)="createAskRec()" class="op-button" [disabled]="!queryPlace || !notes" *ngIf="!isCreatedReco">
       <!-- {{addButtonLabel}} -->
       Send Reco
@@ -47,6 +55,18 @@
     </ion-button>
 
 
+=======
+      <ion-button (click)="createAskRec()" class="op-button" [disabled]="!queryPlace || !notes" *ngIf="!isCreatedReco">
+        <!-- {{addButtonLabel}} -->
+        Submit
+      </ion-button>
+      <ion-button class="op-button" *ngIf="isCreatedReco">
+        <ion-icon name="checkmark" size="large"></ion-icon>
+        Sent
+      </ion-button>
+      
+      
+>>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
   </div>
 
   <div class="reco-card-content" *ngIf="_cardIndex===2">

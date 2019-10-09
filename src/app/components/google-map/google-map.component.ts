@@ -65,7 +65,7 @@ export class GoogleMapComponent implements OnInit {
             this.updateBoolToTrue();
             resolve(true);
           }, (err) => {
-            this.disableMap();
+            // this.disableMap();
             reject(err);
           });
         }, (err) => {
@@ -222,9 +222,9 @@ updateBoolToTrue(): void {
     });
   }
 
-  public moveCenter() {
+  public moveCenter(lat?, lng?) {
     // move map by current location
-    const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+    const latLng = new google.maps.LatLng(lat || this.curLocationLat, lng || this.curLocationLng);
     this.map.setCenter(latLng);
   }
 
@@ -284,7 +284,7 @@ updateBoolToTrue(): void {
             this.enableMap();
           }
         } else {
-          this.disableMap();
+          // this.disableMap();
         }
       });
 

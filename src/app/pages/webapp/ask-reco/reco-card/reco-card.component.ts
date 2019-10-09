@@ -47,8 +47,8 @@ export class RecoCardComponent implements OnInit {
   notes: string = '';
 
   cardTitle = [
-    'Your first Reco',
-    'Your second Reco',
+    'Reco one',
+    'Reco two',
     'Save your Recos'
   ];
 
