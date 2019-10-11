@@ -189,6 +189,7 @@ updateBoolToTrue(): void {
 
 // called once the sdk is loaded and responsible for setting up the current map
   private async initMap(): Promise <any> {
+    console.log("google-map-component.InitMapMethod");
     return new Promise ((resolve, reject) => {
       Geolocation.getCurrentPosition().then((position) => {
 
@@ -217,7 +218,34 @@ updateBoolToTrue(): void {
         resolve(true);
 
     }, (err) => {
-        reject('Could not initialise map');
+        console.log("Error in initMap Method ");
+        console.log(err);
+        console.log("Load map to NYC as error solve ");
+        // try to initialze the map for NYC
+        this.curLocationLat = 40.7128;
+        this.curLocationLng = 74.0060;
+        console.log(this.curLocationLat);
+        const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+
+        const mapOptions = {
+          /*   zoomControl: boolean,
+            mapTypeControl: boolean,
+            scaleControl: boolean,
+            streetViewControl: boolean,
+            rotateControl: boolean,
+            fullscreenControl: boolean */
+            zoomControl : false,
+            streetViewControl: false,
+            fullscreenControl: false,
+            mapTypeControl: false,
+            center: latLng,
+            zoom: 12
+        };
+
+        this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+        console.log('GoogleMapComponent.InitiMap.infoWindow');
+        resolve(true);
+        // reject('Could not initialise map');
     });
     });
   }
