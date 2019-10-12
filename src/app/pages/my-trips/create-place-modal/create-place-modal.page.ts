@@ -4,7 +4,8 @@ import { ExplorerService } from 'src/app/services/explorer.service';
 
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { generateThumbImage, getImageSize } from 'src/app/utils/image-utils';
+import { generateThumbImage, getImageSize, saveGoogleImage } from 'src/app/utils/image-utils';
+import undefined = require('firebase/empty-import');
 
 declare var google;
 
@@ -28,6 +29,7 @@ export class CreatePlaceModalPage implements OnInit {
   googlePlaceId: string;
   googleTypes: any;
   placePhone: any;
+  googlePhoto:any;
   placeWebsite: string;
   public name: string = '';
   public city: string = '';
@@ -190,14 +192,13 @@ export class CreatePlaceModalPage implements OnInit {
       location.lng = details.geometry.location.lng();
       location.city = details.address_components[3].short_name;
       this.saveDisabled = false;
-
+      this.googlePhoto = details.photos[0].getUrl();
       this.queryPlace = location.name;
       this.city = location.city;
       this.googlePlaceId = details.place_id;
       this.googleTypes = details.types;
       this.placeWebsite = details.website;
       this.placePhone = details.international_phone_number;
-
       this.location = location;
       console.log(this.location);
 
@@ -213,6 +214,18 @@ export class CreatePlaceModalPage implements OnInit {
       await this.presentToast(uploadState.state);
     } */
     const isAskReco = false;
+    console.log("this.pictureDataUrl")
+    console.log(this.pictureDataUrl)
+    console.log("this.googlephoto")
+    console.log(this.googlePhoto)
+
+    if(this.pictureDataUrl == null){
+      saveGoogleImage(this.googlePhoto, 50, 50, 1, data => {
+        this.pictureDataUrl = data;
+        console.log(this.pictureDataUrl);
+      });      
+
+    }
     const result = await this.explorerService.createNewRecommendation(isAskReco,
       this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
       // this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);

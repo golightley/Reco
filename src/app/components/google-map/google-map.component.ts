@@ -222,8 +222,8 @@ updateBoolToTrue(): void {
         console.log(err);
         console.log("Load map to NYC as error solve ");
         // try to initialze the map for NYC
-        this.curLocationLat = 40.7128;
-        this.curLocationLng = 74.0060;
+        this.curLocationLat = 40.74;
+        this.curLocationLng = -73.99;
         console.log(this.curLocationLat);
         const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
