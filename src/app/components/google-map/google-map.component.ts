@@ -18,6 +18,9 @@ declare var google;
 export class GoogleMapComponent implements OnInit {
 
   @Input('apiKey') apiKey: string;
+  @Input('lat') lat: string;
+  @Input('long') long: string;
+
 
   // variables
   public map: any;
@@ -191,6 +194,44 @@ updateBoolToTrue(): void {
   private async initMap(): Promise <any> {
     console.log("google-map-component.InitMapMethod");
     return new Promise ((resolve, reject) => {
+        // if lat long already set in the html 
+        console.log("Has lat long been set?")
+        console.log(this.lat)
+        console.log(this.long)
+
+      //   if(this.lat && this.long){
+      //     this.curLocationLat = Number(this.lat);
+      //     this.curLocationLng = Number(this.long);
+
+      //     // this.curLocationLat = 40.74;
+      //     // this.curLocationLng = -73.99;
+
+      //     const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+
+      //     const mapOptions = {
+      //       /*   zoomControl: boolean,
+      //         mapTypeControl: boolean,
+      //         scaleControl: boolean,
+      //         streetViewControl: boolean,
+      //         rotateControl: boolean,
+      //         fullscreenControl: boolean */
+      //         zoomControl : false,
+      //         streetViewControl: false,
+      //         fullscreenControl: false,
+      //         mapTypeControl: false,
+      //         center: latLng,
+      //         zoom: 12
+      //     };
+  
+      //     this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+      //     console.log('GoogleMapComponent.InitiMap.infoWindow');
+      //     resolve(true);
+      //   }else{
+
+      // console.log("Lat and long not set...")
+     if(!this.lat && !this.long){
+
+      // lat long hasn't been set 
       Geolocation.getCurrentPosition().then((position) => {
 
         this.curLocationLat = position.coords.latitude;
@@ -216,39 +257,70 @@ updateBoolToTrue(): void {
         this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
         console.log('GoogleMapComponent.InitiMap.infoWindow');
         resolve(true);
+      })}else{
+        
+         this.curLocationLat = Number(this.lat);
+         this.curLocationLng = Number(this.long);
+          
+         const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
 
-    }, (err) => {
-        console.log("Error in initMap Method ");
-        console.log(err);
-        console.log("Load map to NYC as error solve ");
-        // try to initialze the map for NYC
-        this.curLocationLat = 40.74;
-        this.curLocationLng = -73.99;
-        console.log(this.curLocationLat);
-        const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+         const mapOptions = {
+            /*   zoomControl: boolean,
+              mapTypeControl: boolean,
+              scaleControl: boolean,
+              streetViewControl: boolean,
+              rotateControl: boolean,
+              fullscreenControl: boolean */
+              zoomControl : false,
+              streetViewControl: false,
+              fullscreenControl: false,
+              mapTypeControl: false,
+              center: latLng,
+              zoom: 12
+          };
+  
+          this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+          console.log('GoogleMapComponent.InitiMap.infoWindow');
+          resolve(true);
 
-        const mapOptions = {
-          /*   zoomControl: boolean,
-            mapTypeControl: boolean,
-            scaleControl: boolean,
-            streetViewControl: boolean,
-            rotateControl: boolean,
-            fullscreenControl: boolean */
-            zoomControl : false,
-            streetViewControl: false,
-            fullscreenControl: false,
-            mapTypeControl: false,
-            center: latLng,
-            zoom: 12
-        };
-
-        this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
-        console.log('GoogleMapComponent.InitiMap.infoWindow');
-        resolve(true);
-        // reject('Could not initialise map');
+      }
+    // }
     });
-    });
+    
   }
+
+    // }, (err) => {
+    //     console.log("Error in initMap Method ");
+    //     console.log(err);
+    //     console.log("Load map to NYC as error solve ");
+    //     // try to initialze the map for NYC
+    //     this.curLocationLat = 40.74;
+    //     this.curLocationLng = -73.99;
+    //     console.log(this.curLocationLat);
+    //     const latLng = new google.maps.LatLng(this.curLocationLat, this.curLocationLng);
+
+    //     const mapOptions = {
+    //       /*   zoomControl: boolean,
+    //         mapTypeControl: boolean,
+    //         scaleControl: boolean,
+    //         streetViewControl: boolean,
+    //         rotateControl: boolean,
+    //         fullscreenControl: boolean */
+    //         zoomControl : false,
+    //         streetViewControl: false,
+    //         fullscreenControl: false,
+    //         mapTypeControl: false,
+    //         center: latLng,
+    //         zoom: 12
+    //     };
+
+    //     this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
+    //     console.log('GoogleMapComponent.InitiMap.infoWindow');
+    //     resolve(true);
+    //     // reject('Could not initialise map');
+    // });
+
+  
 
   public moveCenter(lat?, lng?) {
     // move map by current location

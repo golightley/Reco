@@ -5,7 +5,7 @@ import { ExplorerService } from 'src/app/services/explorer.service';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { generateThumbImage, getImageSize, saveGoogleImage } from 'src/app/utils/image-utils';
-import undefined = require('firebase/empty-import');
+// import undefined = require('firebase/empty-import');
 
 declare var google;
 
@@ -29,7 +29,7 @@ export class CreatePlaceModalPage implements OnInit {
   googlePlaceId: string;
   googleTypes: any;
   placePhone: any;
-  googlePhoto:any;
+  googlePhoto: any;
   placeWebsite: string;
   public name: string = '';
   public city: string = '';
@@ -219,11 +219,11 @@ export class CreatePlaceModalPage implements OnInit {
     console.log("this.googlephoto")
     console.log(this.googlePhoto)
 
-    if(this.pictureDataUrl == null){
+    if (this.pictureDataUrl == null) {
       saveGoogleImage(this.googlePhoto, 50, 50, 1, data => {
         this.pictureDataUrl = data;
         console.log(this.pictureDataUrl);
-      });      
+      });
 
     }
     const result = await this.explorerService.createNewRecommendation(isAskReco,

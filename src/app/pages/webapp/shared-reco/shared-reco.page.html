@@ -2,7 +2,7 @@
   <div class="desc-down" *ngIf="userName">
     <h2>Previewing {{userName}}'s recommendations</h2>
     <ion-button (click)="downloadApp()" class="op-button" color="primary">
-      Download app to see more
+      Download Reco to see more
     </ion-button>
   </div>
 </ion-header>
@@ -11,7 +11,7 @@
   <!-- Google Map -->
   <div class="map">
     <!-- *ngIf="!focusedSearchBar" -->
-    <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg"></google-map>
+    <google-map apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg" lat="40.74" long="-73.99"></google-map>
   </div>
   <!-- // Google Map -->
   <!-- Place(Recommendation Group) Card List  -->
@@ -28,19 +28,19 @@
                 {{suggestion.name}}
                 <!-- {{suggestion.name}} -->
               </h2>
-              <div class="reco-away">
+              <!-- <div class="reco-away">
                   <ion-icon name="pin"></ion-icon>
                   {{suggestion.distance}} miles away
-              </div>
+              </div> -->
               <div class="reco-note-div">
                 <p class="reco-note">
                   {{suggestion.notes[0]}}
                 </p>
               </div>
-              <div class="friends-count">
+              <!-- <div class="friends-count">
                 <ion-icon name="people" size="small"></ion-icon>
                 &nbsp; {{suggestion.userIds.length}} of your friends recommend it
-              </div>
+              </div> -->
             </div>
           </ion-card-content>
         </ion-card>
