@@ -108,12 +108,13 @@
   }
   .op-button {
     width: 75%;
-    height: 40px;    
-    font-size: 20px;    
+    height: 45px;    
+    font-size: 18px; 
+    padding: 1px 1px 5px 1px;   
     --border-radius: 10px;
     // --background: linear-gradient(320deg,  #fffb7d, #ffffff);
     // --background-activated: linear-gradient(320deg,  #c0ba06, #e4e4bc);    
-    --color: rgb(24, 23, 22);
+    color:#373043;
   } 
   
   google-map{

@@ -1,8 +1,8 @@
 <ion-header>
   <div class="desc-down" *ngIf="userName">
-    <h2>Previewing {{userName}}'s recommendations</h2>
-    <ion-button (click)="downloadApp()" class="op-button" color="primary">
-      Download Reco to see more
+    <h2> {{userName}}'s Recos</h2>
+    <ion-button href="https://reco-6c892.firebaseapp.com/main" class="op-button" color="primary">
+      Signup to see more
     </ion-button>
   </div>
 </ion-header>
@@ -17,9 +17,11 @@
   <!-- Place(Recommendation Group) Card List  -->
   <div class="horizontal-card-list" #recoCardList>
     <div class="list-content">
-      <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem (click)="selectPlaceCard(inx, suggestion.id)">
-        <ion-card class="suggestion-card"  *ngIf="suggestion.visible" [ngClass] ="{'activated-card': inx == activatedRecoIndex}">
-          <ion-card-content >
+      <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem
+        (click)="selectPlaceCard(inx, suggestion.id)">
+        <ion-card class="suggestion-card" *ngIf="suggestion.visible"
+          [ngClass]="{'activated-card': inx == activatedRecoIndex}">
+          <ion-card-content>
             <div class="reco-picture">
               <img *ngIf="suggestion.pictureThumbs[0]" src="{{suggestion.pictureThumbs[0]}}" />
             </div>
