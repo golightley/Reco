@@ -5,10 +5,12 @@ import { Plugins } from '@capacitor/core';
 import { Component, OnInit } from '@angular/core';
 import { ExplorerService } from 'src/app/services/explorer.service';
 import { ActionSheetController } from '@ionic/angular';
-
+import { PopoverController } from '@ionic/angular';
+// import { PopoverComponent } from '../../component/popover/popover.component';
 // for the modal 
 import { ModalController, AlertController } from '@ionic/angular';
 import { CreatePlaceModalPage } from './create-place-modal/create-place-modal.page';
+import { ShareRecoModelPage } from './share-reco-modal/share-reco-modal.page';
 
 @Component({
   selector: 'app-my-trips',
@@ -30,11 +32,12 @@ export class MyTripsPage implements OnInit {
     private mytripService: MytripService,
     public modalController: ModalController,
     private authService: AuthService,
+    public popoverController: PopoverController,
     public actionSheetController: ActionSheetController) {
-   }
+  }
 
   ngOnInit() {
-   // this.getRecommendations();
+    // this.getRecommendations();
   }
 
   ionViewWillEnter() {
@@ -50,7 +53,7 @@ export class MyTripsPage implements OnInit {
     });
     console.log('MyTripsPage.GetRecommendation: Results', this.recoArray);
   }
-  
+
   // show the modal for create a recommendation
   async addReco() {
     this._backdropOn = false;
@@ -72,6 +75,8 @@ export class MyTripsPage implements OnInit {
     return await modal.present();
   }
 
+
+
   // show the modal for ask reco to friends
   async askReco() {
     this._backdropOn = false;
@@ -90,10 +95,29 @@ export class MyTripsPage implements OnInit {
     return await modal.present();
   }
 
+  // show the other reco
+  async shareLinkReco(link:any) {
+    this._backdropOn = false;
+    const modal = await this.modalController.create({
+      component: ShareRecoModelPage,
+      cssClass: 'share-modal',
+      componentProps: {
+        'param': link
+      }
+    });
+    // wait for the modal to be dismissed
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned !== null) {
+        this.dataReturned = dataReturned.data;
+      }
+    });
+    return await modal.present();
+  }
+
   // Get selected rocos
   getSelectedRecos() {
     const selRecos: any[] = [];
-    this.recoArray.forEach( r => {
+    this.recoArray.forEach(r => {
       if (r.selected) {
         selRecos.push(r.id);
       }
@@ -103,7 +127,7 @@ export class MyTripsPage implements OnInit {
 
   // Release selected all recos
   releaseSelectedRecos() {
-    this.recoArray.map( r => {
+    this.recoArray.map(r => {
       if (r.selected) {
         r.selected = false;
       }
@@ -118,6 +142,16 @@ export class MyTripsPage implements OnInit {
     await alert.present();
   }
 
+  async showCopyAlert(msg: string) {
+    const alert = await this.alertCtrl.create({
+      header: "Text this link!",
+      message: msg,
+      buttons: [{ text: 'Ok', role: 'cancel' }],
+    });
+    await alert.present();
+  }
+
+
   // show modal for send SMS to friends
   async sendReco() {
     this._backdropOn = false;
@@ -130,7 +164,7 @@ export class MyTripsPage implements OnInit {
     }
     const sharedId = await this.mytripService.createShareReco(selRecos, this.currentUser);
     // if error occurred
-    if ( sharedId.error) {
+    if (sharedId.error) {
       const msg = 'Unable to send selected recommendations via SMS. Please try again later.';
       this.showErrorAlert(msg);
       return;
@@ -146,26 +180,40 @@ export class MyTripsPage implements OnInit {
       // call back after sent sms
       this.releaseSelectedRecos();
     }).catch(error => {
-        // see error codes below
-        if (error === 'ERR_NO_NUMBERS') {
-            // show toast with error message
-            console.log('SMS Error: No recipient numbers were retrieved from options.');
-        }
-        if (error === 'ERR_SERVICE_NOTFOUND') {
-            // show toast with error message
-            console.log('SMS Error: The used device can not send SMS.');
-        }
-        if (error === 'ERR_PLATFORM_NOT_SUPPORTED') {
-            // show toast with error message
-            console.log('SMS Error: Sending SMS on the web is not supported.');
-        }
-        if (error === 'SEND_CANCELLED') {
-            // show toast with error message
-            console.log('SMS Error: User cancelled or closed the SMS app.');
-        }
+      console.log("Send manual message...");
+      this.shareLinkReco(shareUrl);
+
+      // see error codes below
+      if (error === 'ERR_NO_NUMBERS') {
+        // show toast with error message
+        console.log('SMS Error: No recipient numbers were retrieved from options.');
+      }
+      if (error === 'ERR_SERVICE_NOTFOUND') {
+        // show toast with error message
+        console.log('SMS Error: The used device can not send SMS.');
+
+      }
+      if (error === 'ERR_PLATFORM_NOT_SUPPORTED') {
+        // show toast with error message
+        console.log('SMS Error: Sending SMS on the web is not supported.');
+
+      }
+      if (error === 'SEND_CANCELLED') {
+        // show toast with error message
+        console.log('SMS Error: User cancelled or closed the SMS app.');
+      }
     });
 
   }
+
+  // async presentPopover(ev: any) {
+  //   const popover = await this.popoverController.create({
+  //     component: PopoverComponent,
+  //     event: ev,
+  //     translucent: true
+  //   });
+  //   return await popover.present();
+  // }
 
   // select recommendation on list
   selectReco(i) {
@@ -173,15 +221,16 @@ export class MyTripsPage implements OnInit {
     this.recoArray[i].selected = !this.recoArray[i].selected;
   }
 
-  async deleteTrip(id){
-    console.log("Delete trip with id = "+id)
+  async deleteTrip(id) {
+    console.log("Delete trip with id = " + id)
     const result = await this.mytripService.deleteReco(id);
     this.getRecommendations();
 
-    
+
   }
 
-  async dropDopwnClicked(event: any){
+
+  async showShareLink(event: any) {
     console.log(event);
     const that = this;
     const actionSheet = await this.actionSheetController.create({
@@ -195,25 +244,6 @@ export class MyTripsPage implements OnInit {
           that.deleteTrip(event.id);
         }
       },
-      // {
-      //   text: 'Share',
-      //   icon: 'share',
-      //   handler: () => {
-      //     console.log('Share clicked');
-      //   }
-      // }, {
-      //   text: 'Play (open modal)',
-      //   icon: 'arrow-dropright-circle',
-      //   handler: () => {
-      //     console.log('Play clicked');
-      //   }
-      // }, {
-      //   text: 'Favorite',
-      //   icon: 'heart',
-      //   handler: () => {
-      //     console.log('Favorite clicked');
-      //   }
-      // }, 
       {
         text: 'Cancel',
         icon: 'close',
@@ -224,8 +254,6 @@ export class MyTripsPage implements OnInit {
       }]
     });
     await actionSheet.present();
-
-
   }
 
   // show action buttons
