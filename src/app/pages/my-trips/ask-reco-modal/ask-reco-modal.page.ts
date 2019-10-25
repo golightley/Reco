@@ -45,7 +45,14 @@ export class AskRecoModalPage implements OnInit {
       this.showErrorAlert(msg);
       return;
     }
-    const shareUrl = ' https://reco-6c892.firebaseapp.com/ask-reco/' + askId;
+    let lat = 0;
+    let lng = 0;
+    if ( localStorage.getItem('UsersLocation') ) {
+      lat = JSON.parse(localStorage.getItem('UsersLocation')).lat;
+      lng = JSON.parse(localStorage.getItem('UsersLocation')).lng;
+    }
+
+    const shareUrl = ` https://reco-6c892.firebaseapp.com/asked-reco/${askId}/${lat}/${lng}`;
     const content = this.smsContent + this.location + shareUrl;
     return content;
   }
