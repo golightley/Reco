@@ -55,8 +55,8 @@ export class ExplorerService {
 
   // if isAskReco is true, it will be created without user
   async createNewRecommendation(
-      isAskReco: boolean, name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
-      placeWebsite: any, placePhone: any, pictureDataUrl: any, pictureDataThumbUrl: any) {
+      askRecoId: string, name: string, city: string, notes: string, location: any, googlePlaceId: any, googleTypes: any,
+      placeWebsite: any, placePhone: any, pictureDataUrl: any, pictureDataThumbUrl: any, userId?: string) {
     // print the form results
     console.log('SERVICE.CreateNewRcommendations.FormGroup:');
     console.log(location);
@@ -65,18 +65,20 @@ export class ExplorerService {
       return new Promise<any>(async (resolve, reject) => {
         let pictureUrl = '';
         let pictureThumbUrl = '';
-        if ( pictureDataUrl ) {
+        if ( pictureDataUrl === 'googlePhoto') { // if google photo, don't upload to firestore
+          pictureUrl = pictureDataThumbUrl;
+          pictureThumbUrl = pictureDataThumbUrl;
+        } else if (pictureDataUrl) { // if not google photo, upload to firestore
           pictureUrl = await this.uploadPicture(pictureDataUrl, false);
           console.log('pictureUrl:' + pictureUrl);
-        }
-        if ( pictureDataThumbUrl ) {
-          pictureThumbUrl = await this.uploadPicture(pictureDataThumbUrl, true);
-          if (pictureThumbUrl === ''){
-            pictureUrl = await this.uploadPicture(pictureDataUrl, false);
+          if ( pictureDataThumbUrl ) {
+            pictureThumbUrl = await this.uploadPicture(pictureDataThumbUrl, true);
+            if (pictureThumbUrl === '') {
+              pictureUrl = await this.uploadPicture(pictureDataUrl, false);
+            }
+            console.log('pictureThumbUrl:' + pictureThumbUrl);
           }
-          console.log('pictureThumbUrl:' + pictureThumbUrl);
         }
-
         firebase.firestore().collection('recommendations').add({
           name: name,
           city: city,
@@ -88,10 +90,17 @@ export class ExplorerService {
           phone: placePhone || '',
           picture: pictureUrl,
           pictureThumb: pictureThumbUrl,
-          user: isAskReco ? '' : firebase.auth().currentUser.uid,
+          user: (askRecoId === '' && userId === '') ? firebase.auth().currentUser.uid : userId,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(docRef => {
+        }).then(async docRef => {
           console.log('SERVICE.createNewRecommendation:', docRef.id);
+          if (askRecoId) {
+            const recoRef = firebase.firestore().collection('askForRecommendations').doc(askRecoId);
+            await recoRef.update({
+               sharedRecos: firebase.firestore.FieldValue.arrayUnion(docRef.id)
+            });
+            console.log('updated recommendation, id => ' + askRecoId);
+          }
           resolve(docRef.id);
         }).catch(error => {
           console.error('SERVICE.createNewRecommendation.Error adding document: ', error);

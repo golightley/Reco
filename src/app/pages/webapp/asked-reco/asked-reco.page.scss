@@ -1,41 +1,137 @@
-$font-color: #fffefe;
-$card-background-color: #373944;
-.content{
-    padding: 50px 20px 0px 15px;
-    height: 100%;
-    background-color: $card-background-color;
-    .title {
-        margin-left: 10px;
-        font-size: 30px;
-        font-weight:bold;
+$font-color: #030303;
+.asked-content{    
+    height: 100%;    
+    .top-content {
+        position: fixed;
+        font-size: 20px;        
         color: $font-color;
-    }
-    .card-slides {
+        z-index: 100;
+        text-align: center;
+        background: #fffbc0ee;
+        width: 100%;
+        padding-bottom: 12px;
+    }    
+
+    .map {
         height: 100%;
-        .reco-card {
-            width: 100%;
-            height: 100%;
-        }
-        ion-slide {
-            // width: 75vw !important;
-            padding-right: 20px;
-            padding-left: 3px;
-        }
     }
+
+    .op-button {
+    width: 70%;
+    height: 45px;    
+    margin-top: 10px;    
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: none;
+    --border-color: #d6d695;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-radius: 20px;
+    --background: linear-gradient(320deg, #4428b3, #7243e6);
+    --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    --color: #fff;
+    --color-activated: #fff;
+    } 
+
+    .horizontal-card-list{
+        position: absolute;
+        bottom: 10px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        .list-content{
+          width: 100vw;      
+          white-space: nowrap;
+          .card-item {  
+            display: inline-grid;
+            .suggestion-card{        
+              display: inline-grid;
+              // border: 1px solid #ddd;
+              border-radius: 10px;
+              background: #ffffff;
+              box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;
+              margin: 5px;
+              padding: 0px;  
+              height: 130px;                  
+              ion-card-content {          
+                display: inline-flex;
+                white-space: normal;
+                width: 320px;
+                padding: 0px;
+                .reco-picture {            
+                    width: 115px;
+                    height: 130px;
+                    img {
+                      width: 115px;
+                      height: 130px;
+                    }
+                }
+                .reco-data {
+                  padding: 10px;
+                  width: calc(90vw - 115px);
+                  .reco-name {
+                    color:#373043;
+                  }
+                  .reco-away {
+                    font-size: 10px;              
+                  }
+                  .reco-note-div {
+                    min-height: 32px;
+                  }
+                  /* mixin for multiline */
+                  @mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: clear){
+                    // @mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: white){
+      
+                    overflow: hidden;
+                    position: relative;
+                    line-height: $lineHeight;
+                    max-height: $lineHeight * $lineCount; 
+                    // min-height: $lineHeight * $lineCount; 
+                    word-break: break-all;
+                    // margin-right: -1em;
+                    padding-right: 1em;
+                    &:before {
+                      // content: '...';
+                      position: absolute;
+                      right: 0;
+                      bottom: 0;
+                    }
+                    &:after {
+                      content: '';
+                      position: absolute;
+                      right: 0;
+                      width: 1em;
+                      height: 1em;
+                      margin-top: 0.2em;
+                      background: $bgColor;
+                    }
+                  }
+      
+                  .reco-note {
+                    // @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 2, $bgColor: white);  
+                    @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 2);  
+      
+                    font-size: 12px;
+                    color: #4a4a4a;
+                    margin-top: 6px;
+                  }
+                  
+                  .friends-count {
+                    display: inline-flex;
+                    font-size: 10px; 
+                    line-height: 20px;
+                    // color: #b4b8ba
+                  }
+                }
+              }
+            }
+            // activated reco card when click marker on Map
+            .activated-card{
+              background: rgb(255, 251, 192);
+              box-shadow: 0 0 8px rgba(100, 100, 100, 0.6) !important;
+            }
+          }
+        }
+      }
 }
 
-ion-footer {
-    font-size: 18px;
-    text-align: center;
-    padding: 15px 30px 0px 30px;
-    padding-bottom: 5vh;
-    color: $font-color;
-    background-color: $card-background-color;
-}
-.footer-md:before {
-    height: 0px;
-}
-.create-profile-link {
-    color: #f5f5a5;
-    cursor: pointer;
-}
+

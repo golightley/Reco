@@ -41,7 +41,7 @@ export class ExplorerPage implements OnInit {
   selectedCategory: any;
   activatedRecoId: any;
   activatedRecoIndex: any;
-  FILTER_DISTANCE = -1; // all data load
+  FILTER_DISTANCE = -1; // load all data
   CardItemWidth = 330;
 
   constructor(
@@ -71,7 +71,6 @@ export class ExplorerPage implements OnInit {
     this.selectedCategory = 'everything';
     this.recMapArray = [];
     this.recCardArray = [];
-    
     // await this.getFriends();
     await this.getFriendsAndRecos();
     // make array for cards with recommendations list

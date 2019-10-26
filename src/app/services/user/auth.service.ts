@@ -133,19 +133,21 @@ export class AuthService {
       return firebase.auth().signOut();
     }
 
-    async getCurrentUser() {
+    async getCurrentUser(userId?) {
       let user;
       await this.loadingService.doFirebaseWithoutLoading ( async () => {
-        const current = firebase.auth().currentUser;
+        if (!userId) {
+          const current = firebase.auth().currentUser;
+          userId = current.uid;
+        }
         // get full information
-        const userProfileRef = firebase.firestore().collection('userProfile').doc(current.uid);
+        const userProfileRef = firebase.firestore().collection('userProfile').doc(userId);
         await userProfileRef.get().then( res => {
-          console.log('[User] =>', res.data());
           user =  {
             ...res.data(),
-            uid: current.uid
+            uid: userId
           };
-          console.log('[Current User] =>', user);
+          // console.log('[Current User] =>', user);
         }).catch (error => {
           console.log('[Get current user] error => ' + error);
         });

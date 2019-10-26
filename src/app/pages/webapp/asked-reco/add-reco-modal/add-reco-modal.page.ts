@@ -1,21 +1,21 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { ModalController, NavParams, Platform, ToastController } from '@ionic/angular';
+import { Component, OnInit, Renderer2, Input } from '@angular/core';
+import { ModalController, NavParams, Platform, ToastController, Events } from '@ionic/angular';
 import { ExplorerService } from 'src/app/services/explorer.service';
 
-import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { generateThumbImage, getImageSize, saveGoogleImage } from 'src/app/utils/image-utils';
-// import undefined = require('firebase/empty-import');
+import { Router } from '@angular/router';
+import { AskedRecoService } from 'src/app/services/asked-reco.service';
 
 declare var google;
 
 @Component({
-  selector: 'app-create-place-modal',
-  templateUrl: './create-place-modal.page.html',
-  styleUrls: ['./create-place-modal.page.scss'],
+  selector: 'app-add-reco-modal',
+  templateUrl: './add-reco-modal.page.html',
+  styleUrls: ['./add-reco-modal.page.scss'],
 })
 
-export class CreatePlaceModalPage implements OnInit {
+export class AddRecoModalPage implements OnInit {
 
   modalTitle: string;
   modelId: number;
@@ -45,20 +45,40 @@ export class CreatePlaceModalPage implements OnInit {
   PictureSize = 1500;
   limitFileSize = 1024; // KB
 
+  _askId: string;
+  _lat: string;
+  _lng: string;
+  backUrl: string;
+  @Input()
+  set askId(val: string) {
+    this._askId = val;
+  }
+  @Input()
+  set lat(val: string) {
+    this._lat = val;
+  }
+  @Input()
+  set lng(val: string) {
+    this._lng = val;
+  }
+  
   constructor(
     private modalController: ModalController,
     private explorerService: ExplorerService,
     private renderer: Renderer2,
     private sanitizer: DomSanitizer,
     private platform: Platform,
-    private tc: ToastController
+    private tc: ToastController,
+    private router: Router,
+    private askedRecoService: AskedRecoService,
+    private ev: Events
   ) { }
 
   ngOnInit() {
+    this.backUrl = `/asked-reco/${this._askId}/${this._lat}/${this._lng}`;
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
     console.log('CreatePlaceMOdal.NgOnInit: Google AutoComplete status');
-    console.log(this.autocompleteService);
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
       this.placesService = new google.maps.places.PlacesService(div);
@@ -67,8 +87,6 @@ export class CreatePlaceModalPage implements OnInit {
     }
   }
 
-
-
   ionViewDidLoad(): void {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
@@ -76,49 +94,6 @@ export class CreatePlaceModalPage implements OnInit {
     this.autocompleteService = new google.maps.places.PlacesService(div);
     // this.searchDisabled = false;
   }
-
-  async selectPicture() {
-    console.log(this.platform);
-    if (
-      this.platform.is('hybrid') ||
-      this.platform.is('android') ||
-      this.platform.is('ios')
-    ) {
-      const image = await Plugins.Camera.getPhoto({
-        quality: 100,
-        allowEditing: false,
-        resultType: CameraResultType.DataUrl,
-        source: CameraSource.Photos
-      });
-
-      this.picture = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl));
-      this.originalPicture = image.dataUrl;
-      // console.log('****image data*****');
-      // console.log(this.pictureDataUrl);
-      console.log('****image size*****');
-      console.log(getImageSize(this.originalPicture));
-      // check image file size
-      // if (getImageSize(this.originalPicture) > this.limitFileSize) {
-      // compress image
-      generateThumbImage(this.originalPicture, this.PictureSize, this.PictureSize, 1, data => {
-        this.pictureDataUrl = data;
-        console.log('****compressed image data*****');
-        // console.log(this.pictureDataUrl);
-      });
-      // } else {
-      //   this.pictureDataUrl = this.originalPicture;
-      // }
-      // create a thumbnail
-      generateThumbImage(this.pictureDataUrl, this.ThumbnailSize, this.ThumbnailSize, 1, data => {
-        this.pictureDataThumbUrl = data;
-        console.log('****thumb image data*****');
-        console.log(this.pictureDataThumbUrl);
-      });
-    } else {
-      await this.presentToast('Only available on mobile');
-    }
-  }
-
 
   async presentToast(message) {
     const closeText = 'close';
@@ -139,7 +114,7 @@ export class CreatePlaceModalPage implements OnInit {
   searchPlace() {
 
     console.log('Searchplace');
-
+    this.googlePhoto = '';
     this.saveDisabled = true;
 
     if (this.queryPlace.length > 0 && !this.searchDisabled) {
@@ -193,6 +168,7 @@ export class CreatePlaceModalPage implements OnInit {
       location.city = details.address_components[3].short_name;
       this.saveDisabled = false;
       this.googlePhoto = details.photos[0].getUrl();
+      console.log('this.googlePhoto: ', this.googlePhoto);
       this.queryPlace = location.name;
       this.city = location.city;
       this.googlePlaceId = details.place_id;
@@ -208,39 +184,34 @@ export class CreatePlaceModalPage implements OnInit {
 
 
   async createNewRec() {
-    /* if (this.pictureDataUrl) {
-      const uploadState = await this.explorerService.uploadPicture(this.pictureDataUrl);
-      // console.log(uploadPicture);
-      await this.presentToast(uploadState.state);
-    } */
-    console.log("this.pictureDataUrl")
-    console.log(this.pictureDataUrl)
-    console.log("this.googlephoto")
-    console.log(this.googlePhoto)
-
-    if (this.pictureDataUrl == null) {
-      saveGoogleImage(this.googlePhoto, 50, 50, 1, data => {
-        this.pictureDataUrl = data;
-        console.log(this.pictureDataUrl);
-      });
-
+    const isAskReco = true;
+    let userId = '';
+    if (localStorage.getItem('userId')) {
+      userId = JSON.parse(localStorage.getItem('userId'));
     }
-    const result = await this.explorerService.createNewRecommendation('',
+    console.log('this.google photo' , this.googlePhoto);
+
+    const recoId = await this.explorerService.createNewRecommendation(this._askId,
       this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
-      // this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
-      this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataUrl);
-
-    console.log(result);
-    if (result) {
-      await this.presentToast('Successfully saved!');
+      this.placeWebsite, this.placePhone, 'googlePhoto', this.googlePhoto, userId);
+    console.log(recoId);
+    if (recoId) {
+      // init asked reco ids
+      await this.askedRecoService.setAskedRecoId('');
+      await this.askedRecoService.setAskedRecoId(recoId);
+      // await this.presentToast('Successfully saved!');
+      await this.modalController.dismiss('Created');
+      if (userId === '') {
+        await this.router.navigateByUrl('/webapp-user');
+      }
+    } else {
+      this.back();
     }
-
-    this.dismiss();
 
   }
 
-  async dismiss() {
-    const onClosedData: string = 'Wrapped Up!';
+  async back() {
+    const onClosedData: string = 'Canceled';
     await this.modalController.dismiss(onClosedData);
   }
 

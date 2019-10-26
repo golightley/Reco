@@ -165,28 +165,28 @@ updateBoolToTrue(): void {
 
 
   // create a script element and manually inject with the google SRC
-  private injectSDK():Promise <any> {
+  private injectSDK(): Promise <any> {
     return new Promise((resolve, reject)=>{
       console.log('map inject sdk');
       // gets triggered by the map's call back function
       // so we attach this function to the window 
       window['mapInit'] = () => {
         this.mapsLoaded = true;
-        resolve(true)
+        resolve(true);
       }
 
       const script = this.renderer.createElement('script');
       script.id  = 'googleMaps';
 
       if (this.apiKey) {
+        console.log('==== inserted map script ==== ');
         // script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&callback=mapInit';
-
-        script.src = 'https://maps.googleapis.com/maps/api/js?key='+ this.apiKey + '&libraries=places&callback=mapInit';
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=' + this.apiKey + '&libraries=places&callback=mapInit';
       } else {
         script.src = 'https://maps.googleapis.com/maps/api/js?callback=mapInit';
       }
       this.renderer.appendChild(this._document.body, script);
-    })
+    });
   }
 
 
@@ -372,9 +372,10 @@ updateBoolToTrue(): void {
     console.warn('Capacitor API does not currently have a web implementation. This will only work when running as an ios / android app');
 
     if (this.platform.is('cordova')) {
-      this.networkHandler = Network.addListener('networkStatusChange', (status) =>{
-        if (status.connected){
+      this.networkHandler = Network.addListener('networkStatusChange', (status) => {
+        if (status.connected) {
           if (typeof google === 'undefined' && this.firstLoadFailed) {
+            console.log('**** 22 call init() ****');
             this.init().then((res) => {
               console.log('Google maps ready!');
             }, (err) => {
@@ -525,7 +526,7 @@ updateBoolToTrue(): void {
     const content =
       '<div id="siteNotice">' +
       '</div>' +
-      '<h1 id="firstHeading" class="firstHeading">' + reco.name + '</h1>' +
+      '<h2 id="firstHeading" class="firstHeading">' + reco.name + '</h2>' +
       '<div id="bodyContent">' +
       '<p>recommended by <b>' + reco.userNames.join() + '</b></p>' +
       // '<p>' + reco.notes[0] + '</p>' +
@@ -541,6 +542,7 @@ updateBoolToTrue(): void {
 
   ngOnInit() {
     // var test = [];
+    console.log('**** call init() ****');
     this.init().then((res) => {
       console.log('Google Maps ready.');
     }, (err) => {

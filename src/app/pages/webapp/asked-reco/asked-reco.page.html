@@ -4,34 +4,54 @@
   </ion-toolbar> -->
 </ion-header>
 
-<ion-content scroll-y="false">
-  <div class="content" *ngIf="askUserName">
-      <div class="title">
-          {{title}}
+<ion-content class="asked-content">
+    <div class="top-content" *ngIf="recoTitle">
+      <h2 *ngIf="!isCreatedReco">{{recoTitle}}</h2>
+      <ion-button class="op-button" (click)="shareYourReco()">
+        {{addRecoTitle}}
+      </ion-button>
+      <ion-button href="https://reco-6c892.firebaseapp.com/main" class="op-button" *ngIf="isCreatedReco" (click)="clearData()">
+        Use App
+      </ion-button>
+    </div>
+    <!-- Google Map -->
+    <div class="map">    
+      <google-map *ngIf="askLng" apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg" lat={{askLat}} long={{askLng}}></google-map>
+    </div>
+    <!-- //Google Map -->
+
+    <!-- Place(Recommendation Group) Card List  -->
+    <div class="horizontal-card-list" #recoCardList>
+      <div class="list-content">
+        <div class="card-item" *ngFor="let suggestion of recCardArray; let inx = index" #recoCardItem (click)="selectPlaceCard(inx, suggestion.id)">
+          <ion-card class="suggestion-card"  *ngIf="suggestion.visible" [ngClass] ="{'activated-card': inx == activatedRecoIndex}">
+            <ion-card-content >
+              <div class="reco-picture">
+                <img *ngIf="suggestion.pictureThumbs[0]" src="{{suggestion.pictureThumbs[0]}}" />
+              </div>
+              <div class="reco-data">
+                <h2 class="reco-name">
+                  {{suggestion.name}}
+                </h2>
+                <div class="reco-away">
+                    <ion-icon name="pin"></ion-icon>
+                    {{suggestion.distance}} miles away
+                </div>
+                <div class="reco-note-div">
+                  <p class="reco-note">
+                    {{suggestion.notes[0]}}
+                  </p>
+                </div>
+                <div class="friends-count">
+                  <ion-icon name="people" size="small"></ion-icon>
+                  &nbsp; {{suggestion.userIds.length}} of your friends recommend it
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
       </div>
-      <ion-slides pager="false"  #recoSlider [options]="slideOpts" class="card-slides" (ionSlideNextEnd)="setCurIndex()" (ionSlidePrevEnd)="setCurIndex()">
-          <ion-slide>
-            <app-reco-card class="reco-card" [cardIndex]="0" [askUserName]="askUserName" [autocompleteService]="autocompleteService" [placeService]="placeService"></app-reco-card>
-          </ion-slide>
-          <ion-slide>
-            <app-reco-card class="reco-card" [cardIndex]="1" [askUserName]="askUserName" [autocompleteService]="autocompleteService" [placeService]="placeService"></app-reco-card>
-          </ion-slide>
-          <ion-slide>
-            <app-reco-card class="reco-card" [cardIndex]="2" [askUserName]="askUserName"></app-reco-card>
-          </ion-slide>
-      </ion-slides>
-  </div>
+    </div>
+  <!-- // Recommendation Card List-->
 </ion-content>
-  <!-- Google Map -->
-  <div class="map" style="display: none">
-    <!-- *ngIf="!focusedSearchBar" -->
-    <google-map *ngIf="askLng" apiKey="AIzaSyCpWo2QDEEoW7KjiYobppSGoH-Un6rYhsg" lat={{askLat}} long={{askLng}}></google-map>
-  </div>
-<ion-footer *ngIf="askUserName">
-  <div class="footer-desc" *ngIf="askUserName && !isCreatedReco">
-    Reco add your trips to a map and lets you save recommendations for others
-  </div>
-  <div class="footer-desc" *ngIf="askUserName && isCreatedReco">
-    <span class="create-profile-link" (click)="createProfile()">Create your profile</span> to share with others and see your friends Recos
-  </div>
-</ion-footer>
+
