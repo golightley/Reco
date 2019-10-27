@@ -7,3 +7,6 @@ project(':byteowls-capacitor-sms').projectDir = new File('../node_modules/@byteo
 
 include ':rdlabo-capacitor-facebook-login'
 project(':rdlabo-capacitor-facebook-login').projectDir = new File('../node_modules/@rdlabo/capacitor-facebook-login/android/@rdlabo/capacitor-facebook-login')
+
+include ':teamhive-capacitor-email'
+project(':teamhive-capacitor-email').projectDir = new File('../node_modules/@teamhive/capacitor-email/android/@teamhive/capacitor-email')

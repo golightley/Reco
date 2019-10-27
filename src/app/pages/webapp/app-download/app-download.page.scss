@@ -1,0 +1,35 @@
+.main-content {
+    --background: #c9ca70;
+    justify-content: center;
+    .title-container {
+        margin: auto;
+        margin-top: 24vh;
+        width: 80vw;
+        position: relative;            
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2a2b2c;
+        }
+    }
+    .download-app {
+        margin-top: 25vh;
+        ion-button {
+            border-radius: 5px;
+            font-size: 18px;
+            text-transform: initial;
+            --color: #fff;            
+            --background: #464444;
+            width: 80vw;
+            height: 55px;
+            margin: auto;   
+        }
+    }
+    .desc {
+        text-align: center;
+        padding:30px;
+        margin-top: 10vh;
+        color: #2a2b2c;
+    }
+}

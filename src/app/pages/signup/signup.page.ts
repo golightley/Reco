@@ -1,8 +1,11 @@
+import { AskrecoService } from 'src/app/services/ask-reco.service';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/user/auth.service';
+import { AuthService } from 'src/app/services/user/auth.service';
 import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ExplorerService } from 'src/app/services/explorer.service';
+import { FriendService } from 'src/app/services/friend.service';
 
 @Component({
   selector: 'app-signup',
@@ -16,12 +19,19 @@ export class SignupPage implements OnInit {
   private showPass: boolean;
   userId: string;
   step: string;
+  appType: string;
+  recoIds: any[];
+  backUrl: string;
 
   constructor(
     private authService: AuthService,
     private alertCtrl: AlertController,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private askRecoService: AskrecoService,
+    private explorerService: ExplorerService,
+    private friendService: FriendService
   ) {
     this.emailForm = this.formBuilder.group({
       email: [
@@ -41,9 +51,16 @@ export class SignupPage implements OnInit {
     });
   }
 
-  ngOnInit( ) {
+  async ngOnInit( ) {
     this.step = 'email-register';
     this.userId = '';
+    this.appType = this.route.snapshot.paramMap.get('type');
+    console.log('App Type parameter => ' + this.appType);
+    if (this.appType === 'app') {
+      this.backUrl = '/login';
+    } else {
+      this.backUrl = '/webapp-user';
+    }
   }
 
   async registerEmail(emailForm: FormGroup): Promise<void> {
@@ -82,9 +99,28 @@ export class SignupPage implements OnInit {
       const result = await this.authService.registerUsername(this.userId, handle);
       console.log('result=> ', result);
       if ( result === 'success' ) {
-        // if success, navigate to explorer page
-        this.router.navigateByUrl('');
-      } else if ( result ==='duplicate' ){
+        // if success
+        if (this.appType === 'app') {
+          // navigate to explorer page
+          this.router.navigateByUrl('');
+        } else {
+          // update recommendations with user id created
+          const recoIds = await this.askRecoService.getAskedRecoId();
+          await this.explorerService.updateRecommendations(recoIds);
+
+          // make friend
+          const askUserId =  JSON.parse(localStorage.getItem('askUserId'));
+          await this.friendService.followUser(askUserId, true);
+
+          localStorage.setItem('userId', JSON.stringify(this.userId));
+          // navigate to reco page
+          const askId = JSON.parse(localStorage.getItem('askId'));
+          const askLat = JSON.parse(localStorage.getItem('askLat'));
+          const askLng = JSON.parse(localStorage.getItem('askLng'));
+          const url = `/asked-reco/${askId}/${askLat}/${askLng}`;
+          this.router.navigateByUrl(url);
+        }
+      } else if ( result === 'duplicate' ){
         const errorMessage = 'Username already exists. please input another username.'
         this.showErrorAlert(errorMessage);
       } else {

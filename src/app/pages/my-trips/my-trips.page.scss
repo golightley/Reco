@@ -21,6 +21,22 @@
       box-shadow: 0 2px 8px rgba(100, 100, 100, 0.6) !important;
     }
 }
+.test-modal {
+  .modal-wrapper {
+      width: 600px;
+      left: calc(50% - (600px/2));
+      height: 500px;
+      top: calc(50% - (500px/2));
+  }
+}
+.my-custom-modal-css .modal-wrapper {
+
+  height: 20%;
+  top: 80%;
+  position: absolute; 
+  display: block;  
+}
+
 
 
 .footer{
@@ -46,7 +62,7 @@
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
       font-size: 16px;
       font-weight: bold;
-      background: linear-gradient(320deg, #ffffff, #fffb7d);
+      background: linear-gradient(320deg,  #fffb7d, #ffffff);
       // color: white;
     }
 
@@ -56,8 +72,23 @@
     }
 
     .send-button {
-        background: linear-gradient(320deg,  #fffb7d, #ffffff);
+        // background: linear-gradient(320deg,  #fffb7d, #ffffff);
         // color: white;
+    }
+    .ask-button {        
+        // background: linear-gradient(320deg, #ffffff, #fffb7d);
+        // color: white;
+    }
+
+    ion-icon {
+      width: 48px;
+      height: 48px;
+    }
+    .send-icon{
+      ion-icon {
+        width: 60px;
+        height: 60px;
+      }
     }
 
     .more-button {

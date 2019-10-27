@@ -1,0 +1,33 @@
+.photo-header {
+    position: absolute;
+    left: 5px;
+    top: 10px;
+    z-index: 10;
+}
+
+.card-background-page {
+
+    ion-card {
+      position: relative;
+      text-align: center;
+    }
+  
+    .card-title {
+    //   position: absolute;
+      top: 50%;
+      text-align: center;
+      font-size: 2rem;
+      width: 100%;
+    //   font-weight: bold;
+      color: #2a4365;
+    }
+  
+    .card-subtitle {
+      font-size: 1.0em;
+      position: absolute;
+      top: 52%;
+      width: 100%;
+      color: #2a4365;
+    }
+  
+  }

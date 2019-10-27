@@ -7,12 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./me.page.scss'],
 })
 export class MePage implements OnInit {
+  email: string;
+
 
   constructor(
     private authService: AuthService
-  ) { }
+  ) { 
+  }
 
-  ngOnInit() {
+  async ngOnInit() {
+    var currentUser:any  = await this.authService.getCurrentUser();
+    console.log(currentUser)
+    this.email = currentUser.email;
   }
 
   logout(){
@@ -21,3 +27,5 @@ export class MePage implements OnInit {
 
   }
 }
+
+

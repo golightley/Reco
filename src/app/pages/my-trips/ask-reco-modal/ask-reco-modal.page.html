@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar class="nolines">
+      <ion-buttons slot="start">
+        <!-- <ion-back-button class="back-button" text="" icon="/assets/images/left-arrow.svg" color="dark" (click)="dismiss()" defaultHref="/tabs/my-trips"></ion-back-button> -->
+        <ion-back-button color="dark" (click)="dismiss()" defaultHref="/tabs/my-trips"></ion-back-button>
+
+      </ion-buttons>
+    <ion-title>Where</ion-title>
+  </ion-toolbar>
+</ion-header>
+  
+<ion-content>
+  <div class="ask-reco-content">
+      <div class="location">
+          <ion-item lines="none">
+              <ion-label position="stacked" class="title">LOCATION</ion-label>
+              <ion-input  [(ngModel)]="location" type="text"></ion-input>
+          </ion-item>
+      </div>
+      <div class="buttons">
+            <ion-button (click)="inviteViaSMS()" class="op-button" [disabled]="!location">
+                Invite via SMS
+            </ion-button>   
+            <!-- <ion-button (click)="inviteViaEmail()" class="op-button" [disabled]="!location">
+                Invite via Email
+            </ion-button>    -->
+            <ion-button (click)="dismiss()" class="op-button cancel-button">
+                Cancel
+            </ion-button>
+      </div>
+  </div>
+</ion-content>

@@ -123,7 +123,9 @@ export class FriendService {
   async getFriends(withMe) {
     const friendsArray: any[] = [];
     // no loading bar
+    console.log(firebase.auth().currentUser);
     const userId = firebase.auth().currentUser.uid;
+    console.log('current user => ' + userId);
     await this.loadingService.doFirebaseWithoutLoading( async () => {
         await firebase.firestore().collection('userProfile').doc(userId).get().then( async docUser => {
             if (withMe) {
@@ -190,8 +192,13 @@ export class FriendService {
   }
 
   // follow user
-  async followUser(selUserId) {
-    const userId = firebase.auth().currentUser.uid;
+  async followUser(uid, isOpposite?) {
+    let selUserId = uid;
+    let userId = firebase.auth().currentUser.uid;
+    if (isOpposite) {
+      selUserId = firebase.auth().currentUser.uid;
+      userId = uid;
+    }
     console.log('Current user id ' + userId);
     console.log('Following user id ' + selUserId);
 

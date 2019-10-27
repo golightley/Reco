@@ -11,7 +11,7 @@
 @import '~@ionic/angular/css/flex-utils.css';
 
 ion-toolbar {
-    --background: rgb(242,242,242);
+    --background: rgb(255,255,255);
 }
 
 ion-title {
@@ -31,7 +31,7 @@ ion-back-button {
 
 ion-buttons {
     .back-button-icon {
-        font-size: 24px !important;
+        font-size: 32px !important;
     }
 }
 
@@ -54,6 +54,37 @@ ion-textarea{
 textarea{
     height: 180px;
 }
+
+.sc-ion-searchbar-ios-h {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+/* .searchbar-cancel-button.sc-ion-searchbar-md {
+    left: 5px !important;
+}
+
+.searchbar-cancel-button.sc-ion-searchbar-ios {
+    left: 5px !important;
+} */
+
+.share-modal .modal-wrapper {
+    padding-top: 5px !important;
+
+    padding: 5px !important;
+    padding-top: 5px;
+    font-size:18px;
+    --height: 20%;
+    position: absolute; 
+    top: 80%;
+    font-weight: bold;    
+
+    --color: rgb(46, 45, 45);
+
+    display: block;
+  }
 
 .nolines {
     --border-width: 0 !important;
@@ -79,7 +110,7 @@ textarea{
 }
 
 .reco-searchbar {
-    padding: 0;
+    padding: 1;
     .searchbar-input {
       --background: #fff;
       --placeholder-color: rgb(160 160 160);

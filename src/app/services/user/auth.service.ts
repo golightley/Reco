@@ -44,11 +44,16 @@ export class AuthService {
               .set({
                 handle: handleName,
                 email: user.email,
+                handleToSearch: handleName.toLowerCase(),
                 photoURL: user.photoURL,
                 loginType: 'facebook',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
               });
-            resolve(user);
+            const newUser = {
+              ...user,
+              handle: handleName
+            };
+            resolve(newUser);
           }).catch(error => {
             console.error('[Facebook sign failed]: error=> ', error);
             reject(error);
@@ -126,6 +131,28 @@ export class AuthService {
 
     logoutUser(): Promise<void> {
       return firebase.auth().signOut();
+    }
+
+    async getCurrentUser(userId?) {
+      let user;
+      await this.loadingService.doFirebaseWithoutLoading ( async () => {
+        if (!userId) {
+          const current = firebase.auth().currentUser;
+          userId = current.uid;
+        }
+        // get full information
+        const userProfileRef = firebase.firestore().collection('userProfile').doc(userId);
+        await userProfileRef.get().then( res => {
+          user =  {
+            ...res.data(),
+            uid: userId
+          };
+          // console.log('[Current User] =>', user);
+        }).catch (error => {
+          console.log('[Get current user] error => ' + error);
+        });
+      });
+      return user;
     }
 
     getUsersWithName() {

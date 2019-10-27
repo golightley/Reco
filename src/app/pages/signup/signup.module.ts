@@ -9,7 +9,7 @@ import { SignupPage } from './signup.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':type',
     component: SignupPage
   }
 ];

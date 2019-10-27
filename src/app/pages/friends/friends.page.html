@@ -1,11 +1,17 @@
 <ion-header>
     <ion-toolbar>
-      <div class="search-bar"> <!-- mode="md"  showCancelButton="focus"  -->
-        <ion-searchbar [(ngModel)]="keywordUserName" mode="md" class="reco-searchbar" type="text" showCancelButton="focus" (ionInput)="searchFriend()"
-          (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a friend"></ion-searchbar>
+      <div class="search-bar">
+        <ion-searchbar [(ngModel)]="keywordUserName" class="reco-searchbar" type="text" showCancelButton="focus" (ionInput)="searchFriend()"
+          (ionFocus)="focusSearchBar()" (ionCancel)="cancelSearchBar()" placeholder="Search a friend"  style="margin:4px 4px!important;display: flex!important;" ></ion-searchbar>
+          <img/>  
       </div>
     </ion-toolbar>
   </ion-header>
+
+  
+  
+
+
 
   <ion-content>
       <!-- Search list -->

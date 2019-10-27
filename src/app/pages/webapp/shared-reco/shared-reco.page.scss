@@ -1,0 +1,122 @@
+  .horizontal-card-list{
+    position: absolute;
+    bottom: 10px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .list-content{
+      width: 100vw;      
+      white-space: nowrap;
+      .card-item {  
+        display: inline-grid;
+        .suggestion-card{        
+          display: inline-grid;
+          // border: 1px solid #ddd;
+          border-radius: 10px;
+          background: #ffffff;
+          box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;
+          margin: 5px;
+          padding: 0px;  
+          height: 130px;                  
+          ion-card-content {          
+            display: inline-flex;
+            white-space: normal;
+            width: 320px;
+            padding: 0px;
+            .reco-picture {            
+                width: 115px;
+                height: 130px;
+                img {
+                  width: 115px;
+                  height: 130px;
+                }
+            }
+            .reco-data {
+              padding: 10px;
+              width: calc(90vw - 115px);
+              .reco-name {
+                color:#373043;
+              }
+              .reco-away {
+                font-size: 10px;              
+              }
+              .reco-note-div {
+                min-height: 32px;
+              }
+              /* mixin for multiline */
+              @mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: clear){
+                // @mixin multiLineEllipsis($lineHeight: 1.2em, $lineCount: 1, $bgColor: white){
+  
+                overflow: hidden;
+                position: relative;
+                line-height: $lineHeight;
+                max-height: $lineHeight * $lineCount; 
+                // min-height: $lineHeight * $lineCount; 
+                word-break: break-all;
+                // margin-right: -1em;
+                padding-right: 1em;
+                &:before {
+                  // content: '...';
+                  position: absolute;
+                  right: 0;
+                  bottom: 0;
+                }
+                &:after {
+                  content: '';
+                  position: absolute;
+                  right: 0;
+                  width: 1em;
+                  height: 1em;
+                  margin-top: 0.2em;
+                  background: $bgColor;
+                }
+              }
+  
+              .reco-note {
+                // @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 2, $bgColor: white);  
+                @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 2);  
+  
+                font-size: 12px;
+                color: #4a4a4a;
+                margin-top: 6px;
+              }
+              
+              .friends-count {
+                display: inline-flex;
+                font-size: 10px; 
+                line-height: 20px;
+                // color: #b4b8ba
+              }
+            }
+          }
+        }
+        // activated reco card when click marker on Map
+        .activated-card{
+          background: rgb(255, 251, 192);
+          box-shadow: 0 0 8px rgba(100, 100, 100, 0.6) !important;
+        }
+      }
+    }
+  }
+  
+  
+  ::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  .desc-down {
+      text-align: center;      
+  }
+  .op-button {
+    width: 75%;
+    height: 45px;    
+    font-size: 18px; 
+    padding: 1px 1px 5px 1px;   
+    --border-radius: 10px;
+    // --background: linear-gradient(320deg,  #fffb7d, #ffffff);
+    // --background-activated: linear-gradient(320deg,  #c0ba06, #e4e4bc);    
+    color:#373043;
+  } 
+  
+  google-map{
+      height: 100% !important;
+  }

@@ -23,8 +23,8 @@ export class ExplorerPage implements OnInit {
 
   @ViewChild(GoogleMapComponent) map: GoogleMapComponent;
   @ViewChild('recoCardList', { read: ElementRef }) private cardListElem: ElementRef;
-  @ViewChild('recoCardItem', { read: ElementRef }) private cardItemElem: ElementRef;
 
+  usersLocation: any;
   recMapArray: RecommendationModel[] = [];
   recCardArray: RecommendationModel[] = [];
   friendList: any[] = [];
@@ -41,7 +41,7 @@ export class ExplorerPage implements OnInit {
   selectedCategory: any;
   activatedRecoId: any;
   activatedRecoIndex: any;
-  FILTER_DISTANCE = -1; // all data load
+  FILTER_DISTANCE = -1; // load all data
   CardItemWidth = 330;
 
   constructor(
@@ -105,15 +105,20 @@ export class ExplorerPage implements OnInit {
     console.log('Explorer Friends list => ', this.friendList);
   }
 
+  async changeUserLocation() {
+    this.usersLocation = await this.map.getCurrentLocation();
+    localStorage.setItem('UsersLocation', JSON.stringify(this.usersLocation));
+    console.log(' *** Current UsersLocation *** ', localStorage.getItem('UsersLocation'));
+  }
+
   async getFriendsAndRecos() {
     // get recommendations of all friends
     const result = await this.explorerService.getFriendsAndRecos();
-    const usersLocation = await this.map.getCurrentLocation();
     this.friendList = result.friends;
     console.log('Returned Recos array => ', result.recos);
-
+    await this.changeUserLocation();
     // Get distance and sort by distance
-    const sortedRecsArray = await getDistanceByLocation(result.recos, usersLocation) ;
+    const sortedRecsArray = await getDistanceByLocation(result.recos, this.usersLocation) ;
     sortedRecsArray.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
@@ -175,10 +180,20 @@ export class ExplorerPage implements OnInit {
         this.recMapArray[index - 1] = rec;
       }
       dist = data.distance;
+
+
     });
     console.log('Group Map Recos array => count: ' + this.recMapArray.length);
     console.log('Group Map array result=>', this.recMapArray);
-    await this.map.addMarkers(this.recMapArray);
+
+    this.map.readyTointeract.subscribe((data) => {
+      if (data) {
+        this.map.addMarkers(this.recMapArray);
+      } 
+
+      console.log(data);
+    });
+    // await this.map.addMarkers(this.recMapArray);
     this.moveScollCardList(0);
   }
 
@@ -188,10 +203,8 @@ export class ExplorerPage implements OnInit {
 
   // filter recommendation by distance for Card list
   async filterCardRecoByDistance() {
-    const usersLocation = this.map.getCurrentLocation();
-    console.log('current usersLocation', usersLocation);
     // filter recommendation within 100 miles of selected place's location
-    this.recCardArray = await filterByHaversine(this.recMapArray, usersLocation, this.FILTER_DISTANCE);
+    this.recCardArray = await filterByHaversine(this.recMapArray, this.usersLocation, this.FILTER_DISTANCE);
     this.recCardArray.sort((locationA, locationB) => {
       return locationA.distance - locationB.distance;
     });
@@ -310,6 +323,7 @@ export class ExplorerPage implements OnInit {
 
   // clicked a place in place list
   async selectPlace(place) {
+
     this.enableSelectAllFriend();
     this.focusedSearchBar = false;
     await this.showDealyLoading(300);
@@ -325,7 +339,7 @@ export class ExplorerPage implements OnInit {
       city: null
     };
 
-    this.service.getDetails({ placeId: place.place_id }, (details) => {
+    this.service.getDetails({ placeId: place.place_id }, async (details) => {
       console.log('Map.SelectPlace');
       console.log(details);
       location.name = details.name;
@@ -337,7 +351,7 @@ export class ExplorerPage implements OnInit {
       console.log(this.location);
       this.query = location.name;
       this.map.setCurrentLocation(location.lat, location.lng);
-
+      await this.changeUserLocation();
       // close activated info window on Map
       this.map.closeActiveInfoWindow();
       // reload reco data
@@ -430,8 +444,7 @@ export class ExplorerPage implements OnInit {
     // move map according to position of selected card place
     const lat = this.recCardArray[index].lat;
     const lng = this.recCardArray[index].lng;
-    await this.map.setCurrentLocation(lat, lng);
-    await this.map.moveCenter();
+    await this.map.moveCenter(lat, lng);
     // get index of marker
     const mapRecoIndex = this.recMapArray.findIndex ( reco => {
       return reco.id === recoId;

@@ -1,0 +1,7 @@
+{
+  "appId": "com.bowieventures.recotravelapp",
+  "appName": "Reco",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
