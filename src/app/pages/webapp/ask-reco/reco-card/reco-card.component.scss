@@ -7,25 +7,6 @@ $font-color: #fffefe;
 $card-border-color: #f5f3d6;
 
 .first {
-<<<<<<< HEAD
-    // background-color: $first-card-color !important;    
-    // --background: $first-card-color !important;    
-    border: 4px solid #FBFFC4;
-}
-.second {
-    // background-color: $second-card-color !important;    
-    // --background: $second-card-color !important;
-    // border: 1px solid $second-card-color !important;
-    border: 3px solid #FBFFC4;
-
-}
-.third {
-    // background-color: $third-card-color !important;    
-    // --background: $third-card-color !important;
-    // border: 1px solid $third-card-color !important;
-    border: 4px solid #FBFFC4;
-
-=======
     background-color: $first-card-color;    
     --background: $first-card-color;    
     border: 2px solid $card-border-color;
@@ -45,7 +26,6 @@ $card-border-color: #f5f3d6;
   background-color: $card-background-color;    
     --background: $card-background-color;
     border: 1px solid $card-background-color;
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
 }
 
 .reco-card-component {
@@ -54,17 +34,11 @@ $card-border-color: #f5f3d6;
     border-radius: 25px;
     margin: 40px 10px 0px 0px;
     overflow: hidden;
-    background-color: #2F3746;
 
     box-shadow: 0 3px 8px rgba(100, 100, 100, 1);
 
     .reco-card-title {
-<<<<<<< HEAD
-      color: #FEFEFE;
-      margin-bottom: 50px;
-=======
       color: $font-color;
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
       margin-top:45px;
       margin-left: 20px;
       font-size: 24px;
@@ -73,24 +47,7 @@ $card-border-color: #f5f3d6;
     }
 
     .reco-card-content {
-      // background-color: #2F3746 !important;;
-      
-
         ion-item {
-<<<<<<< HEAD
-          background-color: #2F3746 !important;
-          border: 0px solid #2F3746;
-
-          padding-right: 7px;
-            padding-left: 7px;
-            // font-weight:bold;
-            font-size: 22px;
-            color: rgb(212, 218, 230);
-            // ion-label {
-            //   color: #2F3746;
-            //   height: 5px;
-            // }
-=======
             padding-right: 7px;
             padding-left: 0px;
             // font-weight:bold;
@@ -100,32 +57,22 @@ $card-border-color: #f5f3d6;
               color: $font-color;
               height: 5px;
             }
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
         }
         ion-input, ion-textarea{          
           --placeholder-opacity: 1;
-          background-color: #2F3746 !important;;
-
         }
         margin: 0 auto;
         // height: 55vh;
         .place-list {
             margin: 5px 0 !important;
-<<<<<<< HEAD
-            // border: 1px solid rgba(150,150,150, 0.5) !important;
-            // box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
-=======
             border: 1px solid $card-border-color !important;
             box-shadow: 0 3px 6px $card-border-color !important;  
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
             border-radius: 5px;
             ion-item {
-              // border-bottom: 1px solid rgb(205,205,205);
+              border-bottom: 1px solid rgb(205,205,205);
               padding: 3px 0;
               color: rgb(50,50,50);
               font-size: 14px;
-              
-
             }
           }
           .empty-place-list {
@@ -146,13 +93,7 @@ $card-border-color: #f5f3d6;
           .notes-textarea {
             height: 50px;
             padding: 0px;
-<<<<<<< HEAD
-            background-color: #2F3746 !important;;
-
-            // margin-top: 10px;
-=======
             margin-top: 10px;
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
           }
         
           .photo-item {
@@ -195,17 +136,10 @@ $card-border-color: #f5f3d6;
             // --border-width: 1px;
             // --border-style: solid;
             --border-radius: 10px;
-<<<<<<< HEAD
-            // --background: #F8F7FB;
-            --background-activated: linear-gradient(320deg,  #c0ba06, #e4e4bc);
-            // --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);        
-            --color: rgb(255, 255, 255);
-=======
             --background: #f5f5a5;
             --background-activated: #f5f5a5; // linear-gradient(320deg,  #c0ba06, #e4e4bc);
             // --box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);        
             --color: black;
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
             // --color-activated:#000;
           }
           
@@ -213,11 +147,7 @@ $card-border-color: #f5f3d6;
             margin-top: 30px;
             font-size: 16px;
             padding: 20px;
-<<<<<<< HEAD
-            color: #FEFEFE;
-=======
             color: $font-color;
->>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
           }
     }
 
