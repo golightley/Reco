@@ -36,43 +36,23 @@ ion-buttons {
 }
 
 ion-item{
-    // --background-active:#fff;
-              background-color: #2F3746 !important;;
-
+    --background-active:#fff;
 }
 
 ion-input, ion-textarea{
 
-    // background-color: #f3f3f3;
+    background-color: #f3f3f3;
     border-bottom: 1px solid #cecece;
     padding-left:10px;
-    // background-color: #2F3746 !important;;
-    background-color: #2F3746 !important;;
-
 
 }
 
 ion-textarea{
     height: 200px;
-    background-color: #2F3746 !important;;
-
 }
 
 textarea{
     height: 180px;
-    background-color: #2F3746 !important;;
-
-}
-
-.sc-ion-searchbar-ios-h {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-}
-
-/* .searchbar-cancel-button.sc-ion-searchbar-md {
-    left: 5px !important;
 }
 
 .sc-ion-searchbar-ios-h {
