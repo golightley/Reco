@@ -192,8 +192,13 @@ export class FriendService {
   }
 
   // follow user
-  async followUser(selUserId) {
-    const userId = firebase.auth().currentUser.uid;
+  async followUser(uid, isOpposite?) {
+    let selUserId = uid;
+    let userId = firebase.auth().currentUser.uid;
+    if (isOpposite) {
+      selUserId = firebase.auth().currentUser.uid;
+      userId = uid;
+    }
     console.log('Current user id ' + userId);
     console.log('Following user id ' + selUserId);
 

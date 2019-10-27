@@ -5,6 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ExplorerService } from 'src/app/services/explorer.service';
+import { FriendService } from 'src/app/services/friend.service';
 
 @Component({
   selector: 'app-signup',
@@ -29,7 +30,8 @@ export class SignupPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private askRecoService: AskrecoService,
-    private explorerService: ExplorerService
+    private explorerService: ExplorerService,
+    private friendService: FriendService
   ) {
     this.emailForm = this.formBuilder.group({
       email: [
@@ -102,11 +104,14 @@ export class SignupPage implements OnInit {
           // navigate to explorer page
           this.router.navigateByUrl('');
         } else {
-          // register with user id created recos
-          // get created reco ids
+          // update recommendations with user id created
           const recoIds = await this.askRecoService.getAskedRecoId();
-          console.log('Created reco ids => ', recoIds);
           await this.explorerService.updateRecommendations(recoIds);
+
+          // make friend
+          const askUserId =  JSON.parse(localStorage.getItem('askUserId'));
+          await this.friendService.followUser(askUserId, true);
+
           localStorage.setItem('userId', JSON.stringify(this.userId));
           // navigate to reco page
           const askId = JSON.parse(localStorage.getItem('askId'));

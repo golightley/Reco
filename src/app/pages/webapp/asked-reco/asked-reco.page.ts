@@ -112,6 +112,8 @@ export class AskedRecoPage implements OnInit {
     }
 
     this.askUserName = askedReco.userName;
+    localStorage.setItem('askUserId', JSON.stringify(askedReco.user));
+    
     this.recoTitle = `${this.askUserName} is asking for ${askedReco.location} Recommendations`;
     if (!(askedReco.recsArray && askedReco.recsArray.length > 0)) {
       return;
