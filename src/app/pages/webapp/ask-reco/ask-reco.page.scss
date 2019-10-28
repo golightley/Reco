@@ -1,6 +1,14 @@
 $font-color: #fffefe;
 $card-background-color: #373944;
 .content{
+<<<<<<< HEAD
+    padding: 50px 20px 0px 18px;
+    background-color: #2F3746;
+    .title {
+        font-size: 26px;
+        font-weight:bold;
+        color:#FEFEFE;
+=======
     padding: 50px 20px 0px 15px;
     height: 100%;
     background-color: $card-background-color;
@@ -9,6 +17,7 @@ $card-background-color: #373944;
         font-size: 30px;
         font-weight:bold;
         color: $font-color;
+>>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
     }
     .card-slides {
         height: 100%;
@@ -27,14 +36,20 @@ $card-background-color: #373944;
 ion-footer {
     font-size: 18px;
     text-align: center;
+<<<<<<< HEAD
+    padding: 5px 75px 60px 40px;
+    background-color: #2F3746;
+
+=======
     padding: 15px 30px 0px 30px;
     padding-bottom: 5vh;
     color: $font-color;
     background-color: $card-background-color;
+>>>>>>> df02f6e421d83150145e91fc11779a7c7aab1c27
 }
-.footer-md:before {
-    height: 0px;
-}
+// .footer-md:before {
+//     height: 0px;
+// }
 .create-profile-link {
     color: #f5f5a5;
     cursor: pointer;
