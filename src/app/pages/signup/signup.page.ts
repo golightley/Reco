@@ -107,10 +107,13 @@ export class SignupPage implements OnInit {
           const recoIds = await this.askRecoService.getAskedRecoId();
           console.log('Created reco ids => ', recoIds);
           await this.explorerService.updateRecommendations(recoIds);
-          // init askedRecoId
-          await this.askRecoService.setAskedRecoId('');
-          // navigate to download page
-          this.router.navigateByUrl('/app-download');
+          localStorage.setItem('userId', JSON.stringify(this.userId));
+          // navigate to reco page
+          const askId = JSON.parse(localStorage.getItem('askId'));
+          const askLat = JSON.parse(localStorage.getItem('askLat'));
+          const askLng = JSON.parse(localStorage.getItem('askLng'));
+          const url = `/asked-reco/${askId}/${askLat}/${askLng}`;
+          this.router.navigateByUrl(url);
         }
       } else if ( result === 'duplicate' ){
         const errorMessage = 'Username already exists. please input another username.'

@@ -78,6 +78,23 @@ textarea{
 .searchbar-cancel-button.sc-ion-searchbar-ios {
     left: 5px !important;
 } */
+
+.share-modal .modal-wrapper {
+    padding-top: 5px !important;
+
+    padding: 5px !important;
+    padding-top: 5px;
+    font-size:18px;
+    --height: 20%;
+    position: absolute; 
+    top: 80%;
+    font-weight: bold;    
+
+    --color: rgb(46, 45, 45);
+
+    display: block;
+  }
+
 .nolines {
     --border-width: 0 !important;
     border-bottom: none;

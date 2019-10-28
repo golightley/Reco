@@ -194,7 +194,7 @@ export class RecoCardComponent implements OnInit {
 
   async createAskRec() {
     const isAskReco = true;
-    const recoID = await this.explorerService.createNewRecommendation(isAskReco,
+    const recoID = await this.explorerService.createNewRecommendation('',
       this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
       this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
 

@@ -21,6 +21,22 @@
       box-shadow: 0 2px 8px rgba(100, 100, 100, 0.6) !important;
     }
 }
+.test-modal {
+  .modal-wrapper {
+      width: 600px;
+      left: calc(50% - (600px/2));
+      height: 500px;
+      top: calc(50% - (500px/2));
+  }
+}
+.my-custom-modal-css .modal-wrapper {
+
+  height: 20%;
+  top: 80%;
+  position: absolute; 
+  display: block;  
+}
+
 
 
 .footer{
