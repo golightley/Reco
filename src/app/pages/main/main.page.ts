@@ -20,8 +20,6 @@ export class MainPage implements OnInit {
     ) { }
 
   ngOnInit() {
-      console.log('clear local data');
-      localStorage.clear();
   }
 
   async capacitorFbLogin() {
