@@ -12,11 +12,14 @@
       <div class="location">
           <ion-item lines="none">
               <ion-label position="stacked" class="title">LOCATION</ion-label>
-              <ion-input  [(ngModel)]="location" type="text"></ion-input>
+              <ion-input  class="place" [(ngModel)]="queryPlace" (ionInput)="searchPlace()"  type="text"></ion-input>            
+              <ion-list [ngClass]="{'place-list': places.length>0, 'empty-place-list': places.length==0}">
+                  <ion-item *ngFor="let place of places" (click)="selectPlace(place)"  lines="none">{{place.description}}</ion-item >
+              </ion-list>
           </ion-item>
       </div>
       <div class="buttons">
-            <ion-button (click)="inviteViaSMS()" class="op-button" [disabled]="!location">
+            <ion-button (click)="inviteViaSMS()" class="op-button" [disabled]="!queryPlace || !lat || !lng">
                 Invite via SMS
             </ion-button>   
             <!-- <ion-button (click)="inviteViaEmail()" class="op-button" [disabled]="!location">

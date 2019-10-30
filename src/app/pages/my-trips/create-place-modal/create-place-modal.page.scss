@@ -1,11 +1,9 @@
-  back-button {
-      padding-left: 12px !important;
-      --icon-font-size: 24px !important;
-  }
-
 
 .create-place-content {
   margin: 20px 10px 0px 0px !important;
+  .place {
+    min-height: 39px;
+  } 
   .place-list {
     margin: 5px !important;
     border: 1px solid rgba(150,150,150, 0.5) !important;

@@ -107,8 +107,7 @@ export class ExplorerPage implements OnInit {
 
   async changeUserLocation() {
     this.usersLocation = await this.map.getCurrentLocation();
-    localStorage.setItem('UsersLocation', JSON.stringify(this.usersLocation));
-    console.log(' *** Current UsersLocation *** ', localStorage.getItem('UsersLocation'));
+    /* localStorage.setItem('UsersLocation', JSON.stringify(this.usersLocation)); */
   }
 
   async getFriendsAndRecos() {

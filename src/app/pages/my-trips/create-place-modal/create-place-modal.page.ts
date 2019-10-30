@@ -23,7 +23,6 @@ export class CreatePlaceModalPage implements OnInit {
   placesService: any;
   queryPlace: string = '';
   places: any = [];
-  searchDisabled: boolean;
   saveDisabled: boolean;
   location: any;
   googlePlaceId: string;
@@ -54,27 +53,23 @@ export class CreatePlaceModalPage implements OnInit {
     private tc: ToastController
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewDidLoad(): void {
+    this.initGoogleMapService();
+  }
+
+  initGoogleMapService() {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
-    console.log('CreatePlaceMOdal.NgOnInit: Google AutoComplete status');
-    console.log(this.autocompleteService);
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
       this.placesService = new google.maps.places.PlacesService(div);
-    } catch {
-
+      console.log('Autocomplete service succeed');
+    } catch (err) {
+      console.log('Autocomplete service failed');
+      console.log(err);
     }
-  }
-
-
-
-  ionViewDidLoad(): void {
-    const div = this.renderer.createElement('div');
-    div.id = 'googleDiv';
-    this.autocompleteService = new google.maps.places.AutocompleteService();
-    this.autocompleteService = new google.maps.places.PlacesService(div);
-    // this.searchDisabled = false;
   }
 
   async selectPicture() {
@@ -132,28 +127,24 @@ export class CreatePlaceModalPage implements OnInit {
       closeButtonText: closeText,
       showCloseButton: true,
       duration: 2000,
-    })
+    });
     this.toast.present();
   }
 
   searchPlace() {
 
-    console.log('Searchplace');
-
     this.saveDisabled = true;
 
-    if (this.queryPlace.length > 0 && !this.searchDisabled) {
+    if (this.queryPlace.length > 0) {
 
       const config = {
         types: ['establishment'],
         // types: ['geocode'],
         input: this.queryPlace
-      }
+      };
 
       this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-        console.log('CreateModalPage.SearchPlace.Autocomplete');
         console.log(predictions);
-        console.log(status);
 
         if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
 
