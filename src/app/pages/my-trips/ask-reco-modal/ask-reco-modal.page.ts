@@ -50,7 +50,7 @@ export class AskRecoModalPage implements OnInit {
     this.smsContent = this.userName + ' would like your recommendations for ';
   }
 
-  ionViewDidLoad(): void {
+  ionViewWillEnter(): void {
     this.initGoogleMapService();
     // this.searchDisabled = false;
   }

@@ -55,7 +55,7 @@ export class CreatePlaceModalPage implements OnInit {
 
   ngOnInit() {}
 
-  ionViewDidLoad(): void {
+  ionViewWillEnter(): void {
     this.initGoogleMapService();
   }
 
@@ -65,9 +65,9 @@ export class CreatePlaceModalPage implements OnInit {
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
       this.placesService = new google.maps.places.PlacesService(div);
-      console.log('Autocomplete service succeed');
+      console.log('Create Place Modal: Autocomplete service succeed');
     } catch (err) {
-      console.log('Autocomplete service failed');
+      console.log('Create Place Modal: Autocomplete service failed');
       console.log(err);
     }
   }
