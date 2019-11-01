@@ -36,15 +36,8 @@ export class AddRecoModalPage implements OnInit {
   public notes: string = '';
   script: any;
 
-  picture: SafeResourceUrl;
   toast: any;
-  originalPicture: string;
-  pictureDataUrl; string;
-  pictureDataThumbUrl: string;
-  ThumbnailSize = 500;
-  PictureSize = 1500;
-  limitFileSize = 1024; // KB
-
+  
   _askId: string;
   _lat: string;
   _lng: string;
@@ -66,33 +59,30 @@ export class AddRecoModalPage implements OnInit {
     private modalController: ModalController,
     private explorerService: ExplorerService,
     private renderer: Renderer2,
-    private sanitizer: DomSanitizer,
-    private platform: Platform,
     private tc: ToastController,
     private router: Router,
-    private askedRecoService: AskedRecoService,
-    private ev: Events
+    private askedRecoService: AskedRecoService
   ) { }
 
   ngOnInit() {
     this.backUrl = `/asked-reco/${this._askId}/${this._lat}/${this._lng}`;
+  }
+
+  ionViewWillEnter(): void {
+    this.initGoogleMapService();
+  }
+
+  initGoogleMapService() {
     const div = this.renderer.createElement('div');
     div.id = 'googleDiv';
-    console.log('CreatePlaceMOdal.NgOnInit: Google AutoComplete status');
     try {
       this.autocompleteService = new google.maps.places.AutocompleteService();
       this.placesService = new google.maps.places.PlacesService(div);
-    } catch {
-
+      console.log('Add reco modal: Autocomplete service succeed');
+    } catch (err) {
+      console.log('Add reco modal: Autocomplete service failed');
+      console.log(err);
     }
-  }
-
-  ionViewDidLoad(): void {
-    const div = this.renderer.createElement('div');
-    div.id = 'googleDiv';
-    this.autocompleteService = new google.maps.places.AutocompleteService();
-    this.autocompleteService = new google.maps.places.PlacesService(div);
-    // this.searchDisabled = false;
   }
 
   async presentToast(message) {
@@ -113,7 +103,6 @@ export class AddRecoModalPage implements OnInit {
 
   searchPlace() {
 
-    console.log('Searchplace');
     this.googlePhoto = '';
     this.saveDisabled = true;
 
@@ -126,9 +115,6 @@ export class AddRecoModalPage implements OnInit {
       }
 
       this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-        console.log('CreateModalPage.SearchPlace.Autocomplete');
-        console.log(predictions);
-        console.log(status);
 
         if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
 
