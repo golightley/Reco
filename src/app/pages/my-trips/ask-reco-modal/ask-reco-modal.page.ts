@@ -2,8 +2,9 @@ import { MytripService } from 'src/app/services/mytrip.service';
 import { AuthService } from 'src/app/services/user/auth.service'
 import { ModalController, AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Email } from '@teamhive/capacitor-email';
+declare var google;
 
 @Component({
   selector: 'app-ask-reco-modal',
@@ -12,6 +13,12 @@ import { Email } from '@teamhive/capacitor-email';
 })
 export class AskRecoModalPage implements OnInit {
   location: string;
+  queryPlace: string = '';
+  places: any = [];
+  autocompleteService: any;
+  placesService: any;
+  lat: number = 0;
+  lng: number = 0;
   userName: string;
   smsContent: string;
   currentUser: any;
@@ -20,10 +27,20 @@ export class AskRecoModalPage implements OnInit {
     private modalController: ModalController,
     private mytripService: MytripService,
     public alertCtrl: AlertController,
-    private authService: AuthService
+    private authService: AuthService,
+    private renderer: Renderer2
   ) { }
 
   async ngOnInit() {
+    try {
+      const div = this.renderer.createElement('div');
+      div.id = 'googleDiv';
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+      this.placesService = new google.maps.places.PlacesService(div);
+    } catch (err) {
+      console.log('Autocomplete service failed');
+      console.log(err);
+    }
     this.currentUser = await this.authService.getCurrentUser();
     this.location = '';
     this.userName = '';
@@ -33,29 +50,84 @@ export class AskRecoModalPage implements OnInit {
     this.smsContent = this.userName + ' would like your recommendations for ';
   }
 
+  ionViewDidLoad(): void {
+    this.initGoogleMapService();
+    // this.searchDisabled = false;
+  }
+
+  initGoogleMapService() {
+    const div = this.renderer.createElement('div');
+    div.id = 'googleDiv';
+    try {
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+      this.placesService = new google.maps.places.PlacesService(div);
+      console.log('Autocomplete service succeed!');
+    } catch (err) {
+      console.log('Autocomplete service failed');
+      console.log(err);
+    }
+  }
+
+  searchPlace() {
+    this.lat = 0;
+    this.lng = 0;
+
+    if (this.queryPlace.length > 0) {
+      const config = {
+        types: ['geocode'],
+        input: this.queryPlace
+      };
+
+      this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
+        // console.log(predictions);
+
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+
+          this.places = [];
+
+          predictions.forEach((prediction) => {
+            this.places.push(prediction);
+          });
+        }
+
+      });
+
+    } else {
+      this.places = [];
+    }
+
+  }
+
+  async selectPlace(place) {
+    this.places = [];
+    this.placesService.getDetails({ placeId: place.place_id }, (details) => {
+      console.log('AskRecoModal.selectPlace(): details => ', details);
+      console.log(details);
+      this.lat = details.geometry.location.lat();
+      this.lng = details.geometry.location.lng();
+      this.queryPlace = details.name;
+      // this.saveDisabled = false;
+    });
+
+  }
+
   async getShareContent() {
-    this.location = this.location.replace(/\s/g, '');
-    if (this.location.length === 0 ) {
+    if ( !this.queryPlace || !this.lat || !this.lng ) {
       return;
     }
-    const askId = await this.mytripService.createAskForReco(this.location, this.currentUser);
+    const askId = await this.mytripService.createAskForReco(this.queryPlace, this.currentUser);
     // if error occurred
     if ( askId.error) {
       const msg = 'Unable to ask a recommendation. Please try again later.';
       this.showErrorAlert(msg);
       return;
     }
-    let lat = 0;
-    let lng = 0;
-    if ( localStorage.getItem('UsersLocation') ) {
-      lat = JSON.parse(localStorage.getItem('UsersLocation')).lat;
-      lng = JSON.parse(localStorage.getItem('UsersLocation')).lng;
-    }
-
-    const shareUrl = ` https://reco-6c892.firebaseapp.com/asked-reco/${askId}/${lat}/${lng}`;
-    const content = this.smsContent + this.location + shareUrl;
+    
+    const shareUrl = ` https://reco-6c892.firebaseapp.com/asked-reco/${askId}/${this.lat}/${this.lng}`;
+    const content = this.smsContent + this.queryPlace + shareUrl;
     return content;
   }
+
   async inviteViaSMS() {
     const content = await this.getShareContent();
     console.log(content);

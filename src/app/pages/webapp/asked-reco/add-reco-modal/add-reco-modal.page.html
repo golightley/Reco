@@ -1,8 +1,7 @@
 <ion-header>
   <ion-toolbar class="nolines">
       <ion-buttons slot="start">        
-          <!-- <ion-button class="back-button" text="" icon="/assets/images/left-arrow.svg" color="dark" (click)="dismiss()"></ion-button> -->
-          <ion-back-button color="dark" (click)="back()" defaultHref="{{backUrl}}"></ion-back-button>
+        <ion-back-button  mode="ios" icon="arrow-back" text="" (click)="back()" defaultHref="{{backUrl}}"></ion-back-button>
       </ion-buttons>
     <ion-title class="title">Add Your Recommendation</ion-title>
   </ion-toolbar>
@@ -12,9 +11,9 @@
     <ion-list lines="none" class="create-place-content">
           <ion-item lines="none">
             <ion-label position="stacked" class="title">NEW PLACE NAME</ion-label>
-            <ion-input  [(ngModel)]="queryPlace" (ionInput)="searchPlace()"  type="text"></ion-input>            
+            <ion-input  class="place" [(ngModel)]="queryPlace" (ionInput)="searchPlace()"  type="text"></ion-input>            
             <ion-list [ngClass]="{'place-list': places.length>0, 'empty-place-list': places.length==0}">
-                <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
+                <ion-item *ngFor="let place of places" (click)="selectPlace(place)">{{place.description}}</ion-item>
             </ion-list>
           </ion-item>
           <div class="tooltip" *ngIf="!queryPlace">

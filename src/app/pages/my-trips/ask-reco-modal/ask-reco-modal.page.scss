@@ -1,14 +1,23 @@
-.back-button {
-    padding-left: 12px !important;
-    --icon-font-size: 24px !important;
-}
-
 .ask-reco-content {
     padding: 60px 10px;
-
-    /* .location {
-        
-    } */
+    .place {
+        min-height: 39px;
+    }
+    .place-list {
+        margin: 5px !important;
+        border: 1px solid rgba(150,150,150, 0.5) !important;
+        box-shadow: 0 3px 6px rgba(100, 100, 100, 0.5) !important;  
+        border-radius: 5px;
+        ion-item {
+          border-bottom: 1px solid rgb(205,205,205);
+          padding: 5px 0px;
+        }
+        width: 95%;
+      }
+    .empty-place-list {
+        margin: 0px !important;
+        border: none;
+      }
     .buttons {
         text-align: center;
         position: absolute;
