@@ -9,30 +9,44 @@
   
 <ion-content>
     <ion-list lines="none" class="create-place-content">
+        <div class="input_block">
           <ion-item lines="none">
-            <ion-label position="stacked" class="title">NEW PLACE NAME</ion-label>
+            <b><ion-label position="stacked" class="title">NEW PLACE NAME</ion-label></b>
             <ion-input  class="place" [(ngModel)]="queryPlace" (ionInput)="searchPlace()"  type="text"></ion-input>            
             <ion-list [ngClass]="{'place-list': places.length>0, 'empty-place-list': places.length==0}">
                 <ion-item *ngFor="let place of places" (click)="selectPlace(place)">{{place.description}}</ion-item>
             </ion-list>
           </ion-item>
           <div class="tooltip" *ngIf="!queryPlace">
-            <span>The name of the recommended place.</span>
+            <span>The name of the place (bar, restaurant, museum)</span>
           </div>
+        </div>
     
+        <div class="input_block">
+
           <ion-item lines="none">
-            <ion-label position="stacked" class="title">CITY</ion-label>
+            <b><ion-label position="stacked" class="title">CITY</ion-label></b>
             <ion-input  [(ngModel)]="city" type="text"></ion-input>
           </ion-item>
+          <div class="tooltip" *ngIf="!queryPlace">
+              <span>Automatically filled in for you</span>
+            </div>
+
+          </div>
+
+          <div class="input_block">
 
           <ion-item  lines="none">
-            <ion-label position="stacked" class="title notes">NOTES</ion-label>
+            <b><ion-label position="stacked" class="title notes">NOTES</ion-label></b>
             <ion-textarea [(ngModel)]="notes" type="text"></ion-textarea>
           </ion-item>
-
+          </div>
          <div class="photo-content">
             <img *ngIf="googlePhoto" [src]="googlePhoto">
           </div>
+          <div class="tooltip" *ngIf="!queryPlace">
+              <span>Tips for your friends</span>
+            </div>
     </ion-list>
 
 </ion-content>
