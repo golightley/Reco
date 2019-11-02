@@ -199,23 +199,12 @@ export class CreatePlaceModalPage implements OnInit {
 
 
   async createNewRec() {
-    /* if (this.pictureDataUrl) {
-      const uploadState = await this.explorerService.uploadPicture(this.pictureDataUrl);
-      // console.log(uploadPicture);
-      await this.presentToast(uploadState.state);
-    } */
-    console.log("this.pictureDataUrl")
-    console.log(this.pictureDataUrl)
-    console.log("this.googlephoto")
-    console.log(this.googlePhoto)
-
-    if (this.pictureDataUrl == null) {
+/*     if (this.pictureDataUrl == null) {
       saveGoogleImage(this.googlePhoto, 50, 50, 1, data => {
         this.pictureDataUrl = data;
         console.log(this.pictureDataUrl);
       });
-
-    }
+    } */
     const result = await this.explorerService.createNewRecommendation('',
       this.queryPlace, this.city, this.notes, this.location, this.googlePlaceId, this.googleTypes,
       // this.placeWebsite, this.placePhone, this.pictureDataUrl, this.pictureDataThumbUrl);
@@ -223,7 +212,7 @@ export class CreatePlaceModalPage implements OnInit {
 
     console.log(result);
     if (result) {
-      await this.presentToast('Successfully saved!');
+      this.presentToast('Successfully saved!');
     }
 
     this.dismiss();
