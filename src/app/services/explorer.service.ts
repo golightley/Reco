@@ -90,7 +90,7 @@ export class ExplorerService {
           phone: placePhone || '',
           picture: pictureUrl,
           pictureThumb: pictureThumbUrl,
-          user: (askRecoId === '' && userId === '') ? firebase.auth().currentUser.uid : userId,
+          user: (askRecoId === '' && !userId) ? await firebase.auth().currentUser.uid : userId,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(async docRef => {
           console.log('SERVICE.createNewRecommendation:', docRef.id);
